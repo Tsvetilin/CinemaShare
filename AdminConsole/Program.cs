@@ -1,14 +1,8 @@
 ﻿using Data;
 using Data.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using MySql.Data.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace AdminConsole
@@ -45,7 +39,7 @@ namespace AdminConsole
             await dbContext.SaveChangesAsync();
 
             var getUser = await dbContext.Users.FirstOrDefaultAsync(x => x.LastName == "Tsvetilov");
-            var name = user?.LastName;
+            var name = getUser?.LastName;
             Console.WriteLine(name);
         }
     }

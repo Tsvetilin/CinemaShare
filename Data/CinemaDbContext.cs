@@ -2,12 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
-using MySql.Data.Entity;
 using System;
-using System.Configuration;
-//using System.Data.Entity;
-using System.Reflection;
 
 namespace Data
 {

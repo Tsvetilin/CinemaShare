@@ -1,18 +1,16 @@
 ﻿using Data;
 using Data.Models;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Business
 {
-    class CinemaBusiness
+    class ProjectionTicketBusiness
     {
         private readonly CinemaDbContext context;
 
-        public CinemaBusiness(CinemaDbContext context)
+        public ProjectionTicketBusiness(CinemaDbContext context)
         {
             this.context = context;
         }
@@ -35,10 +33,10 @@ namespace Business
 
         public async Task Update(Cinema cinema)
         {
-            var cinemaInContext = await context.Cinemas.FindAsync(cinema.Id);
-            if (cinemaInContext != null)
+            var cinemaDataInContext = await context.Cinemas.FindAsync(cinema.Id);
+            if (cinemaDataInContext != null)
             {
-                context.Entry(cinemaInContext).CurrentValues.SetValues(cinema);
+                context.Entry(cinemaDataInContext).CurrentValues.SetValues(cinema);
                 await context.SaveChangesAsync();
             }
         }
