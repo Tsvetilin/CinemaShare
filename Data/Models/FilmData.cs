@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Data.Models
 {
     public class FilmData
     {
-        [Key("filmId")]
+        [Key]
         public string FilmId { get; set; }
 
         public string Poster { get; set; }
@@ -27,5 +28,7 @@ namespace Data.Models
         public DateTime ReleaseDate { get; set; }
 
         public string TargetAudience { get; set; }
+
+        public virtual Film Film { get; set; }
     }
 }
