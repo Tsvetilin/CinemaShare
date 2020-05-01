@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Business;
 
 namespace CinemaShare
 {
@@ -30,9 +31,22 @@ namespace CinemaShare
                 options.UseMySQL(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<CinemaUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                //.AddUserStore<CinemaDbContext>()
+                .AddRoles<CinemaRole>()
                 .AddEntityFrameworkStores<CinemaDbContext>();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddSingleton(this.Configuration);
+
+            services.AddTransient<ICinemaBusiness, CinemaBusiness>();
+            services.AddTransient<IFilmBusiness, FilmBusiness>();
+            services.AddTransient<IFilmDataBusiness, FilmDataBusiness>();
+            services.AddTransient<IFilmProjectionBusiness, FilmProjectionBusiness>();
+            services.AddTransient<IFilmReviewBusiness, FilmReviewBusiness>();
+            services.AddTransient<IProjectionTicketBusiness, ProjectionTicketBusiness>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +64,7 @@ namespace CinemaShare
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseCookiePolicy();
 
             app.UseRouting();
 
