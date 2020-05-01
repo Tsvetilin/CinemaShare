@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using CinemaShare.Common;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 
 namespace CinemaShare.Areas.Identity.Pages.Account
 {
@@ -47,6 +49,25 @@ namespace CinemaShare.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "First name")]
+            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            public string FirstName { get; set; }
+
+            [Required]
+            [Display(Name = "Last name")]
+            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            public string LastName { get; set; }
+
+            [Required]
+            [Display(Name = "Username")]
+            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            public string Username { get; set; }
+
+            [Required]
+            [Display(Name = "Account type")]
+            public UserTypeInput UserType { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -75,8 +96,18 @@ namespace CinemaShare.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new CinemaUser { UserName = Input.Email, Email = Input.Email };
+                var user = new CinemaUser { UserName = Input.Username, 
+                                            Email = Input.Email, 
+                                            FirstName = Input.FirstName, 
+                                            LastName = Input.LastName, 
+                                            CreatedOn = DateTime.UtcNow
+                                          };
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                if (result.Succeeded)
+                {
+                result = await _userManager.AddToRoleAsync(user, Input.UserType.ToString());
+                }
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
