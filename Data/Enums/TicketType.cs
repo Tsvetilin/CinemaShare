@@ -7,7 +7,7 @@ namespace Data.Enums
     public enum TicketType
     {
         Adult,
-        Children,
         Student,
+        Children,
     }
 }

@@ -8,6 +8,7 @@ namespace Data.Enums
     {
         All,
         Children,
+        Over12,
         Over16,
         Adults,
     }

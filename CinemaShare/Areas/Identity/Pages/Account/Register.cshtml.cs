@@ -103,10 +103,10 @@ namespace CinemaShare.Areas.Identity.Pages.Account
                                             CreatedOn = DateTime.UtcNow
                                           };
                 var result = await _userManager.CreateAsync(user, Input.Password);
-                if (result.Succeeded)
+               /* if (result.Succeeded)
                 {
                 result = await _userManager.AddToRoleAsync(user, Input.UserType.ToString());
-                }
+                }*/
 
                 if (result.Succeeded)
                 {
