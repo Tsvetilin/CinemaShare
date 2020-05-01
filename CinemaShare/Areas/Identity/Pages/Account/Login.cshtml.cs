@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Data;
 
 namespace CinemaShare.Areas.Identity.Pages.Account
 {
@@ -21,12 +23,13 @@ namespace CinemaShare.Areas.Identity.Pages.Account
         private readonly UserManager<CinemaUser> _userManager;
         private readonly SignInManager<CinemaUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly Business.IEmailSender _emailSender;
 
-        public LoginModel(SignInManager<CinemaUser> signInManager, 
+        public LoginModel(SignInManager<CinemaUser> signInManager,
             ILogger<LoginModel> logger,
             UserManager<CinemaUser> userManager,
-            IEmailSender emailSender)
+            Business.IEmailSender emailSender
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -47,8 +50,7 @@ namespace CinemaShare.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+            public string UserName { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
@@ -77,13 +79,14 @@ namespace CinemaShare.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            CinemaUser user = _userManager.FindByNameAsync(Input.UserName).GetAwaiter().GetResult();
             returnUrl = returnUrl ?? Url.Content("~/");
 
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -100,6 +103,14 @@ namespace CinemaShare.Areas.Identity.Pages.Account
                 }
                 else
                 {
+                    if (user != null)
+                    {
+                        if (!_userManager.IsEmailConfirmedAsync(user).GetAwaiter().GetResult())
+                        {
+                            ModelState.AddModelError(string.Empty, "Email not confirmed.");
+                            return Page();
+                        }
+                    }
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }
@@ -116,7 +127,8 @@ namespace CinemaShare.Areas.Identity.Pages.Account
                 return Page();
             }
 
-            var user = await _userManager.FindByEmailAsync(Input.Email);
+            var user = await _userManager.FindByNameAsync(Input.UserName);
+
             if (user == null)
             {
                 ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
@@ -130,9 +142,12 @@ namespace CinemaShare.Areas.Identity.Pages.Account
                 values: new { userId = userId, code = code },
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(
-                Input.Email,
+                "no-reply@cinemashare.com",
+                "Admin",
+                user.Email,
                 "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                $"<h3>Please confirm your account by </h3><a href='{HtmlEncoder.Default.Encode(callbackUrl)}'><h3>clicking here</h3></a>." +
+                $"<br/> {HtmlEncoder.Default.Encode(callbackUrl)}");
 
             ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             return Page();

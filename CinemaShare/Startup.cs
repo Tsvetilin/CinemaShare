@@ -41,6 +41,7 @@ namespace CinemaShare
 
             services.AddSingleton(this.Configuration);
 
+            services.AddTransient<Business.IEmailSender>(x=>new EmailSender(Configuration.GetSection("EmailSender").Value));
             services.AddTransient<ICinemaBusiness, CinemaBusiness>();
             services.AddTransient<IFilmBusiness, FilmBusiness>();
             services.AddTransient<IFilmDataBusiness, FilmDataBusiness>();

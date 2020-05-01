@@ -25,13 +25,13 @@ namespace CinemaShare.Areas.Identity.Pages.Account
         private readonly SignInManager<CinemaUser> _signInManager;
         private readonly UserManager<CinemaUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly Business.IEmailSender _emailSender;
 
         public RegisterModel(
             UserManager<CinemaUser> userManager,
             SignInManager<CinemaUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            Business.IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -102,40 +102,48 @@ namespace CinemaShare.Areas.Identity.Pages.Account
                                             LastName = Input.LastName, 
                                             CreatedOn = DateTime.UtcNow
                                           };
-                var result = await _userManager.CreateAsync(user, Input.Password);
-               /* if (result.Succeeded)
+                if (_userManager.FindByEmailAsync(user.Email).GetAwaiter().GetResult() == null)
                 {
-                result = await _userManager.AddToRoleAsync(user, Input.UserType.ToString());
-                }*/
-
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User created a new account with password.");
-
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    var result = await _userManager.CreateAsync(user, Input.Password);
+                    /* if (result.Succeeded)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
+                    result = await _userManager.AddToRoleAsync(user, Input.UserType.ToString());
+                    }*/
+
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("User created a new account with password.");
+
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var callbackUrl = Url.Page(
+                            "/Account/ConfirmEmail",
+                            pageHandler: null,
+                            values: new { area = "Identity", userId = user.Id, code = code },
+                            protocol: Request.Scheme);
+
+                        await _emailSender.SendEmailAsync("no-reply@cinemashare.com", "Admin", Input.Email, "Confirm your email",
+                            $"<h3>Please confirm your account by</h3> <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'><h3>clicking here</h3></a>." +
+                            $"<br/> {HtmlEncoder.Default.Encode(callbackUrl)}");
+
+                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                        {
+                            return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
+                        }
+                        else
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                            return LocalRedirect(returnUrl);
+                        }
                     }
-                    else
+                    foreach (var error in result.Errors)
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        ModelState.AddModelError(string.Empty, error.Description);
                     }
                 }
-                foreach (var error in result.Errors)
+                else
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError(string.Empty, "This email is already registered");
                 }
             }
 
