@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace Business
 {
-    class CinemaBusiness
+    public class CinemaBusiness : ICinemaBusiness
     {
         private readonly CinemaDbContext context;
 
+        //IIdentityDbContext
         public CinemaBusiness(CinemaDbContext context)
         {
             this.context = context;

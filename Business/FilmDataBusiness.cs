@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Business
 {
-    public class FilmDataBusiness
+    public class FilmDataBusiness : IFilmDataBusiness
     {
         private readonly CinemaDbContext context;
 
