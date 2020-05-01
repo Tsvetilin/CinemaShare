@@ -22,6 +22,10 @@ namespace CinemaShare.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
         }
+        [Display(Name ="First Name")]
+        public string FirstName { get; set; }
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
 
         public string Username { get; set; }
 
@@ -42,8 +46,9 @@ namespace CinemaShare.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
             Username = userName;
+            FirstName = user.FirstName;
+            LastName = user.LastName;
 
             Input = new InputModel
             {
