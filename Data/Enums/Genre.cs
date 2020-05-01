@@ -30,6 +30,5 @@ namespace Data.Enums
         Thriller,
         War,
         Western,
-
     }
 }
