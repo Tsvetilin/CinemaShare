@@ -2,6 +2,8 @@
 using Data.Models;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Business
@@ -15,23 +17,23 @@ namespace Business
             this.context = context;
         }
 
-        public async Task Add(Film film)
+        public async Task AddAsync(Film film)
         {
             await context.Films.AddAsync(film);
             await context.SaveChangesAsync();
         }
 
-        public async Task<Film> Get(string id)
+        public async Task<Film> GetAsync(string id)
         {
             return await context.Films.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Film>> GetAll()
+        public IEnumerable<Film> GetAll()
         {
-            return await context.Films.ToListAsync();
+            return context.Films.ToList();
         }
 
-        public async Task Update (Film film)
+        public async Task UpdateAsync(Film film)
         {
             var filmInContext = await context.Films.FindAsync(film.Id);
             if(filmInContext!=null)
@@ -41,7 +43,7 @@ namespace Business
             }
         }
 
-        public async Task Delete (string id)
+        public async Task DeleteAsync(string id)
         {
             var filmInContext = await context.Films.FindAsync(id);
             if (filmInContext != null)
@@ -49,6 +51,20 @@ namespace Business
                 context.Films.Remove(filmInContext);
                 await context.SaveChangesAsync();
             }
+        }
+
+        public IEnumerable<Film> GetTopFilms()
+        {
+            var allFilms = GetAll();
+            var topFilms = allFilms.OrderBy(x=>x.Rating)?.Take(10);
+            return topFilms;
+        }
+
+        public IEnumerable<Film> GetRecentFilms()
+        {
+            var allFilms = GetAll();
+            var recentFilms = allFilms.OrderBy(x => x.FilmData.ReleaseDate)?.Take(4).Reverse();
+            return recentFilms;
         }
     }
 }

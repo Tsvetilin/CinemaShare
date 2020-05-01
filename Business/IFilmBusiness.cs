@@ -8,14 +8,18 @@ namespace Business
 {
     public interface IFilmBusiness
     {
-        public Task Add(Film film);
+        public Task AddAsync(Film film);
 
-        public Task<Film> Get(string id);
+        public Task<Film> GetAsync(string id);
 
-        public Task<IEnumerable<Film>> GetAll();
+        public IEnumerable<Film> GetAll();
 
-        public Task Update(Film film);
+        public Task UpdateAsync(Film film);
 
-        public Task Delete(string id);
+        public Task DeleteAsync(string id);
+
+        public IEnumerable<Film> GetTopFilms();
+
+        public IEnumerable<Film> GetRecentFilms();
     }
 }

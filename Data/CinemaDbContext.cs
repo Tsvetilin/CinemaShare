@@ -15,6 +15,7 @@ namespace Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            //Rewrite the default max length of the fields to be suitable for MySql database
             builder.Entity<CinemaUser>(entity => entity.Property(m => m.Id).HasMaxLength(85));
             builder.Entity<CinemaUser>(entity => entity.Property(m => m.NormalizedEmail).HasMaxLength(85));
             builder.Entity<CinemaUser>(entity => entity.Property(m => m.NormalizedUserName).HasMaxLength(85));
@@ -37,7 +38,12 @@ namespace Data
             builder.Entity<IdentityUserClaim<string>>(entity => entity.Property(m => m.UserId).HasMaxLength(85));
             builder.Entity<IdentityRoleClaim<string>>(entity => entity.Property(m => m.Id).HasMaxLength(85));
             builder.Entity<IdentityRoleClaim<string>>(entity => entity.Property(m => m.RoleId).HasMaxLength(85));
-            
+
+            //Map user to films
+            builder.Entity<CinemaUser>().HasMany(user => user.AddedFilms).WithOne();
+            builder.Entity<CinemaUser>().HasMany(user => user.WatchList).WithOne();
+            builder.Entity<Film>().HasOne(film => film.AddedByUser);
+
             base.OnModelCreating(builder);
         }
 

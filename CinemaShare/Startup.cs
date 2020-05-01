@@ -32,7 +32,8 @@ namespace CinemaShare
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<CinemaUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 //.AddUserStore<CinemaDbContext>()
-                .AddRoles<CinemaRole>()
+                //.AddRoleStore<CinemaDbContext>()
+                //.AddRoles<CinemaRole>()
                 .AddEntityFrameworkStores<CinemaDbContext>();
 
             services.AddControllersWithViews();

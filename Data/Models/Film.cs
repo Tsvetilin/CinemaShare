@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Infrastructure;
 
 namespace Data.Models
 {
@@ -17,6 +19,9 @@ namespace Data.Models
 
         public byte Rating { get; set; }
 
+        [ForeignKey(nameof(AddedByUser))]
+        public string CinemaUserId { get; set; }
+
         public virtual CinemaUser AddedByUser { get; set; }
 
         public virtual FilmData FilmData { get; set; }
@@ -24,6 +29,8 @@ namespace Data.Models
         public virtual FilmProjection FilmProjection { get; set; }
 
         public virtual IEnumerable<FilmReview> FilmReviews { get; set; }
+
+        public virtual IEnumerable<CinemaUser> OnWatchlistUsers { get; set; }
 
     }
 }

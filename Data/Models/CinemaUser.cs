@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models
 {
@@ -13,6 +14,7 @@ namespace Data.Models
             this.AddedFilms = new HashSet<Film>();
             this.ProjectionTickets = new HashSet<ProjectionTicket>();
             this.FilmReviews = new HashSet<FilmReview>();
+            this.WatchList = new HashSet<Film>();
         }
 
         [PersonalData]
@@ -28,11 +30,14 @@ namespace Data.Models
         [Required]
         public DateTime CreatedOn { get; set; }
         
+        [ForeignKey(nameof(AddedFilms))]
         public virtual IEnumerable<Film> AddedFilms { get; set; }
 
         public virtual IEnumerable<ProjectionTicket> ProjectionTickets { get; set; }
 
         public virtual IEnumerable<FilmReview> FilmReviews { get; set; }
+
+        public virtual IEnumerable<Film> WatchList { get; set; }
 
         public virtual Cinema Cinema { get; set; }
     }
