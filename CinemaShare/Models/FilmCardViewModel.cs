@@ -14,5 +14,7 @@ namespace CinemaShare.Models
         public string Rating { get; set; }
 
         public string Genres { get; set; }
+
+        public string Redirect { get; set; }
     }
 }

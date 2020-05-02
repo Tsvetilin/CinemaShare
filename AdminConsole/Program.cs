@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AdminConsole
@@ -16,6 +17,7 @@ namespace AdminConsole
         {
             var optionsBuilder = new DbContextOptionsBuilder<CinemaDbContext>();
             optionsBuilder.UseMySQL<CinemaDbContext>("server=localhost;port=3306;username=root;password=root;database=cinemaapp;SslMode = None");
+            optionsBuilder.UseLazyLoadingProxies();
             CinemaDbContext dbContext = new CinemaDbContext(optionsBuilder.Options);
 
 
@@ -46,23 +48,27 @@ namespace AdminConsole
             //var name = getUser?.LastName;
             //Console.WriteLine(name);
 
-            Film film = new Film
-            {
-                Rating = 7
-            };
-            Console.WriteLine(film.Id);
-            FilmData filmData = new FilmData
-            {
-                FilmId = film.Id,
-                Title = "Test",
-                Description = "asddsa",
-                Genre = new[] { new GenreType { Genre = Genre.Action } },
-            };
+            /* Film film = new Film
+             {
+                 Rating = 7
+             };
+             Console.WriteLine(film.Id);
+             FilmData filmData = new FilmData
+             {
+                 FilmId = film.Id,
+                 Title = "Test",
+                 Description = "asddsa",
+                 Genre = new[] { new GenreType { Genre = Genre.Action } },
+             };
 
-            FilmBusiness filmBusiness = new FilmBusiness(dbContext);
-            FilmDataBusiness filmDataBusiness = new FilmDataBusiness(dbContext);
-            await filmBusiness.AddAsync(film);
-            await filmDataBusiness.Add(filmData);
+             FilmBusiness filmBusiness = new FilmBusiness(dbContext);
+             FilmDataBusiness filmDataBusiness = new FilmDataBusiness(dbContext);
+             await filmBusiness.AddAsync(film);
+             await filmDataBusiness.Add(filmData);*/
+
+            var data = await dbContext.FilmDatas.ToListAsync();
+            var mapped = data.ToList();
+            Console.WriteLine(mapped);
         }
     }
 

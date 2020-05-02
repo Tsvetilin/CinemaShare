@@ -30,7 +30,7 @@ namespace Data.Models
         public string Description { get; set; }
 
         [Required]
-        public IEnumerable<GenreType> Genre { get; set; }
+        public virtual IEnumerable<GenreType> Genre { get; set; }
 
         [MaxLength(50)]
         public string Director { get; set; }

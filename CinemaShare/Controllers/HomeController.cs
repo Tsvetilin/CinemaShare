@@ -30,14 +30,13 @@ namespace CinemaShare.Controllers
         public IActionResult Index()
         {
             var rawAllFilms = filmDataBusiness.GetAll();
-            var data = rawAllFilms.ToList()[0].Film;
-            //var rawTopFilms =  rawAllFilms?.OrderBy(x => x.Rating)?.Take(10)?.Reverse();
-            //var rawRecentFilms = rawAllFilms?.OrderBy(x => x.FilmData.ReleaseDate).Take(4)?.Reverse();
+            var rawTopFilms =  rawAllFilms?.OrderBy(x => x.Film.Rating)?.Take(10)?.Reverse();
+            var rawRecentFilms = rawAllFilms?.OrderBy(x => x.ReleaseDate).Take(4)?.Reverse();
 
             HomePageViewModel viewModel = new HomePageViewModel
             {
-                TopFilms = MapToViewModel(rawAllFilms).ToList(),
-                RecentFilms = MapToViewModel(rawAllFilms).ToList(),
+                TopFilms = MapToViewModel(rawTopFilms).ToList(),
+                RecentFilms = MapToViewModel(rawRecentFilms).ToList(),
             };
             
             return View(viewModel);
@@ -50,7 +49,8 @@ namespace CinemaShare.Controllers
                 Title = x.Title,
                 Genres = string.Join(", ", x.Genre.Select(a => a.Genre.ToString())),
                 Poster = x.Poster,
-                Rating = "5"
+                Rating = x.Film.Rating.ToString(),
+                Redirect="\"/films/"+x.FilmId+ "\""
             });
         }
 

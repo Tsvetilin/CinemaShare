@@ -58,11 +58,11 @@ namespace Data.Seeders
             {
                 var film = new Film { Rating= (byte)randomNumber.Next(0,6)};
                 filmData.FilmId = film.Id;
-                //film.FilmData = filmData;
                 await context.Films.AddAsync(film) ;
                 await context.FilmDatas.AddAsync(filmData);
-                await context.SaveChangesAsync();
             }
+            
+            await context.SaveChangesAsync();
         }
     }
 }

@@ -7,37 +7,31 @@
 <h1> Cinema Share</h1>
 <h2>Add sth here</h2>
 
-<div >
+<div class=" unselectable-text">
     <h4>Top rated films</h4>
-    <div class="text-dark">
+    <div class="text-dark bg-dark">
         <div id="topFilms" class="carousel slide" data-ride="carousel">
-            <!-- <ol class="carousel-indicators">
-         <li data-target="#topFilms" data-slide-to="0" class="active"></li>
-         <li data-target="#topFilms" data-slide-to="1"></li>
-         <li data-target="#topFilms" data-slide-to="2"></li>
-     </ol>-->
             <div class="carousel-inner">
-
                 @if (Model.TopFilms.Count > 0)
                 {
-                <div class="carousel-item active">
+                <div class="carousel-item active cursor-pointer" onclick="window.location.href = @Model.TopFilms[0].Redirect">
                     <img class="d-flex h-25 mx-auto" src="@Model.TopFilms[0].Poster" alt="Film poster" />
                     <div class="carousel-caption d-none d-md-block">
-                        <h5 class="text-dark font-weight-bold">@Model.TopFilms[0].Title</h5>
-                        <h5 class="text-dark">Rating: @Model.TopFilms[0].Rating</h5>
-                        <h3 class="text-dark">@Model.TopFilms[0].Genres</h3>
+                        <h5 class="text-dark font-weight-bold  bg-light w-25 mx-auto">@Model.TopFilms[0].Title</h5>
+                        <h5 class="text-dark  bg-light w-25 mx-auto">Rating: @Model.TopFilms[0].Rating</h5>
+                        <p class="text-dark  bg-light w-25 mx-auto">@Model.TopFilms[0].Genres</p>
                     </div>
                 </div>
                 }
 
                 @foreach (var filmCard in Model.TopFilms.Skip(1))
                 {
-                    <div class="carousel-item">
+                    <div class="carousel-item cursor-pointer" onclick="window.location.href = @Model.TopFilms[0].Redirect">
                         <img class="d-block h-25 mx-auto" src="@filmCard.Poster" alt="Film poster">
-                        <div class="carousel-caption d-none d-md-block">
-                            <h5 class="text-dark font-weight-bold">@filmCard.Title</h5>
-                            <h5 class="text-dark">Rating: @filmCard.Rating</h5>
-                            <h3 class="text-dark">@filmCard.Genres</h3>
+                        <div class="carousel-caption d-none d-md-block bg-light">
+                            <h5 class="text-dark font-weight-bold w-25 mx-auto">@filmCard.Title</h5>
+                            <h5 class="text-dark w-25 mx-auto">Rating: @filmCard.Rating</h5>
+                            <p class="text-dark w-25 mx-auto">@filmCard.Genres</p>
                         </div>
                     </div>
                 }
@@ -60,13 +54,12 @@
     <ul class="list-inline text-dark" >
         @foreach (var filmCard in Model.RecentFilms)
         {
-        <li class="col-md-4 list-inline-item">
-            <!--class="d-block h-100"-->
-            <img class="rounded mx-auto d-block h-25 w-25" src="@filmCard.Poster" alt="Film poster">
-            <div class="carousel-caption d-none d-md-block">
-                <h3 class="text-dark font-weight-bold">@filmCard.Title</h3>
-                <h3 class="text-danger" >Rating: @filmCard.Rating</h3>
-                <h5 class="text-danger">@filmCard.Genres</h5>
+        <li class="col-md-4 list-inline-item cursor-pointer" onclick="window.location.href = @Model.TopFilms[0].Redirect">
+            <img class="rounded mx-auto d-block h-50 w-75" src="@filmCard.Poster" alt="Film poster">
+            <div class="down-container bg-light">
+                <h5 class="text-dark font-weight-bold">@filmCard.Title</h5>
+                <h5 class="text-dark " >Rating: @filmCard.Rating</h5>
+                <p class="text-dark ">@filmCard.Genres</p>
             </div>
         </li>
         }

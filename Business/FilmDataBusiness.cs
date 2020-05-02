@@ -29,7 +29,7 @@ namespace Business
 
         public IEnumerable<FilmData> GetAll()
         {
-            return context.FilmDatas.Include(x=>x.Film).ToList();
+            return context.FilmDatas.Include(x=>x.Film).Include(x=>x.Genre).ToList();
         }
 
         public async Task Update(FilmData filmData)

@@ -105,10 +105,10 @@ namespace CinemaShare.Areas.Identity.Pages.Account
                 if (_userManager.FindByEmailAsync(user.Email).GetAwaiter().GetResult() == null)
                 {
                     var result = await _userManager.CreateAsync(user, Input.Password);
-                    /* if (result.Succeeded)
+                    if (result.Succeeded)
                     {
-                    result = await _userManager.AddToRoleAsync(user, Input.UserType.ToString());
-                    }*/
+                        result = await _userManager.AddToRoleAsync(user, Input.UserType.ToString());
+                    }
 
                     if (result.Succeeded)
                     {

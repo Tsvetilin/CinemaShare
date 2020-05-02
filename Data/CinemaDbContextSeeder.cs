@@ -18,6 +18,7 @@ namespace Data
         public async Task SeedAsync()
         {
             await new FilmsSeeder().SeedAsync(context);
+            await new RolesSeeder().SeedAsync(context);
         }
     }
 }
