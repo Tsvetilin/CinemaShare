@@ -17,9 +17,5 @@ namespace Business
         public Task UpdateAsync(Film film);
 
         public Task DeleteAsync(string id);
-
-        public IEnumerable<Film> GetTopFilms();
-
-        public IEnumerable<Film> GetRecentFilms();
     }
 }

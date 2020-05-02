@@ -18,7 +18,7 @@ namespace Data.Models
 
         public double Price { get; set; }
 
-        public ushort Seat { get; set; }
+        public int Seat { get; set; }
         
         public virtual FilmProjection Projection { get; set; }
 

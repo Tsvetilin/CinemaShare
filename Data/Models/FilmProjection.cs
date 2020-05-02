@@ -24,7 +24,7 @@ namespace Data.Models
 
         public ProjectionType ProjectionType { get; set; }
 
-        public ushort TotalTickets { get; set; }
+        public int TotalTickets { get; set; }
 
         public virtual Cinema Cinema { get; set; }
 

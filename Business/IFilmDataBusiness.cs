@@ -12,7 +12,7 @@ namespace Business
 
         public Task<FilmData> Get(string id);
 
-        public Task<IEnumerable<FilmData>> GetAll();
+        public IEnumerable<FilmData> GetAll();
 
         public Task Update(FilmData filmData);
 

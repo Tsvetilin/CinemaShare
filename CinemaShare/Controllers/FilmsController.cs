@@ -24,5 +24,10 @@ namespace CinemaShare.Controllers
             };
             return View(viewModel);
         }
+
+        public async Task<IActionResult> Add()
+        {
+            return this.View();
+        }
     }
 }

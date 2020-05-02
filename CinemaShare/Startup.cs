@@ -27,13 +27,12 @@ namespace CinemaShare
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<CinemaDbContext>(options =>
-                options.UseMySQL(
-                    Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<CinemaDbContext>(options => {
+                options.UseMySQL( Configuration.GetConnectionString("DefaultConnection"));
+                options.UseLazyLoadingProxies();
+            });
             services.AddDefaultIdentity<CinemaUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                //.AddUserStore<CinemaDbContext>()
-                //.AddRoleStore<CinemaDbContext>()
-                //.AddRoles<CinemaRole>()
+                .AddRoles<CinemaRole>()
                 .AddEntityFrameworkStores<CinemaDbContext>();
 
             services.AddControllersWithViews();
@@ -48,12 +47,19 @@ namespace CinemaShare
             services.AddTransient<IFilmProjectionBusiness, FilmProjectionBusiness>();
             services.AddTransient<IFilmReviewBusiness, FilmReviewBusiness>();
             services.AddTransient<IProjectionTicketBusiness, ProjectionTicketBusiness>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Seed data on application startup
+            using (var serviceScope = app.ApplicationServices.CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<CinemaDbContext>();
+                context.Database.EnsureCreated();
+                new CinemaDbContextSeeder(context).SeedAsync().GetAwaiter().GetResult();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
