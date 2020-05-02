@@ -30,7 +30,7 @@ namespace Business
 
         public IEnumerable<Film> GetAll()
         {
-            return context.Films.ToList();
+            return context.Films.Include("FilmData").ToList();
         }
 
         public async Task UpdateAsync(Film film)
@@ -51,20 +51,6 @@ namespace Business
                 context.Films.Remove(filmInContext);
                 await context.SaveChangesAsync();
             }
-        }
-
-        public IEnumerable<Film> GetTopFilms()
-        {
-            var allFilms = GetAll();
-            var topFilms = allFilms.OrderBy(x=>x.Rating)?.Take(10);
-            return topFilms;
-        }
-
-        public IEnumerable<Film> GetRecentFilms()
-        {
-            var allFilms = GetAll();
-            var recentFilms = allFilms.OrderBy(x => x.FilmData.ReleaseDate)?.Take(4).Reverse();
-            return recentFilms;
         }
     }
 }

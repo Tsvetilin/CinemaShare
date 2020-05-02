@@ -2,6 +2,7 @@
 using Data.Models;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Business
@@ -26,14 +27,14 @@ namespace Business
             return await context.FilmDatas.FindAsync(id);
         }
 
-        public async Task<IEnumerable<FilmData>> GetAll()
+        public IEnumerable<FilmData> GetAll()
         {
-            return await context.FilmDatas.ToListAsync();
+            return context.FilmDatas.Include(x=>x.Film).ToList();
         }
 
         public async Task Update(FilmData filmData)
         {
-            var filmDataInContext = await context.Films.FindAsync(filmData.FilmId);
+            var filmDataInContext = await context.Films.FindAsync(filmData.Film);
             if (filmDataInContext != null)
             {
                 context.Entry(filmDataInContext).CurrentValues.SetValues(filmData);

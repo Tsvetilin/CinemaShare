@@ -47,8 +47,8 @@ namespace CinemaShare.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             Username = userName;
-            FirstName = user.FirstName;
-            LastName = user.LastName;
+            FirstName = user?.FirstName;
+            LastName = user?.LastName;
 
             Input = new InputModel
             {

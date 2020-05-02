@@ -1,8 +1,11 @@
-﻿using Data;
+﻿using Business;
+using Data;
+using Data.Enums;
 using Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AdminConsole
@@ -14,33 +17,52 @@ namespace AdminConsole
             var optionsBuilder = new DbContextOptionsBuilder<CinemaDbContext>();
             optionsBuilder.UseMySQL<CinemaDbContext>("server=localhost;port=3306;username=root;password=root;database=cinemaapp;SslMode = None");
             CinemaDbContext dbContext = new CinemaDbContext(optionsBuilder.Options);
-            var user = new CinemaUser()
+
+
+            //var user = new CinemaUser()
+            //{
+            //    FirstName = "Tsvetilin",
+            //    LastName = "Tsvetilov",
+            //    UserName = "Ceco",
+            //    CreatedOn = DateTime.UtcNow,
+            //    Email="cvetilov6@abv.bg",
+            //};
+
+            //var hasher = new PasswordHasher<CinemaUser>();
+            //var password = hasher.HashPassword(user, "PasswordSecretToHashxD");
+            //user.PasswordHash = password;
+
+            ////IUserStore<CinemaUser> store = new CinemaStore();
+            ////IOptions<IdentityOptions> options = new CinemaOptions();
+            ////var userValidator = new[] { new UserValidator<CinemaUser>() };
+            ////var passwordValidator = new[] { new PasswordValidator<CinemaUser>() };
+            ////var manager = new UserManager<CinemaUser>(store, options, hasher, userValidator, passwordValidator, null, null, null, null);
+            ////await manager.CreateAsync(user, password);
+
+            //await dbContext.Users.AddAsync(user);
+            //await dbContext.SaveChangesAsync();
+
+            //var getUser = await dbContext.Users.FirstOrDefaultAsync(x => x.LastName == "Tsvetilov");
+            //var name = getUser?.LastName;
+            //Console.WriteLine(name);
+
+            Film film = new Film
             {
-                FirstName = "Tsvetilin",
-                LastName = "Tsvetilov",
-                UserName = "Ceco",
-                CreatedOn = DateTime.UtcNow,
-                Id = Guid.NewGuid(),
-                Email="cvetilov6@abv.bg",
+                Rating = 7
+            };
+            Console.WriteLine(film.Id);
+            FilmData filmData = new FilmData
+            {
+                FilmId = film.Id,
+                Title = "Test",
+                Description = "asddsa",
+                Genre = new[] { new GenreType { Genre = Genre.Action } },
             };
 
-            var hasher = new PasswordHasher<CinemaUser>();
-            var password = hasher.HashPassword(user, "PasswordSecretToHashxD");
-            user.PasswordHash = password;
-
-            //IUserStore<CinemaUser> store = new CinemaStore();
-            //IOptions<IdentityOptions> options = new CinemaOptions();
-            //var userValidator = new[] { new UserValidator<CinemaUser>() };
-            //var passwordValidator = new[] { new PasswordValidator<CinemaUser>() };
-            //var manager = new UserManager<CinemaUser>(store, options, hasher, userValidator, passwordValidator, null, null, null, null);
-            //await manager.CreateAsync(user, password);
-
-            await dbContext.Users.AddAsync(user);
-            await dbContext.SaveChangesAsync();
-
-            var getUser = await dbContext.Users.FirstOrDefaultAsync(x => x.LastName == "Tsvetilov");
-            var name = getUser?.LastName;
-            Console.WriteLine(name);
+            FilmBusiness filmBusiness = new FilmBusiness(dbContext);
+            FilmDataBusiness filmDataBusiness = new FilmDataBusiness(dbContext);
+            await filmBusiness.AddAsync(film);
+            await filmDataBusiness.Add(filmData);
         }
     }
 

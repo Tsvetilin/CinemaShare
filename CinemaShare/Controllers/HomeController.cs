@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using CinemaShare.Models;
 using Business;
 using Data.Models;
+using Data.Enums;
 
 namespace CinemaShare.Controllers
 {
@@ -15,35 +16,41 @@ namespace CinemaShare.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IFilmBusiness filmsBusiness;
+        private readonly IFilmDataBusiness filmDataBusiness;
 
-        public HomeController(ILogger<HomeController> logger, IFilmBusiness filmsBusiness)
+        public HomeController(ILogger<HomeController> logger,
+                              IFilmBusiness filmsBusiness,
+                              IFilmDataBusiness filmDataBusiness)
         {
             _logger = logger;
             this.filmsBusiness = filmsBusiness;
+            this.filmDataBusiness = filmDataBusiness;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var rawTopFilms =  filmsBusiness.GetTopFilms();
-            var rawRecentFilms =  filmsBusiness.GetRecentFilms();
+            var rawAllFilms = filmDataBusiness.GetAll();
+            var data = rawAllFilms.ToList()[0].Film;
+            //var rawTopFilms =  rawAllFilms?.OrderBy(x => x.Rating)?.Take(10)?.Reverse();
+            //var rawRecentFilms = rawAllFilms?.OrderBy(x => x.FilmData.ReleaseDate).Take(4)?.Reverse();
 
             HomePageViewModel viewModel = new HomePageViewModel
             {
-                TopFilms = MapToViewModel(rawTopFilms).ToList(),
-                RecentFilms = MapToViewModel(rawRecentFilms).ToList(),
+                TopFilms = MapToViewModel(rawAllFilms).ToList(),
+                RecentFilms = MapToViewModel(rawAllFilms).ToList(),
             };
-
+            
             return View(viewModel);
         }
 
-        private IEnumerable<FilmCardViewModel> MapToViewModel(IEnumerable<Film> rawFilms)
+        private IEnumerable<FilmCardViewModel> MapToViewModel(IEnumerable<FilmData> rawFilms)
         {
             return rawFilms.Select(x => new FilmCardViewModel
             {
-                Title = x.FilmData.Title,
-                Genres = string.Join(", ", x.FilmData.Genre.Select(a => a.Genre.ToString())),
-                Poster = x.FilmData.Poster,
-                Rating = x.Rating.ToString()
+                Title = x.Title,
+                Genres = string.Join(", ", x.Genre.Select(a => a.Genre.ToString())),
+                Poster = x.Poster,
+                Rating = "5"
             });
         }
 

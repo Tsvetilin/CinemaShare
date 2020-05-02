@@ -43,6 +43,7 @@ namespace Data
             builder.Entity<CinemaUser>().HasMany(user => user.AddedFilms).WithOne();
             builder.Entity<CinemaUser>().HasMany(user => user.WatchList).WithOne();
             builder.Entity<Film>().HasOne(film => film.AddedByUser);
+            //builder.Entity<FilmData>().HasOne(filmData => filmData.Film).WithOne();
 
             base.OnModelCreating(builder);
         }

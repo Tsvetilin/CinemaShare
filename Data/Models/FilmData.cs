@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Models
 {
@@ -10,10 +11,14 @@ namespace Data.Models
         public FilmData()
         {
             this.Genre = new HashSet<GenreType>();
+           // this.Id = Guid.NewGuid().ToString();
         }
 
         [Key]
         public string FilmId { get; set; }
+
+       // [ForeignKey("fk_film")]
+        public virtual Film Film { get; set; }
 
         [MaxLength(50)]
         [Required]
@@ -32,12 +37,12 @@ namespace Data.Models
 
         public string Cast { get; set; }
 
-        public ushort Runtime { get; set; }
+        public int Runtime { get; set; }
 
         public DateTime ReleaseDate { get; set; }
 
         public TargetAudience TargetAudience { get; set; }
 
-        public virtual Film Film { get; set; }
+        
     }
 }
