@@ -38,7 +38,8 @@ namespace Data.Seeders
                 new FilmData{
                 Title = "The Gentlemen",
                 Description = "An American expat tries to sell off his highly profitable marijuana empire in London," +
-                " triggering plots, schemes, bribery and blackmail in an attempt to steal his domain out from under " +
+                              " triggering plots, schemes, bribery and blackmail in an attempt to steal his domain" +
+                              " out from under " +
                 "him. ",
                 Genre = new[] { new GenreType { Genre = Genre.Action },
                                 new GenreType {Genre=Genre.Crime },
@@ -50,6 +51,36 @@ namespace Data.Seeders
                 ReleaseDate=new DateTime(2020,1,31),
                 TargetAudience= TargetAudience.Over12,
                 },
+
+                new FilmData{
+                Title = "Narcos",
+                Description = "A chronicled look at the criminal exploits of Colombian drug lord Pablo Escobar," +
+                              " as well as the many other drug kingpins who plagued the country through the years. ",
+                Genre = new[] { new GenreType { Genre = Genre.Drama },
+                                new GenreType {Genre=Genre.Crime },
+                                new GenreType{Genre=Genre.Thriller}},
+                Poster = "https://m.media-amazon.com/images/M/MV5BOWVkMzY0YzctMGQzZS00YTEwLThmMzktMGU3MGJkZmJhNGNjXkEyXkFqcGdeQXVyNTc4MjczMTM@._V1_SY1000_CR0,0,675,1000_AL_.jpg",
+                Runtime=49,
+                Director="Carlo Bernard",
+                Cast="Pedro Pascal, Wagner Moura, Boyd Holbrook",
+                ReleaseDate=new DateTime(2017,4,20),
+                TargetAudience= TargetAudience.Over16,
+                },
+
+                 new FilmData{
+                Title = "Breaking Bad",
+                Description = "A high school chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing" +
+                              " and selling methamphetamine in order to secure his family's future. ",
+                Genre = new[] { new GenreType { Genre = Genre.Drama },
+                                new GenreType {Genre=Genre.Crime },
+                                new GenreType{Genre=Genre.Thriller}},
+                Poster = "https://m.media-amazon.com/images/M/MV5BMjhiMzgxZTctNDc1Ni00OTIxLTlhMTYtZTA3ZWFkODRkNmE2XkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_SY1000_CR0,0,718,1000_AL_.jpg",
+                Runtime=49,
+                Director="Vince Gilligan",
+                Cast="Bryan Cranston, Anna Gunn, Aaron Paul",
+                ReleaseDate=new DateTime(2010,12,19),
+                TargetAudience= TargetAudience.All,
+                }
             };
 
             var randomNumber = new Random();

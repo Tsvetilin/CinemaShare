@@ -10,6 +10,6 @@ namespace CinemaShare.Models
     {
         public int CurrentPage { get; set; }
         public int PagesCount { get; set; }
-        public List<FilmDataViewModel> Films { get; set; }
+        public List<ExtendedFilmCardViewModel> Films { get; set; }
     }
 }

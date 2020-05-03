@@ -50,7 +50,7 @@ namespace CinemaShare.Controllers
                 Genres = string.Join(", ", x.Genre.Select(a => a.Genre.ToString())),
                 Poster = x.Poster,
                 Rating = x.Film.Rating.ToString(),
-                Redirect="\"/films/"+x.FilmId+ "\""
+                Redirect="\"/films/"+x.FilmId+ "\"" 
             });
         }
 

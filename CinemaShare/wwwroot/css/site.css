@@ -60,6 +60,7 @@ html {
 
 body {
     /* Margin bottom by footer height */
+    box-sizing: content-box;
     margin-bottom: 80px;
 }
 .footer {
@@ -90,6 +91,12 @@ body {
     user-select: none; /* Standard syntax */
 }
 
-.cursor-pointer{
+.cursor-pointer {
     cursor: pointer;
+}
+
+.allFilmsImage {
+    height: 300;
+    width: 300;
+    margin-left: 40px;
 }

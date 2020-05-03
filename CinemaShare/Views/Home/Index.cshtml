@@ -51,10 +51,10 @@
 
 <div>
     <h1>Newest Films</h1>
-    <ul class="list-inline text-dark" >
+    <ul class="list-inline text-dark w-100" >
         @foreach (var filmCard in Model.RecentFilms)
         {
-        <li class="col-md-4 list-inline-item cursor-pointer" onclick="window.location.href = @Model.TopFilms[0].Redirect">
+        <li class="col-md-3 list-inline-item cursor-pointer" onclick="window.location.href = @Model.TopFilms[0].Redirect">
             <img class="rounded mx-auto d-block h-50 w-75" src="@filmCard.Poster" alt="Film poster">
             <div class="down-container bg-light">
                 <h5 class="text-dark font-weight-bold">@filmCard.Title</h5>

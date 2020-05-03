@@ -9,6 +9,5 @@ namespace CinemaShare.Models
     {
         public List<FilmCardViewModel> RecentFilms { get; set; }
         public List<FilmCardViewModel> TopFilms { get; set; }
-
     }
 }
