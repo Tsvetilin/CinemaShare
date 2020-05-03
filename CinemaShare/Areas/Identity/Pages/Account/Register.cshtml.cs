@@ -122,7 +122,7 @@ namespace CinemaShare.Areas.Identity.Pages.Account
                             values: new { area = "Identity", userId = user.Id, code = code },
                             protocol: Request.Scheme);
 
-                        await _emailSender.SendEmailAsync("no-reply@cinemashare.com", "Admin", Input.Email, "Confirm your email",
+                        await _emailSender.SendEmailAsync("cinemashare222@gmail.com", "Admin", Input.Email, "Confirm your email",
                             $"<h3>Please confirm your account by</h3> <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'><h3>clicking here</h3></a>." +
                             $"<br/> {HtmlEncoder.Default.Encode(callbackUrl)}");
 
