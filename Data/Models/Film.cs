@@ -21,8 +21,6 @@ namespace Data.Models
 
         public virtual CinemaUser AddedByUser { get; set; }
 
-       // [ForeignKey(nameof(FilmData))]
-        //public string FilmDataId { get; set; }
         public virtual FilmData FilmData { get; set; }
 
         public virtual FilmProjection FilmProjection { get; set; }

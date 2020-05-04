@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Business;
 using CinemaShare.Models;
 using Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json.Schema;
@@ -14,12 +15,15 @@ namespace CinemaShare.Controllers
     public class FilmsController : Controller
     {
         private readonly IFilmDataBusiness filmBusiness;
+        private readonly IFilmReviewBusiness reviewBusiness;
         private const int filmsOnPage = 3;
 
-        public FilmsController(IFilmDataBusiness filmBusiness)
+        public FilmsController(IFilmDataBusiness filmBusiness, IFilmReviewBusiness reviewBusiness)
         {
             this.filmBusiness = filmBusiness;
+            this.reviewBusiness = reviewBusiness;
         }
+
         public IActionResult Index(int id = 1, string sort = "")
         {
             var allFilms = filmBusiness.GetAll();
@@ -30,7 +34,7 @@ namespace CinemaShare.Controllers
             }
             FilmsIndexViewModel viewModel = new FilmsIndexViewModel
             {
-                Films = MapToViewModel(allFilms).ToList(),
+                Films = allFilms.Select(film=>MapToViewModel(film)).ToList(),
                 PagesCount = pageCount,
                 CurrentPage = id
             };
@@ -46,58 +50,64 @@ namespace CinemaShare.Controllers
             {
                 allFilms = allFilms.OrderByDescending(x => x.Film.Rating);
             }
-            viewModel.Films = MapToViewModel(allFilms.Skip(filmsOnPage * (id - 1)).Take(filmsOnPage)).ToList();
+            viewModel.Films = allFilms.Skip(filmsOnPage * (id - 1)).Take(filmsOnPage).
+                                       Select(filmData=>MapToViewModel(filmData)).ToList();
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Add()
+        [Authorize]
+        public IActionResult Add()
         {
             return this.View();
         }
-        private IEnumerable<ExtendedFilmCardViewModel> MapToViewModel(IEnumerable<FilmData> rawFilms)
+
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Add(FilmInputModel input)
         {
-            return rawFilms.Select(x => new ExtendedFilmCardViewModel
-            {
-                Title = x.Title,
-                Genres = string.Join(", ", x.Genre.Select(a => a.Genre.ToString())),
-                Poster = x.Poster,
-                Rating = x.Film.Rating.ToString(),
-                Id =  x.FilmId,
-                Cast = x.Cast,
-                Description = x.Description,
-                Director = x.Director,
-                Runtime = x.Runtime,
-                ReleaseDate = x.ReleaseDate
-            });
+            await filmBusiness.Add(new FilmData());
+            return this.View();
         }
 
-        public async Task<IActionResult> Detail(string id=null)
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddReview(ReviewInputModel input)
+        {
+            await reviewBusiness.Add(new FilmReview());
+            return this.View();
+        }
+
+        public async Task<IActionResult> Detail(string id = null)
         {
             var film = await filmBusiness.Get(id);
-            if (film==null)
+            if (film == null)
             {
                 this.NotFound();
             }
 
-            var viewModel = new ExtendedFilmCardViewModel()
-            {
-                Title = film.Title,
-                Genres = string.Join(", ", film.Genre.Select(a => a.Genre.ToString())),
-                Poster = film.Poster,
-                Rating = film.Film.Rating.ToString(),
-                Id = film.FilmId,
-                Cast = film.Cast,
-                Description = film.Description,
-                Director = film.Director,
-                Runtime = film.Runtime,
-                ReleaseDate = film.ReleaseDate,
-                TargetAudience = film.TargetAudience,
-               /* Image1 = film.Image1,
-                Image2 = film.Image2,
-                Image3 = film.Image3,*/
-            };
+            var viewModel = MapToViewModel(film);
 
             return this.View(viewModel);
         }
+
+        private ExtendedFilmCardViewModel MapToViewModel(FilmData rawFilmData)
+        {
+            return new ExtendedFilmCardViewModel
+            {
+                Title = rawFilmData.Title,
+                Genres = string.Join(", ", rawFilmData.Genre.Select(a => a.Genre.ToString())),
+                Poster = rawFilmData.Poster,
+                Rating = rawFilmData.Film.Rating.ToString(),
+                Id = rawFilmData.FilmId,
+                Cast = rawFilmData.Cast,
+                Description = rawFilmData.Description,
+                Director = rawFilmData.Director,
+                Runtime = rawFilmData.Runtime,
+                ReleaseDate = rawFilmData.ReleaseDate,
+                TargetAudience = rawFilmData.TargetAudience,
+            };
+        }
+
     }
 }

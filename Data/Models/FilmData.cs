@@ -11,13 +11,11 @@ namespace Data.Models
         public FilmData()
         {
             this.Genre = new HashSet<GenreType>();
-           // this.Id = Guid.NewGuid().ToString();
         }
 
         [Key]
         public string FilmId { get; set; }
 
-       // [ForeignKey("fk_film")]
         public virtual Film Film { get; set; }
 
         [MaxLength(50)]

@@ -4,35 +4,41 @@
     ViewData["Title"] = "Home Page";
 }
 
-<h1> Cinema Share</h1>
+<h1 class="text-center"> Cinema Share</h1>
 <h2>Add sth here</h2>
 
 <div class=" unselectable-text">
     <h4>Top rated films</h4>
-    <div class="text-dark bg-dark">
+    <div class="text-dark bg-dark" style="max-height:80vh;">
         <div id="topFilms" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
                 @if (Model.TopFilms.Count > 0)
                 {
-                <div class="carousel-item active cursor-pointer" >
-                    <img class="d-flex h-25 mx-auto" src="@Model.TopFilms[0].Poster" alt="Film poster" />
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5 class="text-dark font-weight-bold  bg-light w-25 mx-auto">@Model.TopFilms[0].Title</h5>
-                        <h5 class="text-dark  bg-light w-25 mx-auto">Rating: @Model.TopFilms[0].Rating</h5>
-                        <p class="text-dark  bg-light w-25 mx-auto">@Model.TopFilms[0].Genres</p>
+                    <div class="carousel-item active cursor-pointer">
+                        <a asp-controller="Films" asp-action="Detail" asp-route-id="@Model.TopFilms[0].Id"
+                           class="content-heading clearfix media" style="text-decoration:none; max-height:80vh">
+                            <img class="d-flex h-25 mx-auto" src="@Model.TopFilms[0].Poster" alt="Film poster" style="max-height:80vh" />
+                            <div class="carousel-caption d-none d-md-block unselectable-text" style="max-height:80vh;">
+                                <h5 class="text-dark font-weight-bold  bg-light ">@Model.TopFilms[0].Title</h5>
+                                <h5 class="text-dark  bg-light ">Rating: @Model.TopFilms[0].Rating</h5>
+                                <p class="text-dark  bg-light ">@Model.TopFilms[0].Genres</p>
+                            </div>
+                        </a>
                     </div>
-                </div>
                 }
 
                 @foreach (var filmCard in Model.TopFilms.Skip(1))
                 {
-                    <div class="carousel-item cursor-pointer" >
-                        <img class="d-block h-25 mx-auto" src="@filmCard.Poster" alt="Film poster">
-                        <div class="carousel-caption d-none d-md-block bg-light">
-                            <h5 class="text-dark font-weight-bold w-25 mx-auto">@filmCard.Title</h5>
-                            <h5 class="text-dark w-25 mx-auto">Rating: @filmCard.Rating</h5>
-                            <p class="text-dark w-25 mx-auto">@filmCard.Genres</p>
-                        </div>
+                    <div class="carousel-item cursor-pointer">
+                        <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
+                           class="content-heading clearfix media" style="text-decoration:none; max-height:80vh;" >
+                            <img class="d-block h-25 mx-auto" src="@filmCard.Poster" alt="Film poster" style="max-height:80vh">
+                            <div class="carousel-caption d-none d-md-block bg-light unselectable-text" style="max-height:80vh">
+                                <h5 class="text-dark font-weight-bold w-25 mx-auto">@filmCard.Title</h5>
+                                <h5 class="text-dark w-25 mx-auto">Rating: @filmCard.Rating</h5>
+                                <p class="text-dark w-25 mx-auto">@filmCard.Genres</p>
+                            </div>
+                        </a>
                     </div>
                 }
                 <a class="carousel-control-prev text-black-50" href="#topFilms" role="button" data-slide="prev">
@@ -51,19 +57,23 @@
 
 <div>
     <h1>Newest Films</h1>
-    <ul class="list-inline text-dark w-100" >
+    <ul class="list-inline text-dark w-100">
         @foreach (var filmCard in Model.RecentFilms)
         {
-        <li class="col-md-3 list-inline-item cursor-pointer">
-            <img class="rounded mx-auto d-block h-50 w-75" src="@filmCard.Poster" alt="Film poster">
-            <div class="down-container bg-light">
-                <h5 class="text-dark font-weight-bold">@filmCard.Title</h5>
-                <h5 class="text-dark " >Rating: @filmCard.Rating</h5>
-                <p class="text-dark ">@filmCard.Genres</p>
-            </div>
-        </li>
+            <li class="col-md-3 list-inline-item my-auto p-0">
+                <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
+                   class="content-heading clearfix media" style="text-decoration:none;">
+                    <img class="rounded mx-auto d-block h-50 w-75" src="@filmCard.Poster" alt="Film poster">
+                    <div class="down-container bg-light unselectable-text">
+                        <h5 class="text-dark font-weight-bold">@filmCard.Title</h5>
+                        <h5 class="text-dark ">Rating: @filmCard.Rating</h5>
+                        <p class="text-dark ">@filmCard.Genres</p>
+                    </div>
+                </a>
+            </li>
         }
     </ul>
 </div>
 
-<a href="/films">See all films</a>
+
+    <a href="/Films" class="text-center my-auto"><h5>See all films</h5></a>

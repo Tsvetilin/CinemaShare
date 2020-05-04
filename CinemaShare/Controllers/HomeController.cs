@@ -31,8 +31,8 @@ namespace CinemaShare.Controllers
         public IActionResult Index(int? page)
         {
             var rawAllFilms = filmDataBusiness.GetAll();
-            var rawTopFilms =  rawAllFilms?.OrderBy(x => x.Film.Rating)?.Take(10)?.Reverse();
-            var rawRecentFilms = rawAllFilms?.OrderBy(x => x.ReleaseDate).Take(4)?.Reverse();
+            var rawTopFilms =  rawAllFilms?.OrderByDescending(x => x.Film.Rating)?.Take(10);
+            var rawRecentFilms = rawAllFilms?.OrderByDescending(x => x.ReleaseDate).Take(6);
 
             HomePageViewModel viewModel = new HomePageViewModel
             {

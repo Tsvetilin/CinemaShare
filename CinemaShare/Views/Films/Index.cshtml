@@ -6,7 +6,7 @@
 <h1>Films</h1>
 <br />
 
-<div class="orderOptions">
+<div class="orderOptions" style="position:absolute;">
     <h3>Sort by:</h3>
     <h4 class="media-heading"><a asp-route="filmsList" asp-route-sort="Name" asp-route-id="1">Name</a></h4>
     <h4 class="media-heading"><a asp-route="filmsList" asp-route-sort="Year" asp-route-id="1">Year</a></h4>
@@ -19,7 +19,7 @@
     {
         <li>
             <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
-               class="content-heading clearfix media" style="text-decoration:none;">
+               class="content-heading clearfix media box-hover" style="text-decoration:none;">
                 <img class="rounded float-left h-25 w-25" style="margin-left:320px;" src="@filmCard.Poster" alt="Film poster">
                 <div style="margin-left:30px; margin-top: 20px;">
                     <h3 class="text-dark font-weight-bold">@filmCard.Title</h3>

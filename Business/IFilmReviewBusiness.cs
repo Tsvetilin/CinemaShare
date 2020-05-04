@@ -1,10 +1,21 @@
-﻿using System;
+﻿using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Business
 {
     public interface IFilmReviewBusiness
     {
+        public Task Add(FilmReview filmReview);
+
+        public Task<FilmReview> Get(string id);
+
+        public Task<IEnumerable<FilmReview>> GetAll();
+
+        public Task Update(FilmReview filmReview);
+
+        public Task Delete(string id);
     }
 }
