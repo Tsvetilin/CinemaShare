@@ -84,6 +84,9 @@ namespace CinemaShare
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "filmsList",
+                    pattern: "{controller=Films}/{action=Index}/{sort=All}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

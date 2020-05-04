@@ -14,7 +14,7 @@
             <div class="carousel-inner">
                 @if (Model.TopFilms.Count > 0)
                 {
-                <div class="carousel-item active cursor-pointer" onclick="window.location.href = @Model.TopFilms[0].Redirect">
+                <div class="carousel-item active cursor-pointer" >
                     <img class="d-flex h-25 mx-auto" src="@Model.TopFilms[0].Poster" alt="Film poster" />
                     <div class="carousel-caption d-none d-md-block">
                         <h5 class="text-dark font-weight-bold  bg-light w-25 mx-auto">@Model.TopFilms[0].Title</h5>
@@ -26,7 +26,7 @@
 
                 @foreach (var filmCard in Model.TopFilms.Skip(1))
                 {
-                    <div class="carousel-item cursor-pointer" onclick="window.location.href = @Model.TopFilms[0].Redirect">
+                    <div class="carousel-item cursor-pointer" >
                         <img class="d-block h-25 mx-auto" src="@filmCard.Poster" alt="Film poster">
                         <div class="carousel-caption d-none d-md-block bg-light">
                             <h5 class="text-dark font-weight-bold w-25 mx-auto">@filmCard.Title</h5>
@@ -54,7 +54,7 @@
     <ul class="list-inline text-dark w-100" >
         @foreach (var filmCard in Model.RecentFilms)
         {
-        <li class="col-md-3 list-inline-item cursor-pointer" onclick="window.location.href = @Model.TopFilms[0].Redirect">
+        <li class="col-md-3 list-inline-item cursor-pointer">
             <img class="rounded mx-auto d-block h-50 w-75" src="@filmCard.Poster" alt="Film poster">
             <div class="down-container bg-light">
                 <h5 class="text-dark font-weight-bold">@filmCard.Title</h5>

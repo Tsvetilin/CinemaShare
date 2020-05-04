@@ -7,6 +7,8 @@ namespace CinemaShare.Models
 {
     public class FilmCardViewModel
     {
+        public string Id { get; set; }
+
         public string Title { get; set; }
 
         public string Poster { get; set; }
@@ -14,7 +16,5 @@ namespace CinemaShare.Models
         public string Rating { get; set; }
 
         public string Genres { get; set; }
-
-        public string Redirect { get; set; }
     }
 }

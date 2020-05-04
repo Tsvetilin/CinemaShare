@@ -43,6 +43,6 @@ namespace Data.Models
 
         public TargetAudience TargetAudience { get; set; }
 
-        
+
     }
 }

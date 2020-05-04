@@ -3,31 +3,34 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<h1>Films</h1>
+<br />
 
-<h1>Search options</h1>
+<div class="orderOptions">
+    <h3>Sort by:</h3>
+    <h4 class="media-heading"><a asp-route="filmsList" asp-route-sort="Name" asp-route-id="1">Name</a></h4>
+    <h4 class="media-heading"><a asp-route="filmsList" asp-route-sort="Year" asp-route-id="1">Year</a></h4>
+    <h4 class="media-heading"><a asp-route="filmsList" asp-route-sort="Rating" asp-route-id="1">Rating</a></h4>
+</div>
 
-<h1>Order options</h1>
-<h4 class="media-heading"><a asp-controller="Films" asp-action="ByName" asp-route-id="1">By name</a></h4>
-<h4 class="media-heading"><a asp-controller="Films" asp-action="ByYear" asp-route-id="1">By year</a></h4>
-<h4 class="media-heading"><a asp-controller="Films" asp-action="ByRating" asp-route-id="1">By rating</a></h4>
 
-
-
-<h1>Films</h1><br/>
 <ul class="list-inline text-dark">
     @foreach (var filmCard in Model?.Films)
     {
-        <li class="ontent-heading clearfix media" onclick="window.location.href = @filmCard.Redirect">
-            <img class="rounded float-left h-25 w-25" style="margin-left:320px;" src="@filmCard.Poster" alt="Film poster">
-            <div style="margin-left:30px; margin-top: 20px;">
-                <h3 class="text-dark font-weight-bold">@filmCard.Title</h3>
-                <h5 class="text-dark ">Rating: @filmCard.Rating</h5>
-                <p class="text-dark ">Director: @filmCard.Director</p>
-                <p class="text-dark ">@filmCard.Runtime minutes</p>
-                <p class="text-dark ">Genres: @filmCard.Genres</p>
-                <p class="text-dark ">Release date: @filmCard.ReleaseDate.ToShortDateString()</p>
-                <p class="font-weight-bold ">@filmCard.Description</p>
-            </div>
+        <li>
+            <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
+               class="content-heading clearfix media" style="text-decoration:none;">
+                <img class="rounded float-left h-25 w-25" style="margin-left:320px;" src="@filmCard.Poster" alt="Film poster">
+                <div style="margin-left:30px; margin-top: 20px;">
+                    <h3 class="text-dark font-weight-bold">@filmCard.Title</h3>
+                    <h5 class="text-dark ">Rating: @filmCard.Rating</h5>
+                    <p class="text-dark ">Director: @filmCard.Director</p>
+                    <p class="text-dark ">@filmCard.Runtime minutes</p>
+                    <p class="text-dark ">Genres: @filmCard.Genres</p>
+                    <p class="text-dark ">Release date: @filmCard.ReleaseDate.ToShortDateString()</p>
+                    <p class="font-weight-bold " style="color:black">@filmCard.Description</p>
+                </div>
+            </a>
         </li>
         <br />
     }
@@ -35,7 +38,7 @@
 
 
 <nav>
-    <ul class="pagination justify-content-center">
+    <ul class="pagination justify-content-center" style="padding-top:30px; margin-bottom:0px;">
         @if (this.Model.CurrentPage == 1)
         {
             <li class="page-item disabled">
@@ -45,8 +48,8 @@
         else
         {
             <li class="page-item">
-                <a class="page-link"                  
-                   asp-route-id="@(this.Model.CurrentPage - 1)">Previous</a>
+                <a class="page-link"
+                   asp-route="filmsList" asp-route-id="@(this.Model.CurrentPage - 1)">Previous</a>
             </li>
         }
 
@@ -55,7 +58,7 @@
             var active = i == this.Model.CurrentPage ? "active" : String.Empty;
             <li class="page-item @active">
                 <a class="page-link"
-                   asp-route-id="@i">@i</a>
+                   asp-route="filmsList" asp-route-id="@i">@i</a>
             </li>
         }
 
@@ -69,11 +72,8 @@
         {
             <li class="page-item">
                 <a class="page-link"
-                   asp-route-id="@(this.Model.CurrentPage + 1)">Next</a>
+                   asp-route="filmsList" asp-route-id="@(this.Model.CurrentPage + 1)">Next</a>
             </li>
         }
     </ul>
 </nav>
-
-
-<h1>Pages</h1>
