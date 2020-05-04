@@ -6,6 +6,7 @@ using Business;
 using CinemaShare.Models;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json.Schema;
 
 namespace CinemaShare.Controllers
@@ -13,17 +14,25 @@ namespace CinemaShare.Controllers
     public class FilmsController : Controller
     {
         private readonly IFilmDataBusiness filmBusiness;
+        private const int filmsOnPage = 1;
 
         public FilmsController(IFilmDataBusiness filmBusiness)
         {
             this.filmBusiness = filmBusiness;
         }
-        public IActionResult Index()
+        public IActionResult Index(int id=1)
         {
             var allFilms = filmBusiness.GetAll();
+            int pageCount = (int)Math.Ceiling((double)allFilms.Count() / filmsOnPage);
+            if (id >pageCount)
+            {
+                id = 1;
+            }
             FilmsIndexViewModel viewModel = new FilmsIndexViewModel
             {
-                Films = MapToViewModel(allFilms).ToList(),
+                Films = MapToViewModel(allFilms.Skip(filmsOnPage * (id-1)).Take(filmsOnPage)).ToList(),
+                PagesCount = pageCount,
+                CurrentPage = id
             };
             return View(viewModel);
         }

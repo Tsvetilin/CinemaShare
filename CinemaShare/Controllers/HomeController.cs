@@ -9,6 +9,7 @@ using CinemaShare.Models;
 using Business;
 using Data.Models;
 using Data.Enums;
+using Data;
 
 namespace CinemaShare.Controllers
 {
@@ -27,7 +28,7 @@ namespace CinemaShare.Controllers
             this.filmDataBusiness = filmDataBusiness;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
             var rawAllFilms = filmDataBusiness.GetAll();
             var rawTopFilms =  rawAllFilms?.OrderBy(x => x.Film.Rating)?.Take(10)?.Reverse();

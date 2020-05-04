@@ -7,9 +7,9 @@
 <h1>Search options</h1>
 
 <h1>Order options</h1>
-<h4 class="media-heading"><a asp-controller="Films" asp-action="ByName" asp-route-id="">By name</a></h4>
-<h4 class="media-heading"><a asp-controller="Films" asp-action="ByYear" asp-route-id="">By year</a></h4>
-<h4 class="media-heading"><a asp-controller="Films" asp-action="ByRating" asp-route-id="">By rating</a></h4>
+<h4 class="media-heading"><a asp-controller="Films" asp-action="ByName" asp-route-id="1">By name</a></h4>
+<h4 class="media-heading"><a asp-controller="Films" asp-action="ByYear" asp-route-id="1">By year</a></h4>
+<h4 class="media-heading"><a asp-controller="Films" asp-action="ByRating" asp-route-id="1">By rating</a></h4>
 
 
 
@@ -45,21 +45,17 @@
         else
         {
             <li class="page-item">
-                <a class="page-link"
-                   asp-route="route"
-                   asp-route-name="routeName"
-                   asp-route-page="@(this.Model.CurrentPage - 1)">Previous</a>
+                <a class="page-link"                  
+                   asp-route-id="@(this.Model.CurrentPage - 1)">Previous</a>
             </li>
         }
 
         @for (int i = 1; i <= this.Model.PagesCount; i++)
         {
-            var active = i == this.Model.CurrentPage ? "active" : string.Empty;
+            var active = i == this.Model.CurrentPage ? "active" : String.Empty;
             <li class="page-item @active">
                 <a class="page-link"
-                   asp-route="route"
-                   asp-route-name="routeName"
-                   asp-route-page="@i">@i</a>
+                   asp-route-id="@i">@i</a>
             </li>
         }
 
@@ -73,9 +69,7 @@
         {
             <li class="page-item">
                 <a class="page-link"
-                   asp-route="route"
-                   asp-route-name="routeName"
-                   asp-route-page="@(this.Model.CurrentPage + 1)">Next</a>
+                   asp-route-id="@(this.Model.CurrentPage + 1)">Next</a>
             </li>
         }
     </ul>
