@@ -26,7 +26,6 @@ namespace Data.Models
         [MaxLength(50)]
         public string Country { get; set; }
 
-        [ForeignKey(nameof(Manager))]
         public string ManagerId { get; set; }
 
         public virtual CinemaUser Manager { get; set; }

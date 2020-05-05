@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Business;
 using CinemaShare.Models;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json.Schema;
@@ -14,14 +16,19 @@ namespace CinemaShare.Controllers
 {
     public class FilmsController : Controller
     {
+        [BindProperty]
+        private FilmReviewInputModel FilmReviewInput { get; set; }
+
         private readonly IFilmDataBusiness filmBusiness;
         private readonly IFilmReviewBusiness reviewBusiness;
+        private readonly UserManager<CinemaUser> userManager;
         private const int filmsOnPage = 3;
 
-        public FilmsController(IFilmDataBusiness filmBusiness, IFilmReviewBusiness reviewBusiness)
+        public FilmsController(IFilmDataBusiness filmBusiness, IFilmReviewBusiness reviewBusiness, UserManager<CinemaUser> userManager)
         {
             this.filmBusiness = filmBusiness;
             this.reviewBusiness = reviewBusiness;
+            this.userManager = userManager;
         }
 
         public IActionResult Index(int id = 1, string sort = "")
@@ -70,14 +77,6 @@ namespace CinemaShare.Controllers
             return this.View();
         }
 
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> AddReview(ReviewInputModel input)
-        {
-            await reviewBusiness.Add(new FilmReview());
-            return this.View();
-        }
-
         public async Task<IActionResult> Detail(string id = null)
         {
             var film = await filmBusiness.Get(id);
@@ -86,9 +85,28 @@ namespace CinemaShare.Controllers
                 this.NotFound();
             }
 
-            var viewModel = MapToViewModel(film);
-
+            FilmDataViewModel viewModel = MapToViewModel(MapToViewModel(film), film);
             return this.View(viewModel);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddReview([Bind("Content")]FilmReviewInputModel Input, string id)
+        {
+            var user = userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            if(ModelState.IsValid && id!=null || user!=null)
+            {
+                await reviewBusiness.Add(new FilmReview
+                {
+                    Content = Input.Content,
+                    CreatedOn = DateTime.UtcNow,
+                    FilmId = id,
+                    UserId = user.Id
+                });
+
+            }
+
+            return this.Redirect(Request.Headers["Referer"].ToString());
         }
 
         private ExtendedFilmCardViewModel MapToViewModel(FilmData rawFilmData)
@@ -105,8 +123,21 @@ namespace CinemaShare.Controllers
                 Director = rawFilmData.Director,
                 Runtime = rawFilmData.Runtime,
                 ReleaseDate = rawFilmData.ReleaseDate,
-                TargetAudience = rawFilmData.TargetAudience,
             };
+        }
+
+        private FilmDataViewModel MapToViewModel(ExtendedFilmCardViewModel filmCard, FilmData film)
+        {
+            FilmDataViewModel viewModel = new FilmDataViewModel();
+            PropertyInfo[] props = filmCard.GetType().GetProperties();
+            foreach (var prop in props)
+            {
+                viewModel.GetType().GetProperty(prop.Name).SetValue(viewModel, prop.GetValue(filmCard));
+            }
+            viewModel.TargetAudience = film.TargetAudience;
+            viewModel.FilmProjections = film.Film.FilmProjection.ToList();
+            viewModel.FilmReviews = film.Film.FilmReviews.ToList();
+            return viewModel;
         }
 
     }

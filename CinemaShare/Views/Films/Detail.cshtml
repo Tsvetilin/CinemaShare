@@ -1,4 +1,5 @@
-﻿@model ExtendedFilmCardViewModel
+﻿@model FilmDataViewModel
+
 @{
     ViewData["Title"] = "Detail";
 }
@@ -18,3 +19,21 @@
         <p class="font-weight-bold " style="color:black">Description: @Model.Description</p>
     </div>
 </div>
+
+<form asp-controller="Films" asp-action="AddReview" method="post" asp-route-id="@Model.Id">
+    <input type="text" name="Content"/>
+    <input type="submit" />
+</form>
+
+
+@foreach (var projection in Model.FilmProjections)
+{
+    <h5>@projection.Cinema</h5>
+    <h5>@projection.Date.ToString()</h5>
+}
+
+@foreach (var review in Model.FilmReviews)
+{
+    <h5>@review.User.UserName</h5>
+    <h5>@review.Content</h5>
+}

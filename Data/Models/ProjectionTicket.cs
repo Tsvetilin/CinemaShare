@@ -14,6 +14,10 @@ namespace Data.Models
         [Key]
         public string Id { get; set; }
 
+        public string HolderId { get; set; }
+
+        public string ProjectionId { get; set; }
+
         public TicketType Type { get; set; }
 
         public double Price { get; set; }

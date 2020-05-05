@@ -19,11 +19,13 @@ namespace Data.Models
 
         public byte Rating { get; set; }
 
+        public string UserId { get; set; }
+
         public virtual CinemaUser AddedByUser { get; set; }
 
         public virtual FilmData FilmData { get; set; }
 
-        public virtual FilmProjection FilmProjection { get; set; }
+        public virtual IEnumerable<FilmProjection> FilmProjection { get; set; }
 
         public virtual IEnumerable<FilmReview> FilmReviews { get; set; }
 

@@ -17,8 +17,10 @@ namespace Data.Models
         [Key]
         public string Id { get; set; }
 
-        [ForeignKey(nameof(Film))]
+       // [ForeignKey(nameof(Film))]
         public string FilmId { get; set; }
+
+        public string CinemaId { get; set; }
 
         public DateTime Date { get; set; }
 
