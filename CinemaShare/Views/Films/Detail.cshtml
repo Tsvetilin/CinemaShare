@@ -3,6 +3,9 @@
 @{
     ViewData["Title"] = "Detail";
 }
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
 <h1>Details</h1>
 
@@ -20,10 +23,6 @@
     </div>
 </div>
 
-<form asp-controller="Films" asp-action="AddReview" method="post" asp-route-id="@Model.Id">
-    <input type="text" name="Content"/>
-    <input type="submit" />
-</form>
 
 
 @foreach (var projection in Model.FilmProjections)
@@ -32,8 +31,44 @@
     <h5>@projection.Date.ToString()</h5>
 }
 
+    <div class="row bootstrap snippets">
+        <div class="col-md-6 col-md-offset-2 col-sm-12" style="margin:20px 0px 10px 0px">
+            <div class="comment-wrapper">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        Reviews
+                    </div>
+                    <div class="panel-body">
+                        <form asp-controller="Films" asp-action="AddReview" method="post" asp-route-id="@Model.Id">
+                            <input type="text" name="Content" class="form-control" placeholder="write a review..." rows="3" />
+                            <br>
+                            <button type="submit" class="btn btn-info pull-right">Post</button>
+                            <div class="clearfix"></div>
+                            <hr>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @foreach (var review in Model.FilmReviews)
 {
-    <h5>@review.User.UserName</h5>
-    <h5>@review.Content</h5>
+    <ul class="media-list" style="margin-bottom:20px">
+        <li class="media">
+            <a href="#" class="pull-left">
+                <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+            </a>
+            <div class="media-body">
+                <span class="text-muted pull-right">
+                    <small class="text-muted">30 min ago</small>
+                </span>
+                <strong class="text-success">@review.User.UserName</strong>
+                <p>
+                    @review.Content
+                </p>
+            </div>
+        </li>
+    </ul>
 }
+<div style="margin-bottom:80px;"></div>
