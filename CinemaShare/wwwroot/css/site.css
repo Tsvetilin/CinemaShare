@@ -104,3 +104,15 @@ body {
 .box-hover:hover{
     background-color: lavender;
 }
+
+.column {
+    float: left;
+    width: 25%;
+    padding: 5px;
+}
+
+.row::after {
+    content: "";
+    clear: both;
+    display: table;
+}

@@ -18,7 +18,7 @@
                         <a asp-controller="Films" asp-action="Detail" asp-route-id="@Model.TopFilms[0].Id"
                            class="content-heading clearfix media" style="text-decoration:none; max-height:80vh">
                             <img class="d-flex h-25 mx-auto" src="@Model.TopFilms[0].Poster" alt="Film poster" style="max-height:80vh" />
-                            <div class="carousel-caption d-none d-md-block unselectable-text" style="max-height:80vh;">
+                            <div class="carousel-caption d-none d-md-block bg-light unselectable-text" style="max-height:80vh;">
                                 <h5 class="text-dark font-weight-bold  bg-light ">@Model.TopFilms[0].Title</h5>
                                 <h5 class="text-dark  bg-light ">Rating: @Model.TopFilms[0].Rating</h5>
                                 <p class="text-dark  bg-light ">@Model.TopFilms[0].Genres</p>
@@ -31,7 +31,7 @@
                 {
                     <div class="carousel-item cursor-pointer">
                         <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
-                           class="content-heading clearfix media" style="text-decoration:none; max-height:80vh;" >
+                           class="content-heading clearfix media" style="text-decoration:none; max-height:80vh;">
                             <img class="d-block h-25 mx-auto" src="@filmCard.Poster" alt="Film poster" style="max-height:80vh">
                             <div class="carousel-caption d-none d-md-block bg-light unselectable-text" style="max-height:80vh">
                                 <h5 class="text-dark font-weight-bold w-25 mx-auto">@filmCard.Title</h5>
@@ -55,25 +55,25 @@
 </div>
 
 
-<div>
-    <h1>Newest Films</h1>
-    <ul class="list-inline text-dark w-100">
-        @foreach (var filmCard in Model.RecentFilms)
-        {
-            <li class="col-md-3 list-inline-item my-auto p-0">
-                <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
-                   class="content-heading clearfix media" style="text-decoration:none;">
-                    <img class="rounded mx-auto d-block h-50 w-75" src="@filmCard.Poster" alt="Film poster">
-                    <div class="down-container bg-light unselectable-text">
-                        <h5 class="text-dark font-weight-bold">@filmCard.Title</h5>
-                        <h5 class="text-dark ">Rating: @filmCard.Rating</h5>
-                        <p class="text-dark ">@filmCard.Genres</p>
-                    </div>
-                </a>
-            </li>
-        }
-    </ul>
-</div>
-
-
-    <a href="/Films" class="text-center my-auto"><h5>See all films</h5></a>
+<h1>Newest Films</h1>
+<ul class="list-inline text-dark h-100 w-100">
+    @foreach (var filmCard in Model.RecentFilms)
+    {
+        <li class="column" style="position: relative;">
+            <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
+               class="column" style="text-decoration:none;">
+                <img src="@filmCard.Poster" style="height:300px;" alt="Film poster">
+                <div class="down-container bg-light unselectable-text" style="position:absolute; bottom:-25px; left:-15px;">
+                    <h5 class="text-dark font-weight-bold">@filmCard.Title</h5>
+                    <h5 class="text-dark ">Rating: @filmCard.Rating</h5>
+                    <p class="text-dark ">@filmCard.Genres</p>
+                </div>
+            </a>
+        </li>
+    }
+</ul>
+<li class="text-center">
+    <a href="/Films" class="text-center">
+        <h5 style="padding-top: 40px; margin-bottom: 0px;">See all films</h5>
+    </a>
+</li>

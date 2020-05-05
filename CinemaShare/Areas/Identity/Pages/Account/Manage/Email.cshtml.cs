@@ -18,12 +18,12 @@ namespace CinemaShare.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<CinemaUser> _userManager;
         private readonly SignInManager<CinemaUser> _signInManager;
-        private readonly IEmailSender _emailSender;
+        private readonly Business.IEmailSender _emailSender;
 
         public EmailModel(
             UserManager<CinemaUser> userManager,
             SignInManager<CinemaUser> signInManager,
-            IEmailSender emailSender)
+            Business.IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -54,10 +54,9 @@ namespace CinemaShare.Areas.Identity.Pages.Account.Manage
         {
             var email = await _userManager.GetEmailAsync(user);
             Email = email;
-
             Input = new InputModel
             {
-                NewEmail = email,
+                NewEmail = "",
             };
 
             IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
@@ -99,10 +98,11 @@ namespace CinemaShare.Areas.Identity.Pages.Account.Manage
                     pageHandler: null,
                     values: new { userId = userId, email = Input.NewEmail, code = code },
                     protocol: Request.Scheme);
+                //Should be on new line
                 await _emailSender.SendEmailAsync(
-                    Input.NewEmail,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    "cinemashare222@gmail.com", "CinemaShare Support", Input.NewEmail, "Confirm your email",
+                            $"<p>Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
+                             $"clicking here</a>.</p>");
 
                 StatusMessage = "Confirmation link to change email sent. Please check your email.";
                 return RedirectToPage();
@@ -135,10 +135,10 @@ namespace CinemaShare.Areas.Identity.Pages.Account.Manage
                 pageHandler: null,
                 values: new { area = "Identity", userId = userId, code = code },
                 protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
-                email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            //Should be on new line
+            await _emailSender.SendEmailAsync("cinemashare222@gmail.com", "CinemaShare Support", email, "Confirm your email",
+                             $"<p>Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>" +
+                             $"clicking here</a>.</p>");
 
             StatusMessage = "Verification email sent. Please check your email.";
             return RedirectToPage();

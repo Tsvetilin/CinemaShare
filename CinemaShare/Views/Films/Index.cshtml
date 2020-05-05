@@ -17,7 +17,7 @@
 <ul class="list-inline text-dark">
     @foreach (var filmCard in Model?.Films)
     {
-        <li>
+        <li style="padding-bottom: 20px;">
             <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
                class="content-heading clearfix media box-hover" style="text-decoration:none;">
                 <img class="rounded float-left h-25 w-25" style="margin-left:320px;" src="@filmCard.Poster" alt="Film poster">
@@ -32,7 +32,6 @@
                 </div>
             </a>
         </li>
-        <br />
     }
 </ul>
 
