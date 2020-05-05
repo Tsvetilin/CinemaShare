@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Business;
+using CinemaShare.Common.Mapping;
 using CinemaShare.Models;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -19,32 +20,42 @@ namespace CinemaShare.Controllers
         [BindProperty]
         private FilmReviewInputModel FilmReviewInput { get; set; }
 
-        private readonly IFilmDataBusiness filmBusiness;
+        private readonly IFilmDataBusiness filmDataBusiness;
+        private readonly IFilmBusiness filmBusiness;
         private readonly IFilmReviewBusiness reviewBusiness;
         private readonly UserManager<CinemaUser> userManager;
+        private readonly IMapper mapper;
         private const int filmsOnPage = 3;
 
-        public FilmsController(IFilmDataBusiness filmBusiness, IFilmReviewBusiness reviewBusiness, UserManager<CinemaUser> userManager)
+        public FilmsController(IFilmDataBusiness filmDataBusiness,
+                               IFilmBusiness filmBusiness,
+                               IFilmReviewBusiness reviewBusiness,
+                               UserManager<CinemaUser> userManager,
+                               IMapper mapper)
         {
+            this.filmDataBusiness = filmDataBusiness;
             this.filmBusiness = filmBusiness;
             this.reviewBusiness = reviewBusiness;
             this.userManager = userManager;
+            this.mapper = mapper;
         }
 
         public IActionResult Index(int id = 1, string sort = "")
         {
-            var allFilms = filmBusiness.GetAll();
+            var allFilms = filmDataBusiness.GetAll();
             int pageCount = (int)Math.Ceiling((double)allFilms.Count() / filmsOnPage);
             if (id > pageCount)
             {
                 id = 1;
             }
+
             FilmsIndexViewModel viewModel = new FilmsIndexViewModel
             {
-                Films = allFilms.Select(film=>MapToViewModel(film)).ToList(),
+                Films = allFilms.Select(film => mapper.MapToExtendedFilmCardViewModel(film)).ToList(),
                 PagesCount = pageCount,
                 CurrentPage = id
             };
+
             if (sort == "Name")
             {
                 allFilms = allFilms.OrderBy(x => x.Title);
@@ -57,88 +68,71 @@ namespace CinemaShare.Controllers
             {
                 allFilms = allFilms.OrderByDescending(x => x.Film.Rating);
             }
+
             viewModel.Films = allFilms.Skip(filmsOnPage * (id - 1)).Take(filmsOnPage).
-                                       Select(filmData=>MapToViewModel(filmData)).ToList();
+                                       Select(filmData => mapper.MapToExtendedFilmCardViewModel(filmData)).ToList();
             return View(viewModel);
         }
 
         [Authorize]
-        public IActionResult Add()
+        public IActionResult Add(FilmInputModel input, string id=null)
         {
-            return this.View();
+            return this.View(input);
         }
-
 
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Add(FilmInputModel input)
         {
-            await filmBusiness.Add(new FilmData());
-            return this.View();
+            if (!TryValidateModel(input))
+            {
+                return RedirectToAction("Add","Films",input);
+            }
+            var film = new Film
+            {
+                UserId = userManager.GetUserId(User)
+            };
+            await filmBusiness.AddAsync(film);
+            var filmData = new FilmData
+            {
+                FilmId = film.Id,
+                Title=input.Title,
+            };
+            await filmDataBusiness.Add(filmData);
+
+            return this.RedirectToAction("Detail", "Films", new {Id=film.Id});
         }
 
         public async Task<IActionResult> Detail(string id = null)
         {
-            var film = await filmBusiness.Get(id);
+            var film = await filmDataBusiness.Get(id);
             if (film == null)
             {
                 this.NotFound();
             }
 
-            FilmDataViewModel viewModel = MapToViewModel(MapToViewModel(film), film);
+            FilmDataViewModel viewModel = mapper.MapToFilmDataViewModel(film);
             return this.View(viewModel);
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddReview([Bind("Content")]FilmReviewInputModel Input, string id)
+        public async Task<IActionResult> AddReview(FilmReviewInputModel input, string id)
         {
             var user = userManager.GetUserAsync(User).GetAwaiter().GetResult();
-            if(ModelState.IsValid && id!=null || user!=null)
+            //TODO: fix validation
+            if (!TryValidateModel(input) && id != null || user != null)
             {
                 await reviewBusiness.Add(new FilmReview
                 {
-                    Content = Input.Content,
+                    Content = input.Content,
                     CreatedOn = DateTime.UtcNow,
                     FilmId = id,
                     UserId = user.Id
                 });
-
             }
 
             return this.Redirect(Request.Headers["Referer"].ToString());
         }
-
-        private ExtendedFilmCardViewModel MapToViewModel(FilmData rawFilmData)
-        {
-            return new ExtendedFilmCardViewModel
-            {
-                Title = rawFilmData.Title,
-                Genres = string.Join(", ", rawFilmData.Genre.Select(a => a.Genre.ToString())),
-                Poster = rawFilmData.Poster,
-                Rating = rawFilmData.Film.Rating.ToString(),
-                Id = rawFilmData.FilmId,
-                Cast = rawFilmData.Cast,
-                Description = rawFilmData.Description,
-                Director = rawFilmData.Director,
-                Runtime = rawFilmData.Runtime,
-                ReleaseDate = rawFilmData.ReleaseDate,
-            };
-        }
-
-        private FilmDataViewModel MapToViewModel(ExtendedFilmCardViewModel filmCard, FilmData film)
-        {
-            FilmDataViewModel viewModel = new FilmDataViewModel();
-            PropertyInfo[] props = filmCard.GetType().GetProperties();
-            foreach (var prop in props)
-            {
-                viewModel.GetType().GetProperty(prop.Name).SetValue(viewModel, prop.GetValue(filmCard));
-            }
-            viewModel.TargetAudience = film.TargetAudience;
-            viewModel.FilmProjections = film.Film.FilmProjection.ToList();
-            viewModel.FilmReviews = film.Film.FilmReviews.ToList();
-            return viewModel;
-        }
-
     }
 }

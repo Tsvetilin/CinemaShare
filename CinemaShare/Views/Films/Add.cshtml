@@ -1,8 +1,11 @@
-﻿
+﻿@model FilmInputModel
 @{
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Add</h1>
-
+<form asp-controller="Films" asp-action="Add" method="post">
+    <input type="text" asp-for="@Model.Title" />
+    <input type="submit" />
+</form>

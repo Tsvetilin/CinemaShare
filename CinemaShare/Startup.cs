@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Business;
+using CinemaShare.Common.Mapping;
 
 namespace CinemaShare
 {
@@ -47,6 +48,8 @@ namespace CinemaShare
             services.AddTransient<IFilmProjectionBusiness, FilmProjectionBusiness>();
             services.AddTransient<IFilmReviewBusiness, FilmReviewBusiness>();
             services.AddTransient<IProjectionTicketBusiness, ProjectionTicketBusiness>();
+
+            services.AddTransient<IMapper, Mapper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

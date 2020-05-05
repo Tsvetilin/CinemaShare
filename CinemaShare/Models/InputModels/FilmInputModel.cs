@@ -8,6 +8,6 @@ namespace CinemaShare.Models
 {
     public class FilmInputModel
     {
-        
+        public string Title { get; set; }
     }
 }

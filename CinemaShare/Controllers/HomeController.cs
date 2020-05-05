@@ -10,6 +10,7 @@ using Business;
 using Data.Models;
 using Data.Enums;
 using Data;
+using CinemaShare.Common.Mapping;
 
 namespace CinemaShare.Controllers
 {
@@ -18,41 +19,32 @@ namespace CinemaShare.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IFilmBusiness filmsBusiness;
         private readonly IFilmDataBusiness filmDataBusiness;
+        private readonly IMapper mapper;
 
         public HomeController(ILogger<HomeController> logger,
                               IFilmBusiness filmsBusiness,
-                              IFilmDataBusiness filmDataBusiness)
+                              IFilmDataBusiness filmDataBusiness,
+                              IMapper mapper)
         {
             _logger = logger;
             this.filmsBusiness = filmsBusiness;
             this.filmDataBusiness = filmDataBusiness;
+            this.mapper = mapper;
         }
 
         public IActionResult Index(int? page)
         {
             var rawAllFilms = filmDataBusiness.GetAll();
             var rawTopFilms =  rawAllFilms?.OrderByDescending(x => x.Film.Rating)?.Take(10);
-            var rawRecentFilms = rawAllFilms?.OrderByDescending(x => x.ReleaseDate).Take(6);
+            var rawRecentFilms = rawAllFilms?.OrderByDescending(x => x.ReleaseDate).Take(4);
 
             HomePageViewModel viewModel = new HomePageViewModel
             {
-                TopFilms = MapToViewModel(rawTopFilms).ToList(),
-                RecentFilms = MapToViewModel(rawRecentFilms).ToList(),
+                TopFilms = mapper.MapToFilmCardViewModel(rawTopFilms).ToList(),
+                RecentFilms = mapper.MapToFilmCardViewModel(rawRecentFilms).ToList(),
             };
             
             return View(viewModel);
-        }
-
-        private IEnumerable<FilmCardViewModel> MapToViewModel(IEnumerable<FilmData> rawFilms)
-        {
-            return rawFilms.Select(x => new FilmCardViewModel
-            {
-                Title = x.Title,
-                Genres = string.Join(", ", x.Genre.Select(a => a.Genre.ToString())),
-                Poster = x.Poster,
-                Rating = x.Film.Rating.ToString(),
-                Id=x.FilmId 
-            });
         }
 
         public IActionResult Privacy()
