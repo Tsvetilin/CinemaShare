@@ -132,25 +132,26 @@ namespace CinemaShare.Areas.Identity.Pages.Account
 
             if (user == null)
             {
+                ModelState.AddModelError(string.Empty, "User not registered.");
+            }
+            else
+            {
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { userId = userId, code = code },
+                    protocol: Request.Scheme);
+                await _emailSender.SendEmailAsync(
+                    "cinemashare222@gmail.com",
+                    "CinemaShare Support",
+                    user.Email,
+                    "Confirm your email",
+                    $"<h3>Please confirm your account by </h3><a href='{HtmlEncoder.Default.Encode(callbackUrl)}'><h3>clicking here</h3></a>.");
+
                 ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             }
-
-            var userId = await _userManager.GetUserIdAsync(user);
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var callbackUrl = Url.Page(
-                "/Account/ConfirmEmail",
-                pageHandler: null,
-                values: new { userId = userId, code = code },
-                protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
-                "no-reply@cinemashare.com",
-                "Admin",
-                user.Email,
-                "Confirm your email",
-                $"<h3>Please confirm your account by </h3><a href='{HtmlEncoder.Default.Encode(callbackUrl)}'><h3>clicking here</h3></a>." +
-                $"<br/> {HtmlEncoder.Default.Encode(callbackUrl)}");
-
-            ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             return Page();
         }
     }

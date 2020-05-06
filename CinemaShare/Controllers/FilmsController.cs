@@ -10,6 +10,7 @@ using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json.Schema;
 
@@ -105,6 +106,11 @@ namespace CinemaShare.Controllers
 
         public async Task<IActionResult> Detail(string id = null)
         {
+            if (id == null)
+            {
+                return RedirectToAction("Index", "Films");
+            }
+
             var film = await filmDataBusiness.Get(id);
             if (film == null)
             {
@@ -120,8 +126,7 @@ namespace CinemaShare.Controllers
         public async Task<IActionResult> AddReview(FilmReviewInputModel input, string id)
         {
             var user = userManager.GetUserAsync(User).GetAwaiter().GetResult();
-            //TODO: fix validation
-            if (!TryValidateModel(input) && id != null || user != null)
+            if (ModelState.IsValid && id != null && user != null)
             {
                 await reviewBusiness.Add(new FilmReview
                 {
@@ -132,7 +137,8 @@ namespace CinemaShare.Controllers
                 });
             }
 
-            return this.Redirect(Request.Headers["Referer"].ToString());
+            return RedirectToAction("Detail", "Films", new { Id = id });
+            //return this.Redirect(Request.Headers["Referer"].ToString());
         }
     }
 }

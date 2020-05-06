@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Business;
 
 namespace CinemaShare.Areas.Identity.Pages.Account
 {
@@ -18,9 +19,9 @@ namespace CinemaShare.Areas.Identity.Pages.Account
     public class ForgotPasswordModel : PageModel
     {
         private readonly UserManager<CinemaUser> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly Business.IEmailSender _emailSender;
 
-        public ForgotPasswordModel(UserManager<CinemaUser> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<CinemaUser> userManager, Business.IEmailSender emailSender)
         {
             _userManager = userManager;
             _emailSender = emailSender;
@@ -58,6 +59,8 @@ namespace CinemaShare.Areas.Identity.Pages.Account
                     protocol: Request.Scheme);
 
                 await _emailSender.SendEmailAsync(
+                    "cinemshare22@gmail.com",
+                    "CinemaShare Support",
                     Input.Email,
                     "Reset Password",
                     $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");

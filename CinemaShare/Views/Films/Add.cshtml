@@ -7,5 +7,6 @@
 <h1>Add</h1>
 <form asp-controller="Films" asp-action="Add" method="post">
     <input type="text" asp-for="@Model.Title" />
+    <span asp-validation-for="@Model.Title"></span>
     <input type="submit" />
 </form>
