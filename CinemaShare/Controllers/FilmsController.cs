@@ -43,8 +43,8 @@ namespace CinemaShare.Controllers
 
         public IActionResult Index(int id = 1, string sort = "")
         {
-            var allFilms = filmDataBusiness.GetAll();
-            int pageCount = (int)Math.Ceiling((double)allFilms.Count() / filmsOnPage);
+           // var allFilms = filmDataBusiness.GetAll();
+            int pageCount = (int)Math.Ceiling((double)filmDataBusiness.CountAllFilms() / filmsOnPage);
             if (id > pageCount)
             {
                 id = 1;
@@ -52,26 +52,35 @@ namespace CinemaShare.Controllers
 
             FilmsIndexViewModel viewModel = new FilmsIndexViewModel
             {
-                Films = allFilms.Select(film => mapper.MapToExtendedFilmCardViewModel(film)).ToList(),
+                //Films = allFilms.Select(film => mapper.MapToExtendedFilmCardViewModel(film)).ToList(),
                 PagesCount = pageCount,
                 CurrentPage = id
             };
 
+            List<ExtendedFilmCardViewModel> films = new List<ExtendedFilmCardViewModel>();
             if (sort == "Name")
             {
-                allFilms = allFilms.OrderBy(x => x.Title);
+                films = filmDataBusiness.GetFilmsOnPageByName(id, pageCount).
+                        Select(x => mapper.MapToExtendedFilmCardViewModel(x)).ToList();
             }
             else if (sort == "Year")
             {
-                allFilms = allFilms.OrderByDescending(x => x.ReleaseDate);
+                films = filmDataBusiness.GetFilmsOnPageByYear(id, pageCount).
+                        Select(x => mapper.MapToExtendedFilmCardViewModel(x)).ToList();
             }
             else if (sort == "Rating")
             {
-                allFilms = allFilms.OrderByDescending(x => x.Film.Rating);
+                films = filmDataBusiness.GetFilmsOnPageByRating(id, pageCount).
+                        Select(x => mapper.MapToExtendedFilmCardViewModel(x)).ToList();
+            }
+            else
+            {
+                films = filmDataBusiness.GetPageItems(id, pageCount).
+                        Select(x => mapper.MapToExtendedFilmCardViewModel(x)).ToList();
             }
 
-            viewModel.Films = allFilms.Skip(filmsOnPage * (id - 1)).Take(filmsOnPage).
-                                       Select(filmData => mapper.MapToExtendedFilmCardViewModel(filmData)).ToList();
+            viewModel.Films = films;
+          
             return View(viewModel);
         }
 
@@ -85,10 +94,11 @@ namespace CinemaShare.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(FilmInputModel input)
         {
-            if (!TryValidateModel(input))
+            if (!ModelState.IsValid)
             {
                 return RedirectToAction("Add","Films",input);
             }
+
             var film = new Film
             {
                 UserId = userManager.GetUserId(User)

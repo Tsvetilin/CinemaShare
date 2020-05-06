@@ -1,5 +1,6 @@
 ﻿using Data;
 using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -30,6 +31,36 @@ namespace Business
         public IEnumerable<FilmData> GetAll()
         {
             return context.FilmDatas.Include(x=>x.Film).Include(x=>x.Genre).ToList();
+        }
+
+        public IEnumerable<FilmData> GetFilmsOnPageByName (int page, int filmsOnPage)
+        {
+            return GetPageItems( page, filmsOnPage, context.FilmDatas.OrderBy(x => x.Title)).ToList();
+        }
+
+        public IEnumerable<FilmData> GetFilmsOnPageByYear(int page, int filmsOnPage)
+        {
+            return GetPageItems(page, filmsOnPage, context.FilmDatas.OrderByDescending(x => x.ReleaseDate)).ToList();
+        }
+
+        public IEnumerable<FilmData> GetFilmsOnPageByRating(int page, int filmsOnPage)
+        {
+            return GetPageItems(page, filmsOnPage, context.FilmDatas.OrderByDescending(x => x.Film.Rating)).ToList();
+        }
+
+        public IEnumerable<FilmData> GetPageItems( int page, int filmsOnPage, IEnumerable<FilmData> orderedFilms = null)
+        {
+            if(orderedFilms==null)
+            {
+                orderedFilms = GetAll();
+            }
+
+            return orderedFilms.Skip(filmsOnPage * (page - 1)).Take(filmsOnPage);
+        }
+
+        public int CountAllFilms()
+        {
+            return context.Films.Count();
         }
 
         public async Task Update(FilmData filmData)

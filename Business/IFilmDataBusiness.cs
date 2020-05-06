@@ -14,6 +14,16 @@ namespace Business
 
         public IEnumerable<FilmData> GetAll();
 
+        public IEnumerable<FilmData> GetFilmsOnPageByName(int page, int filmsOnPage);
+
+        public IEnumerable<FilmData> GetFilmsOnPageByYear(int page, int filmsOnPage);
+
+        public IEnumerable<FilmData> GetFilmsOnPageByRating(int page, int filmsOnPage);
+
+        public IEnumerable<FilmData> GetPageItems(int page, int filmsOnPage, IEnumerable<FilmData> orderedFilms = null);
+
+        public int CountAllFilms();
+
         public Task Update(FilmData filmData);
 
         public Task Delete(string id);
