@@ -5,9 +5,9 @@
     ViewData["Title"] = "Register";
 }
 
-<h1 class="row">@ViewData["Title"]</h1>
+<h1 class="row1">@ViewData["Title"]</h1>
 
-<div class="row">
+<div class="row1">
     <div class="col-md-4">
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h4 style="text-align:center">Create a new account.</h4>
@@ -34,8 +34,17 @@
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Input.Gender"></label>
+                <br />
+                <select class="form-control" asp-for="Input.Gender">
+                    <option value="@GenderTypeInput.Male">Male</option>
+                    <option value="@GenderTypeInput.Female">Female</option>
+                </select>
+                <span asp-validation-for="Input.Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Input.UserType"></label>
-                <br/>
+                <br />
                 <select class="form-control" asp-for="Input.UserType">
                     <option value="@UserTypeInput.User">User</option>
                     <option value="@UserTypeInput.Manager">Manager</option>

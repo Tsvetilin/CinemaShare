@@ -56,12 +56,14 @@
 {
     <ul class="media-list" style="margin-bottom:20px">
         <li class="media">
-            <a href="#" class="pull-left">
-                <img src="https://bootdey.com/img/Content/user_1.jpg" alt="" class="img-circle">
+            <a href="" class="pull-left">
+                @{var source = ((int)review.User.Gender).ToString() + ".jpg";}
+                <img src="https://bootdey.com/img/Content/user_@source" 
+                     alt="" class="img-circle">
             </a>
             <div class="media-body">
                 <span class="text-muted pull-right">
-                    <small class="text-muted">30 min ago</small>
+                    <small class="text-muted">@review.CreatedOn.ToLocalTime().ToString("dd/MM/yyyyг. HH:mm:ss")</small>
                 </span>
                 <strong class="text-success">@review.User.UserName</strong>
                 <p>

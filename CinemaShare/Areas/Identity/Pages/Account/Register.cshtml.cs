@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using CinemaShare.Common;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
+using Data.Enums;
 
 namespace CinemaShare.Areas.Identity.Pages.Account
 {
@@ -73,6 +74,10 @@ namespace CinemaShare.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
+            [Display(Name = "Gender")]
+            public GenderType Gender { get; set; }
+
+            [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
@@ -100,7 +105,8 @@ namespace CinemaShare.Areas.Identity.Pages.Account
                                             Email = Input.Email, 
                                             FirstName = Input.FirstName, 
                                             LastName = Input.LastName, 
-                                            CreatedOn = DateTime.UtcNow
+                                            CreatedOn = DateTime.UtcNow,
+                                            Gender = Input.Gender
                                           };
                 if (_userManager.FindByEmailAsync(user.Email).GetAwaiter().GetResult() == null)
                 {

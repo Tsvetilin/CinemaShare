@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Data.Enums;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,7 +30,10 @@ namespace Data.Models
 
         [Required]
         public DateTime CreatedOn { get; set; }
-        
+
+        [Required]
+        public GenderType Gender { get; set; }
+
         [ForeignKey(nameof(AddedFilms))]
         public virtual IEnumerable<Film> AddedFilms { get; set; }
 
