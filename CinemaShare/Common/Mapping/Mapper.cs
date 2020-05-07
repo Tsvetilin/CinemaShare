@@ -1,4 +1,6 @@
 ﻿using CinemaShare.Models;
+using CinemaShare.Models.JsonModels;
+using Data.Enums;
 using Data.Models;
 using System;
 using System.Collections.Generic;
@@ -58,6 +60,74 @@ namespace CinemaShare.Common.Mapping
                 Rating = x.Film.Rating.ToString(),
                 Id = x.FilmId
             });
+        }
+
+        public FilmInputModel MapToFilmInputModel(FilmJsonModel filmData)
+        {
+            var filmInputModel = new FilmInputModel
+            {
+                Title = filmData.Title,
+                Director = filmData.Director,
+                Cast = filmData.Actors,
+                Description = filmData.Plot,
+                TargetAudience = TargetAudience.All
+            };
+
+            var posterUrl = filmData.Poster;
+            posterUrl = posterUrl.Substring(0, posterUrl.LastIndexOf('@') + 1) + "._V1_SY1000_SX675_AL_.jpg";
+            filmInputModel.Poster = posterUrl;
+
+            var genres = new List<Genre>();
+            foreach (var genre in filmData.Genre.Split(", "))
+            {
+                foreach (Genre type in Enum.GetValues(typeof(Genre)))
+                {
+                    if (genre == type.ToString())
+                    {
+                        genres.Add(type);
+                        break;
+                    }
+                }
+            }
+            if(genres.Count==0)
+            {
+                genres.Add(Genre.Uncategorized);
+            }
+            filmInputModel.Genre = genres;
+
+            DateTime releaseDate;
+            if (!DateTime.TryParse(filmData.Released, out releaseDate))
+            {
+                releaseDate = DateTime.Now;
+            }
+            filmInputModel.ReleaseDate = releaseDate;
+
+            int runtime;
+            if (!int.TryParse(filmData.Runtime.Split(" ")?[0], out runtime))
+            {
+                runtime = 0;
+            }
+            filmInputModel.Runtime = runtime;
+
+            return filmInputModel;
+        }
+
+        public FilmData MapToFilmData(FilmInputModel input, Film film)
+        {
+            return new FilmData
+            {
+                FilmId = film.Id,
+                Film = film,
+                Title = input.Title,
+                Description = input.Description,
+                Director = input.Director,
+                Cast = input.Cast,
+                Poster = input.Poster,
+                TargetAudience = input.TargetAudience,
+                ReleaseDate = input.ReleaseDate,
+                Runtime = input.Runtime,
+                Genre = input.Genre.Select(x => new GenreType() { Genre = x }).ToList(),
+            };
         }
     }
 }

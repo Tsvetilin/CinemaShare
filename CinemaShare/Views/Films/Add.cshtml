@@ -7,18 +7,12 @@
 
 <h1>Add</h1>
 <span asp-validation-summary=""></span>
-<form asp-controller="Films" asp-action="Add" method="post">
-    <input type="text" asp-for="@Model.Title" />
-    <span asp-validation-for="@Model.Title"></span>
-    <input type="submit" />
-</form>
-
 
 <div class="row1">
     <div class="col-md-4">
         <form asp-controller="Films" asp-action="FetchFilm" method="post">
-            <input name="Title"/>
-            <input type="submit"/>
+            <input name="Title" placeholder="Film title"/>
+            <input type="submit" value="Try Fetch Film"/>
         </form>
         <form asp-controller="Films" asp-action="Add" method="post">
             <hr />

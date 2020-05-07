@@ -34,15 +34,15 @@ namespace CinemaShare.Models
 
 
         [Required]
-        [StringLength(maximumLength: 40,
+        [StringLength(maximumLength: 100,
                       ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
-                      MinimumLength = 5)]
+                      MinimumLength = 3)]
         public string Director { get; set; }
 
         [Required]
         [StringLength(maximumLength: 300,
                       ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
-                      MinimumLength = 5)]
+                      MinimumLength = 3)]
         public string Cast { get; set; }
         
         [Required]

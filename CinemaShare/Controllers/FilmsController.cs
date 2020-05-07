@@ -91,11 +91,12 @@ namespace CinemaShare.Controllers
         }
 
         [Authorize]
-        public IActionResult Add(FilmInputModel input, string id = null)
+        public IActionResult Add(FilmInputModel input = null, string id = null)
         {
-            if (input == null)
+            if (input?.Title==null)
             {
-                return this.View(input);
+                this.ModelState.Clear();
+                return this.View();
             }
             return this.View(input);
         }
@@ -120,20 +121,7 @@ namespace CinemaShare.Controllers
             };
             await filmBusiness.AddAsync(film);
 
-            var filmData = new FilmData
-            {
-                FilmId = film.Id,
-                Film = film,
-                Title = input.Title,
-                Description = input.Description,
-                Director = input.Director,
-                Cast = input.Cast,
-                Poster = input.Poster,
-                TargetAudience = input.TargetAudience,
-                ReleaseDate = input.ReleaseDate,
-                Runtime = input.Runtime,
-                Genre = input.Genre.Select(x => new GenreType() { Genre = x }).ToList(),
-            };
+            var filmData = mapper.MapToFilmData(input, film);
             await filmDataBusiness.Add(filmData);
 
             return this.RedirectToAction("Detail", "Films", new { Id = film.Id });
@@ -189,18 +177,9 @@ namespace CinemaShare.Controllers
             string url = $"https://www.omdbapi.com/?apikey={apiKey}&t={title}";
             var json = await client.GetStringAsync(url);
             var filmData = JsonConvert.DeserializeObject<FilmJsonModel>(json);
-            var filmInputModel = new FilmInputModel
-            {
-                Title = filmData.Title,
-                Director = filmData.Director,
-                Cast = filmData.Actors,
-                Poster = filmData.Poster,
-                Description = filmData.Plot,
-                TargetAudience = TargetAudience.All
-            };
-            foreach (var genre in filmData.Genre.Split(","))
-            {
-            }
+            //TODO: fix release date parse
+            var filmInputModel = mapper.MapToFilmInputModel(filmData);
+
             return this.RedirectToAction("Add", "Films", filmInputModel);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using CinemaShare.Models;
+using CinemaShare.Models.JsonModels;
 using Data.Models;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,9 @@ namespace CinemaShare.Common.Mapping
         public FilmDataViewModel MapToFilmDataViewModel(FilmData filmData);
 
         public IEnumerable<FilmCardViewModel> MapToFilmCardViewModel(IEnumerable<FilmData> rawFilms);
+
+        public FilmInputModel MapToFilmInputModel(FilmJsonModel filmData);
+
+        public FilmData MapToFilmData(FilmInputModel input, Film film);
     }
 }
