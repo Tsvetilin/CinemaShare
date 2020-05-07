@@ -16,6 +16,10 @@
 
 <div class="row1">
     <div class="col-md-4">
+        <form asp-controller="Films" asp-action="FetchFilm" method="post">
+            <input name="Title"/>
+            <input type="submit"/>
+        </form>
         <form asp-controller="Films" asp-action="Add" method="post">
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>

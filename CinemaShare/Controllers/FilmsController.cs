@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Text;
 using Business;
 using CinemaShare.Common.Mapping;
 using CinemaShare.Models;
+using CinemaShare.Models.JsonModels;
 using Data.Enums;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +16,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 
 namespace CinemaShare.Controllers
@@ -27,19 +32,21 @@ namespace CinemaShare.Controllers
         private readonly IFilmReviewBusiness reviewBusiness;
         private readonly UserManager<CinemaUser> userManager;
         private readonly IMapper mapper;
+        private readonly IConfiguration configuration;
         private const int filmsOnPage = 3;
 
         public FilmsController(IFilmDataBusiness filmDataBusiness,
                                IFilmBusiness filmBusiness,
                                IFilmReviewBusiness reviewBusiness,
                                UserManager<CinemaUser> userManager,
-                               IMapper mapper)
+                               IMapper mapper, IConfiguration configuration)
         {
             this.filmDataBusiness = filmDataBusiness;
             this.filmBusiness = filmBusiness;
             this.reviewBusiness = reviewBusiness;
             this.userManager = userManager;
             this.mapper = mapper;
+            this.configuration = configuration;
         }
 
         public IActionResult Index(int id = 1, string sort = "")
@@ -84,9 +91,13 @@ namespace CinemaShare.Controllers
         }
 
         [Authorize]
-        public IActionResult Add(string id = null)
+        public IActionResult Add(FilmInputModel input, string id = null)
         {
-            return this.View();
+            if (input == null)
+            {
+                return this.View(input);
+            }
+            return this.View(input);
         }
 
         [Authorize]
@@ -163,6 +174,34 @@ namespace CinemaShare.Controllers
 
             return RedirectToAction("Detail", "Films", new { Id = id });
             //return this.Redirect(Request.Headers["Referer"].ToString());
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> FetchFilm(string title = null)
+        {
+            if (title == null)
+            {
+                return RedirectToAction("Add", "Films");
+            }
+            HttpClient client = new HttpClient();
+            string apiKey = configuration.GetSection("OMDb").Value;
+            string url = $"https://www.omdbapi.com/?apikey={apiKey}&t={title}";
+            var json = await client.GetStringAsync(url);
+            var filmData = JsonConvert.DeserializeObject<FilmJsonModel>(json);
+            var filmInputModel = new FilmInputModel
+            {
+                Title = filmData.Title,
+                Director = filmData.Director,
+                Cast = filmData.Actors,
+                Poster = filmData.Poster,
+                Description = filmData.Plot,
+                TargetAudience = TargetAudience.All
+            };
+            foreach (var genre in filmData.Genre.Split(","))
+            {
+            }
+            return this.RedirectToAction("Add", "Films", filmInputModel);
         }
     }
 }
