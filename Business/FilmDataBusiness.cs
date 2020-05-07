@@ -23,6 +23,11 @@ namespace Business
             await context.SaveChangesAsync();
         }
 
+        public bool IsAlreadyAdded(string filmTitle)
+        {
+            return  context.FilmDatas.Any(x => x.Title.ToLower().Equals(filmTitle.ToLower()));
+        }
+
         public async Task<FilmData> Get(string id)
         {
             return await context.FilmDatas.FindAsync(id);

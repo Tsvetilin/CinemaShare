@@ -12,6 +12,8 @@ namespace Business
 
         public Task<FilmData> Get(string id);
 
+        public bool IsAlreadyAdded(string filmTitle);
+
         public IEnumerable<FilmData> GetAll();
 
         public IEnumerable<FilmData> GetFilmsOnPageByName(int page, int filmsOnPage);

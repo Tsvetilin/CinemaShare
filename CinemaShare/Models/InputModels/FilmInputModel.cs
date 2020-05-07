@@ -30,7 +30,8 @@ namespace CinemaShare.Models
         [Required]
         [MinLength(1,
             ErrorMessage ="The {0} must conatains at least {1} genre")]
-        public List<GenreType> Genre { get; set; }
+        public List<Genre> Genre { get; set; }
+
 
         [Required]
         [StringLength(maximumLength: 40,
@@ -49,9 +50,13 @@ namespace CinemaShare.Models
         public int Runtime { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [Display(Name ="Release date")]
         public DateTime ReleaseDate { get; set; }
 
         [Required]
+        [Display(Name = "Target audience")]
         public TargetAudience TargetAudience { get; set; }
 
     }

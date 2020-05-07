@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Business;
 using CinemaShare.Common.Mapping;
 using CinemaShare.Models;
+using Data.Enums;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -43,16 +44,14 @@ namespace CinemaShare.Controllers
 
         public IActionResult Index(int id = 1, string sort = "")
         {
-           // var allFilms = filmDataBusiness.GetAll();
             int pageCount = (int)Math.Ceiling((double)filmDataBusiness.CountAllFilms() / filmsOnPage);
-            if (id > pageCount)
+            if (id > pageCount || id < 1)
             {
                 id = 1;
             }
 
             FilmsIndexViewModel viewModel = new FilmsIndexViewModel
             {
-                //Films = allFilms.Select(film => mapper.MapToExtendedFilmCardViewModel(film)).ToList(),
                 PagesCount = pageCount,
                 CurrentPage = id
             };
@@ -60,43 +59,48 @@ namespace CinemaShare.Controllers
             List<ExtendedFilmCardViewModel> films = new List<ExtendedFilmCardViewModel>();
             if (sort == "Name")
             {
-                films = filmDataBusiness.GetFilmsOnPageByName(id, pageCount).
+                films = filmDataBusiness.GetFilmsOnPageByName(id, filmsOnPage).
                         Select(x => mapper.MapToExtendedFilmCardViewModel(x)).ToList();
             }
             else if (sort == "Year")
             {
-                films = filmDataBusiness.GetFilmsOnPageByYear(id, pageCount).
+                films = filmDataBusiness.GetFilmsOnPageByYear(id, filmsOnPage).
                         Select(x => mapper.MapToExtendedFilmCardViewModel(x)).ToList();
             }
             else if (sort == "Rating")
             {
-                films = filmDataBusiness.GetFilmsOnPageByRating(id, pageCount).
+                films = filmDataBusiness.GetFilmsOnPageByRating(id, filmsOnPage).
                         Select(x => mapper.MapToExtendedFilmCardViewModel(x)).ToList();
             }
             else
             {
-                films = filmDataBusiness.GetPageItems(id, pageCount).
+                films = filmDataBusiness.GetPageItems(id, filmsOnPage).
                         Select(x => mapper.MapToExtendedFilmCardViewModel(x)).ToList();
             }
 
             viewModel.Films = films;
-          
+
             return View(viewModel);
         }
 
         [Authorize]
-        public IActionResult Add(FilmInputModel input, string id=null)
+        public IActionResult Add(string id = null)
         {
-            return this.View(input);
+            return this.View();
         }
 
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Add(FilmInputModel input)
         {
+            if (filmDataBusiness.IsAlreadyAdded(input.Title))
+            {
+                ModelState.AddModelError("Added", "Film already added!");
+            }
+
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Add","Films",input);
+                return this.View();
             }
 
             var film = new Film
@@ -104,14 +108,24 @@ namespace CinemaShare.Controllers
                 UserId = userManager.GetUserId(User)
             };
             await filmBusiness.AddAsync(film);
+
             var filmData = new FilmData
             {
                 FilmId = film.Id,
-                Title=input.Title,
+                Film = film,
+                Title = input.Title,
+                Description = input.Description,
+                Director = input.Director,
+                Cast = input.Cast,
+                Poster = input.Poster,
+                TargetAudience = input.TargetAudience,
+                ReleaseDate = input.ReleaseDate,
+                Runtime = input.Runtime,
+                Genre = input.Genre.Select(x => new GenreType() { Genre = x }).ToList(),
             };
             await filmDataBusiness.Add(filmData);
 
-            return this.RedirectToAction("Detail", "Films", new {Id=film.Id});
+            return this.RedirectToAction("Detail", "Films", new { Id = film.Id });
         }
 
         public async Task<IActionResult> Detail(string id = null)

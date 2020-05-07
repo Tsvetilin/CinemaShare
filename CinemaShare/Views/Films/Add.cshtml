@@ -1,12 +1,79 @@
 ﻿@model FilmInputModel
+@using Data.Enums;
 @{
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Add</h1>
+<span asp-validation-summary=""></span>
 <form asp-controller="Films" asp-action="Add" method="post">
     <input type="text" asp-for="@Model.Title" />
     <span asp-validation-for="@Model.Title"></span>
     <input type="submit" />
 </form>
+
+
+<div class="row1">
+    <div class="col-md-4">
+        <form asp-controller="Films" asp-action="Add" method="post">
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.Title"></label>
+                <input asp-for="@Model.Title" class="form-control" />
+                <span asp-validation-for="@Model.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Director"></label>
+                <input asp-for="@Model.Director" class="form-control" />
+                <span asp-validation-for="@Model.Director" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Cast"></label>
+                <input asp-for="@Model.Cast" class="form-control" />
+                <span asp-validation-for="@Model.Cast" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Poster"></label>
+                <input asp-for="@Model.Poster" class="form-control" />
+                <span asp-validation-for="@Model.Poster" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Description"></label>
+                <input asp-for="@Model.Description" class="form-control" />
+                <span asp-validation-for="@Model.Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Runtime"></label>
+                <input asp-for="@Model.Runtime" class="form-control" />
+                <span asp-validation-for="@Model.Runtime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.ReleaseDate"></label>
+                <input asp-for="@Model.ReleaseDate" class="form-control" />
+                <span asp-validation-for="@Model.ReleaseDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.TargetAudience"></label>
+                <select class="form-control" multiple="multiple" asp-for="@Model.TargetAudience" asp-items="Html.GetEnumSelectList<TargetAudience>()">
+                </select>
+                <span asp-validation-for="@Model.TargetAudience" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Genre"></label>
+                <br />
+                <select class="form-control" multiple="multiple" asp-for="@Model.Genre" asp-items="Html.GetEnumSelectList<Genre>()">
+                </select>
+                <span asp-validation-for="@Model.Genre" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Film</button>
+        </form>
+    </div>
+</div>
+<!--                    <option value="Genre.Action">Action</option>
+                    <option value="Genre.Drama">Drama</option>-->
+<!--
+                Html.DropDownListFor(m => m.Genre, new[] { new SelectListItem { Text = "Action", Value = Genre.Action.ToString() } })
+
+-->

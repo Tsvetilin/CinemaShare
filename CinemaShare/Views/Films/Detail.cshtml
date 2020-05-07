@@ -18,7 +18,7 @@
         <p class="text-dark ">Runtime: @Model.Runtime minutes</p>
         <p class="text-dark ">Genres: @Model.Genres</p>
         <p class="text-dark ">Target audience: @Model.TargetAudience</p>
-        <p class="text-dark ">Release date: @Model.ReleaseDate.ToShortDateString()</p>
+        <p class="text-dark ">Release date: @Model.ReleaseDate.ToString("dd/MM/yyyyг.")</p>
         <p class="font-weight-bold " style="color:black">Description: @Model.Description</p>
     </div>
 </div>
