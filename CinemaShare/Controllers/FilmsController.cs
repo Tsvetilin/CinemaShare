@@ -33,13 +33,16 @@ namespace CinemaShare.Controllers
         private readonly UserManager<CinemaUser> userManager;
         private readonly IMapper mapper;
         private readonly IConfiguration configuration;
+        private readonly IFilmFetchAPI filmFetchApi;
         private const int filmsOnPage = 3;
 
         public FilmsController(IFilmDataBusiness filmDataBusiness,
                                IFilmBusiness filmBusiness,
                                IFilmReviewBusiness reviewBusiness,
                                UserManager<CinemaUser> userManager,
-                               IMapper mapper, IConfiguration configuration)
+                               IMapper mapper,
+                               IConfiguration configuration,
+                               IFilmFetchAPI filmFetchApi)
         {
             this.filmDataBusiness = filmDataBusiness;
             this.filmBusiness = filmBusiness;
@@ -47,6 +50,7 @@ namespace CinemaShare.Controllers
             this.userManager = userManager;
             this.mapper = mapper;
             this.configuration = configuration;
+            this.filmFetchApi = filmFetchApi;
         }
 
         public IActionResult Index(int id = 1, string sort = "")
@@ -57,48 +61,65 @@ namespace CinemaShare.Controllers
                 id = 1;
             }
 
-            FilmsIndexViewModel viewModel = new FilmsIndexViewModel
-            {
-                PagesCount = pageCount,
-                CurrentPage = id
-            };
-
             List<ExtendedFilmCardViewModel> films = new List<ExtendedFilmCardViewModel>();
             if (sort == "Name")
             {
-                films = filmDataBusiness.GetFilmsOnPageByName(id, filmsOnPage).
-                        Select(x => mapper.MapToExtendedFilmCardViewModel(x)).ToList();
+                films = filmDataBusiness.GetFilmsOnPageByName(id, filmsOnPage,
+                                                              mapper.MapToExtendedFilmCardViewModel).ToList();
             }
             else if (sort == "Year")
             {
-                films = filmDataBusiness.GetFilmsOnPageByYear(id, filmsOnPage).
-                        Select(x => mapper.MapToExtendedFilmCardViewModel(x)).ToList();
+                films = filmDataBusiness.GetFilmsOnPageByYear(id, filmsOnPage,
+                                                              mapper.MapToExtendedFilmCardViewModel).ToList();
             }
             else if (sort == "Rating")
             {
-                films = filmDataBusiness.GetFilmsOnPageByRating(id, filmsOnPage).
-                        Select(x => mapper.MapToExtendedFilmCardViewModel(x)).ToList();
+                films = filmDataBusiness.GetFilmsOnPageByRating(id, filmsOnPage,
+                                                                mapper.MapToExtendedFilmCardViewModel).ToList();
             }
             else
             {
-                films = filmDataBusiness.GetPageItems(id, filmsOnPage).
-                        Select(x => mapper.MapToExtendedFilmCardViewModel(x)).ToList();
+                films = filmDataBusiness.GetPageItems(id, filmsOnPage,
+                                                                mapper.MapToExtendedFilmCardViewModel).ToList();
             }
 
-            viewModel.Films = films;
+            FilmsIndexViewModel viewModel = new FilmsIndexViewModel
+            {
+                PagesCount = pageCount,
+                CurrentPage = id,
+                Films = films
+            };
 
             return View(viewModel);
         }
 
-        [Authorize]
-        public IActionResult Add(FilmInputModel input = null, string id = null)
+        public async Task<IActionResult> Detail(string id = null)
         {
-            if (input?.Title==null)
+            if (id == null)
             {
-                this.ModelState.Clear();
-                return this.View();
+                return RedirectToAction("Index", "Films");
             }
-            return this.View(input);
+
+            var viewModel = await filmDataBusiness.GetAsync(id, mapper.MapToFilmDataViewModel);
+            if (viewModel == null)
+            {
+                this.NotFound();
+            }
+
+            return this.View(viewModel);
+        }
+
+        [Authorize]
+        public IActionResult Add(string id = null)
+        {
+            if (id == null ? false : TempData[id] != null)
+            {
+                var serializedFilm = TempData[id];
+                var inputModel = JsonConvert.DeserializeObject<FilmInputModel>(serializedFilm.ToString());
+                return this.View(inputModel);
+            }
+
+            return this.View();
         }
 
         [Authorize]
@@ -120,35 +141,16 @@ namespace CinemaShare.Controllers
                 UserId = userManager.GetUserId(User)
             };
             await filmBusiness.AddAsync(film);
-
-            var filmData = mapper.MapToFilmData(input, film);
-            await filmDataBusiness.Add(filmData);
+            await filmDataBusiness.AddAsync(input,film, mapper.MapToFilmData);
 
             return this.RedirectToAction("Detail", "Films", new { Id = film.Id });
-        }
-
-        public async Task<IActionResult> Detail(string id = null)
-        {
-            if (id == null)
-            {
-                return RedirectToAction("Index", "Films");
-            }
-
-            var film = await filmDataBusiness.Get(id);
-            if (film == null)
-            {
-                this.NotFound();
-            }
-
-            FilmDataViewModel viewModel = mapper.MapToFilmDataViewModel(film);
-            return this.View(viewModel);
         }
 
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddReview(FilmReviewInputModel input, string id)
         {
-            var user = userManager.GetUserAsync(User).GetAwaiter().GetResult();
+            var user = await userManager.GetUserAsync(User);
             if (ModelState.IsValid && id != null && user != null)
             {
                 await reviewBusiness.Add(new FilmReview
@@ -172,15 +174,13 @@ namespace CinemaShare.Controllers
             {
                 return RedirectToAction("Add", "Films");
             }
-            HttpClient client = new HttpClient();
             string apiKey = configuration.GetSection("OMDb").Value;
-            string url = $"https://www.omdbapi.com/?apikey={apiKey}&t={title}";
-            var json = await client.GetStringAsync(url);
-            var filmData = JsonConvert.DeserializeObject<FilmJsonModel>(json);
-            //TODO: fix release date parse
-            var filmInputModel = mapper.MapToFilmInputModel(filmData);
+            var id = Guid.NewGuid().ToString();
+            //TODO: handle not found
+            TempData[id] = await filmFetchApi.FetchFilmAsync<FilmJsonModel, FilmInputModel>
+                (apiKey, title, mapper.MapToFilmInputModel);
 
-            return this.RedirectToAction("Add", "Films", filmInputModel);
+            return this.RedirectToAction("Add", "Films", new { Id = id});
         }
     }
 }

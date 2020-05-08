@@ -16,32 +16,22 @@ namespace CinemaShare.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly IFilmBusiness filmsBusiness;
         private readonly IFilmDataBusiness filmDataBusiness;
         private readonly IMapper mapper;
 
-        public HomeController(ILogger<HomeController> logger,
-                              IFilmBusiness filmsBusiness,
-                              IFilmDataBusiness filmDataBusiness,
+        public HomeController(IFilmDataBusiness filmDataBusiness,
                               IMapper mapper)
         {
-            _logger = logger;
-            this.filmsBusiness = filmsBusiness;
             this.filmDataBusiness = filmDataBusiness;
             this.mapper = mapper;
         }
 
-        public IActionResult Index(int? page)
+        public IActionResult Index()
         {
-            var rawAllFilms = filmDataBusiness.GetAll();
-            var rawTopFilms =  rawAllFilms?.OrderByDescending(x => x.Film.Rating)?.Take(10);
-            var rawRecentFilms = rawAllFilms?.OrderByDescending(x => x.ReleaseDate).Take(4);
-
             HomePageViewModel viewModel = new HomePageViewModel
             {
-                TopFilms = mapper.MapToFilmCardViewModel(rawTopFilms).ToList(),
-                RecentFilms = mapper.MapToFilmCardViewModel(rawRecentFilms).ToList(),
+                TopFilms= filmDataBusiness.GetTopFilms(mapper.MapToFilmCardViewModel).ToList(),
+                RecentFilms = filmDataBusiness.GetRecentFilms(mapper.MapToFilmCardViewModel).ToList(),
             };
             
             return View(viewModel);

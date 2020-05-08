@@ -8,22 +8,31 @@ namespace Business
 {
     public interface IFilmDataBusiness
     {
-        public Task Add(FilmData filmData);
+        public Task AddAsync<TModel>(TModel filmData, Film film, Func<TModel, Film, FilmData> mapToModelFunc);
 
-        public Task<FilmData> Get(string id);
+        public Task<TModel> GetAsync<TModel>(string id, Func<FilmData, TModel> mapToModelFunc);
 
         public bool IsAlreadyAdded(string filmTitle);
 
         public IEnumerable<FilmData> GetAll();
 
-        public IEnumerable<FilmData> GetFilmsOnPageByName(int page, int filmsOnPage);
+        public IEnumerable<TModel> GetFilmsOnPageByName<TModel>(int page, int filmsOnPage,
+                                                                Func<FilmData, TModel> mapToModelFunc);
 
-        public IEnumerable<FilmData> GetFilmsOnPageByYear(int page, int filmsOnPage);
+        public IEnumerable<TModel> GetFilmsOnPageByYear<TModel>(int page, int filmsOnPage,
+                                                                Func<FilmData, TModel> mapToModelFunc);
 
-        public IEnumerable<FilmData> GetFilmsOnPageByRating(int page, int filmsOnPage);
+        public IEnumerable<TModel> GetFilmsOnPageByRating<TModel>(int page, int filmsOnPage,
+                                                                Func<FilmData, TModel> mapToModelFunc);
 
-        public IEnumerable<FilmData> GetPageItems(int page, int filmsOnPage, IEnumerable<FilmData> orderedFilms = null);
+        public IEnumerable<TModel> GetPageItems<TModel>(int page, int filmsOnPage,
+                                                        Func<FilmData, TModel> mapToModelFunc,
+                                                        IEnumerable<FilmData> orderedFilms = null);
+        public IEnumerable<TModel> GetTopFilms<TModel>(Func<IEnumerable<FilmData>,
+                                                               IEnumerable<TModel>> mapToModelFunc);
 
+        public IEnumerable<TModel> GetRecentFilms<TModel>(Func<IEnumerable<FilmData>,
+                                                               IEnumerable<TModel>> mapToModelFunc);
         public int CountAllFilms();
 
         public Task Update(FilmData filmData);

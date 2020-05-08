@@ -49,6 +49,8 @@ namespace CinemaShare
             services.AddTransient<IFilmReviewBusiness, FilmReviewBusiness>();
             services.AddTransient<IProjectionTicketBusiness, ProjectionTicketBusiness>();
 
+            services.AddTransient<IFilmFetchAPI, FilmFetchAPI>();
+
             services.AddTransient<IMapper, Mapper>();
         }
 
