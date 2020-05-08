@@ -28,6 +28,7 @@ namespace CinemaShare
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Database and Identity
             services.AddDbContext<CinemaDbContext>(options => {
                 options.UseMySQL( Configuration.GetConnectionString("DefaultConnection"));
                 options.UseLazyLoadingProxies();
@@ -38,9 +39,11 @@ namespace CinemaShare
 
             services.AddControllersWithViews();
             services.AddRazorPages();
-
+            
+            //Configuration
             services.AddSingleton(this.Configuration);
 
+            //Add service providers from business layer
             services.AddTransient<Business.IEmailSender>(x=>new EmailSender(Configuration.GetSection("EmailSender").Value));
             services.AddTransient<ICinemaBusiness, CinemaBusiness>();
             services.AddTransient<IFilmBusiness, FilmBusiness>();

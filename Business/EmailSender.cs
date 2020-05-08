@@ -18,10 +18,10 @@ namespace Business
         }
 
         public async Task SendEmailAsync(string sender,
-                                   string senderName,
-                                   string reciever,
-                                   string subject,
-                                   string htmlMessage)
+                                         string senderName,
+                                         string reciever,
+                                         string subject,
+                                         string htmlMessage)
         {
             var from = new EmailAddress(sender, senderName);
             var to = new EmailAddress(reciever);

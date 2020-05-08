@@ -8,14 +8,14 @@
 
 <div class=" unselectable-text">
     <h1>Top rated films</h1>
-    <div class="text-dark bg-dark" style="max-height:80vh;">
+    <div class="text-dark bg-dark" style="min-height:80vh;max-height:100vh;">
         <div id="topFilms" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
                 @if (Model.TopFilms.Count > 0)
                 {
                     <div class="carousel-item active cursor-pointer">
                         <a asp-controller="Films" asp-action="Detail" asp-route-id="@Model.TopFilms[0].Id"
-                           class="content-heading clearfix media" style="text-decoration:none; max-height:80vh">
+                           class="content-heading clearfix media" style="text-decoration:none; max-height:100vh">
                             <img class="d-flex h-25 mx-auto" src="@Model.TopFilms[0].Poster" alt="Film poster" style="max-height:80vh" />
                             <div class="carousel-caption d-none d-md-block bg-light unselectable-text" style="max-height:80vh;">
                                 <h5 class="text-dark font-weight-bold  bg-light ">@Model.TopFilms[0].Title</h5>
@@ -30,7 +30,7 @@
                 {
                     <div class="carousel-item cursor-pointer">
                         <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
-                           class="content-heading clearfix media" style="text-decoration:none; max-height:80vh;">
+                           class="content-heading clearfix media" style="text-decoration:none; max-height:100vh;">
                             <img class="d-block h-25 mx-auto" src="@filmCard.Poster" alt="Film poster" style="max-height:80vh">
                             <div class="carousel-caption d-none d-md-block bg-light unselectable-text" style="max-height:80vh">
                                 <h5 class="text-dark font-weight-bold w-25 mx-auto">@filmCard.Title</h5>
@@ -54,7 +54,7 @@
 </div>
 
 
-<h1 class="unselectable-text">Newest Films</h1>
+<h1 class="unselectable-text" style="margin-top:40px">Newest Films</h1>
 <ul class="list-inline text-dark h-100 w-100">
     @foreach (var filmCard in Model.RecentFilms)
     {

@@ -58,6 +58,7 @@ namespace CinemaShare.Models
         [Required]
         [Display(Name = "Target audience")]
         public TargetAudience TargetAudience { get; set; }
-
+       
+        public string Error { get; set; }
     }
 }

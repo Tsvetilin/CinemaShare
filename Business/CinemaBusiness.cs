@@ -12,7 +12,6 @@ namespace Business
     {
         private readonly CinemaDbContext context;
 
-        //IIdentityDbContext
         public CinemaBusiness(CinemaDbContext context)
         {
             this.context = context;

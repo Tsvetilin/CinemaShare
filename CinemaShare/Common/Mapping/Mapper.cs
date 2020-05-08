@@ -14,38 +14,46 @@ namespace CinemaShare.Common.Mapping
     {
         private TTo MapSimilarProperties<TFrom, TTo>(TFrom fromObject)
              where TFrom : class
-             where TTo : class , new()
+             where TTo : class, new()
         {
             TTo viewModel = new TTo();//Activator.CreateInstance<TTo>();
-            PropertyInfo[] props = fromObject.GetType().GetProperties();
-            foreach (var prop in props)
+            if (fromObject != null)
             {
-                if (viewModel?.GetType()?.GetProperty(prop.Name)?.PropertyType?.Equals(prop.PropertyType) ?? false)
+                PropertyInfo[] props = fromObject.GetType().GetProperties();
+                foreach (var prop in props)
                 {
-                    viewModel.GetType().GetProperty(prop.Name).SetValue(viewModel, prop.GetValue(fromObject));
+                    if (viewModel?.GetType()?.GetProperty(prop.Name)?.PropertyType?.Equals(prop.PropertyType) ?? false)
+                    {
+                        viewModel.GetType().GetProperty(prop.Name).SetValue(viewModel, prop.GetValue(fromObject));
+                    }
                 }
             }
-
             return viewModel;
         }
 
         public ExtendedFilmCardViewModel MapToExtendedFilmCardViewModel(FilmData filmData)
         {
             var viewModel = MapSimilarProperties<FilmData, ExtendedFilmCardViewModel>(filmData);
-            viewModel.Id = filmData.FilmId;
-            viewModel.Genres = string.Join(", ", filmData.Genre.Select(a => a.Genre.ToString()));
-            viewModel.Rating = filmData.Film.Rating.ToString();
+            if (filmData != null)
+            {
+                viewModel.Id = filmData.FilmId;
+                viewModel.Genres = string.Join(", ", filmData.Genre.Select(a => a.Genre.ToString()));
+                viewModel.Rating = filmData.Film.Rating.ToString();
+            }
             return viewModel;
         }
 
         public FilmDataViewModel MapToFilmDataViewModel(FilmData filmData)
         {
             var viewModel = MapSimilarProperties<FilmData, FilmDataViewModel>(filmData);
-            viewModel.Id = filmData.FilmId;
-            viewModel.Genres = string.Join(", ", filmData.Genre.Select(a => a.Genre.ToString()));
-            viewModel.Rating = filmData.Film.Rating.ToString();
-            viewModel.FilmProjections = filmData.Film.FilmProjection.ToList();
-            viewModel.FilmReviews = filmData.Film.FilmReviews.ToList();
+            if (filmData != null)
+            {
+                viewModel.Id = filmData.FilmId;
+                viewModel.Genres = string.Join(", ", filmData.Genre.Select(a => a.Genre.ToString()));
+                viewModel.Rating = filmData.Film.Rating.ToString();
+                viewModel.FilmProjections = filmData.Film.FilmProjection.ToList();
+                viewModel.FilmReviews = filmData.Film.FilmReviews.ToList();
+            }
             return viewModel;
         }
 
@@ -64,17 +72,22 @@ namespace CinemaShare.Common.Mapping
 
         public FilmInputModel MapToFilmInputModel(FilmJsonModel filmData)
         {
+            if (filmData.Response == "False")
+            {
+                return new FilmInputModel { Error = filmData.Error };
+            }
+
             var filmInputModel = new FilmInputModel
             {
                 Title = filmData.Title,
                 Director = filmData.Director,
                 Cast = filmData.Actors,
                 Description = filmData.Plot,
-                TargetAudience = TargetAudience.All
+                TargetAudience = TargetAudience.All,
             };
 
             var posterUrl = filmData.Poster;
-            posterUrl = posterUrl.Substring(0, posterUrl.LastIndexOf('@') + 1) + "._V1_SY1000_SX675_AL_.jpg";
+            posterUrl = posterUrl?.Substring(0, posterUrl.LastIndexOf('@') + 1) + "._V1_SY1000_SX675_AL_.jpg";
             filmInputModel.Poster = posterUrl;
 
             var genres = new List<Genre>();
@@ -89,7 +102,7 @@ namespace CinemaShare.Common.Mapping
                     }
                 }
             }
-            if(genres.Count==0)
+            if (genres.Count == 0)
             {
                 genres.Add(Genre.Uncategorized);
             }
@@ -114,20 +127,11 @@ namespace CinemaShare.Common.Mapping
 
         public FilmData MapToFilmData(FilmInputModel input, Film film)
         {
-            return new FilmData
-            {
-                FilmId = film.Id,
-                Film = film,
-                Title = input.Title,
-                Description = input.Description,
-                Director = input.Director,
-                Cast = input.Cast,
-                Poster = input.Poster,
-                TargetAudience = input.TargetAudience,
-                ReleaseDate = input.ReleaseDate,
-                Runtime = input.Runtime,
-                Genre = input.Genre.Select(x => new GenreType() { Genre = x }).ToList(),
-            };
+            var model = MapSimilarProperties<FilmInputModel, FilmData>(input);
+            model.FilmId = film.Id;
+            model.Film = film;
+            model.Genre = input.Genre.Select(x => new GenreType() { Genre = x }).ToList();
+            return model;
         }
     }
 }

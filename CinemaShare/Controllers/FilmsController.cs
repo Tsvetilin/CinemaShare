@@ -24,9 +24,6 @@ namespace CinemaShare.Controllers
 {
     public class FilmsController : Controller
     {
-        [BindProperty]
-        private FilmReviewInputModel FilmReviewInput { get; set; }
-
         private readonly IFilmDataBusiness filmDataBusiness;
         private readonly IFilmBusiness filmBusiness;
         private readonly IFilmReviewBusiness reviewBusiness;
@@ -101,9 +98,9 @@ namespace CinemaShare.Controllers
             }
 
             var viewModel = await filmDataBusiness.GetAsync(id, mapper.MapToFilmDataViewModel);
-            if (viewModel == null)
+            if (viewModel?.Id == null)
             {
-                this.NotFound();
+               return this.NotFound();
             }
 
             return this.View(viewModel);
@@ -116,6 +113,11 @@ namespace CinemaShare.Controllers
             {
                 var serializedFilm = TempData[id];
                 var inputModel = JsonConvert.DeserializeObject<FilmInputModel>(serializedFilm.ToString());
+                if (inputModel.Error!=null)
+                {
+                    ModelState.Clear();
+                    ModelState.AddModelError("found", "Film not found!");
+                }
                 return this.View(inputModel);
             }
 
@@ -176,7 +178,6 @@ namespace CinemaShare.Controllers
             }
             string apiKey = configuration.GetSection("OMDb").Value;
             var id = Guid.NewGuid().ToString();
-            //TODO: handle not found
             TempData[id] = await filmFetchApi.FetchFilmAsync<FilmJsonModel, FilmInputModel>
                 (apiKey, title, mapper.MapToFilmInputModel);
 

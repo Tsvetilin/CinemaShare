@@ -36,7 +36,7 @@ namespace Business
 
         public IEnumerable<FilmData> GetAll()
         {
-            return context.FilmDatas.Include(x => x.Film).Include(x => x.Genre).ToList();
+            return context.FilmDatas.ToList();
         }
 
         public IEnumerable<TModel> GetFilmsOnPageByName<TModel>(int page, int filmsOnPage,

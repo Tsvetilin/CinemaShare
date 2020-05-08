@@ -86,6 +86,9 @@ namespace CinemaShare.Models.JsonModels
 
         [JsonProperty("Response")]
         public string Response { get; set; }
+
+        [JsonProperty("Error")]
+        public string Error { get; set; }
     }
 
     public partial class Rating
