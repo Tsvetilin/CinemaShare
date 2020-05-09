@@ -3,8 +3,19 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>Films</h1>
-<br />
+<div style="display:inline-flex;" class="w-100">
+    <h1>Films</h1>
+    <form style="position: absolute;left:50%; 
+          display: inline-flex;transform: translateX(-50%);"
+          asp-controller="Films" asp-action="Index" method="get">
+        <div class="row1">
+            <input name="Search" placeholder="Film title" />
+            <input type="submit" value="Try Find Film" />
+        </div>
+    </form>
+    <div asp-validation-summary="All" class="text-danger"></div>
+</div>
+
 
 <div class="orderOptions" style="position:absolute;">
     <h3>Sort by:</h3>

@@ -50,15 +50,27 @@ namespace CinemaShare.Controllers
             this.filmFetchApi = filmFetchApi;
         }
 
-        public IActionResult Index(int id = 1, string sort = "")
+        public IActionResult Index(int id = 1, string sort = "", string search = "")
         {
-            int pageCount = (int)Math.Ceiling((double)filmDataBusiness.CountAllFilms() / filmsOnPage);
-            if (id > pageCount || id < 1)
-            {
-                id = 1;
-            }
-
+            int pageCount = 1;
             List<ExtendedFilmCardViewModel> films = new List<ExtendedFilmCardViewModel>();
+            FilmsIndexViewModel viewModel = new FilmsIndexViewModel();
+            if (!String.IsNullOrEmpty(search))
+            {
+                films = filmDataBusiness.GetAllByName(search, mapper.MapToExtendedFilmCardViewModel).ToList();
+                if (films.Count != 0)
+                {
+                    return View(new FilmsIndexViewModel
+                    {
+                        PagesCount = 1,
+                        CurrentPage = 1,
+                        Films = films
+                    });
+                }
+                ModelState.AddModelError("found", "Film not found!");
+            }
+            pageCount = (int)Math.Ceiling((double)filmDataBusiness.CountAllFilms() / filmsOnPage);
+
             if (sort == "Name")
             {
                 films = filmDataBusiness.GetFilmsOnPageByName(id, filmsOnPage,
@@ -79,8 +91,11 @@ namespace CinemaShare.Controllers
                 films = filmDataBusiness.GetPageItems(id, filmsOnPage,
                                                                 mapper.MapToExtendedFilmCardViewModel).ToList();
             }
-
-            FilmsIndexViewModel viewModel = new FilmsIndexViewModel
+            if (id > pageCount || id < 1)
+            {
+                id = 1;
+            }
+            viewModel = new FilmsIndexViewModel
             {
                 PagesCount = pageCount,
                 CurrentPage = id,
@@ -100,7 +115,7 @@ namespace CinemaShare.Controllers
             var viewModel = await filmDataBusiness.GetAsync(id, mapper.MapToFilmDataViewModel);
             if (viewModel?.Id == null)
             {
-               return this.NotFound();
+                return this.NotFound();
             }
 
             return this.View(viewModel);
@@ -113,7 +128,7 @@ namespace CinemaShare.Controllers
             {
                 var serializedFilm = TempData[id];
                 var inputModel = JsonConvert.DeserializeObject<FilmInputModel>(serializedFilm.ToString());
-                if (inputModel.Error!=null)
+                if (inputModel.Error != null)
                 {
                     ModelState.Clear();
                     ModelState.AddModelError("found", "Film not found!");
@@ -143,7 +158,7 @@ namespace CinemaShare.Controllers
                 UserId = userManager.GetUserId(User)
             };
             await filmBusiness.AddAsync(film);
-            await filmDataBusiness.AddAsync(input,film, mapper.MapToFilmData);
+            await filmDataBusiness.AddAsync(input, film, mapper.MapToFilmData);
 
             return this.RedirectToAction("Detail", "Films", new { Id = film.Id });
         }
@@ -181,7 +196,34 @@ namespace CinemaShare.Controllers
             TempData[id] = await filmFetchApi.FetchFilmAsync<FilmJsonModel, FilmInputModel>
                 (apiKey, title, mapper.MapToFilmInputModel);
 
-            return this.RedirectToAction("Add", "Films", new { Id = id});
+            return this.RedirectToAction("Add", "Films", new { Id = id });
         }
+
+        /*  [Authorize]
+          [HttpPost]
+          public IActionResult GetByName(int id = 1, string title = null)
+          {
+              List<ExtendedFilmCardViewModel> films = filmDataBusiness.GetFilmsOnPageByName(id, filmsOnPage,
+                                                                mapper.MapToExtendedFilmCardViewModel)
+                                                               .Where(x => x.Title.ToLower()
+                                                               .Contains(title.ToLower())).ToList();
+              int pageCount = (int)Math.Ceiling((double)films.Count() / filmsOnPage);
+              if (id > pageCount || id < 1)
+              {
+                  id = 1;
+              }
+
+              if (title == null || films == null)
+              {
+                  return this.NotFound();
+              }
+              FilmsIndexViewModel viewModel = new FilmsIndexViewModel
+              {
+                  PagesCount = pageCount,
+                  CurrentPage = id,
+                  Films = films
+              };
+              return this.RedirectToAction("Index","Films", View(viewModel));
+          }*/
     }
 }

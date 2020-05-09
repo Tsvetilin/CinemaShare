@@ -1,0 +1,65 @@
+﻿@model CinemaShare.Models.ViewModels.CinemasIndexViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Cinemas</h1>
+
+<ul class="list-inline text-dark">
+    @foreach (var filmCard in Model?.Cinemas)
+    {
+        <li style="padding-bottom: 20px;">
+            <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
+               class="content-heading clearfix media box-hover" style="text-decoration:none;">
+                <div style="margin-left:30px;">
+                    <h3 class="text-dark font-weight-bold">@filmCard.Name</h3>
+                    <h5 class="text-dark ">City: @filmCard.City</h5>
+                    <p class="text-dark ">Country: @filmCard.Country</p>
+                    <p class="text-dark ">Manager: @filmCard.Mananger</p>
+                </div>
+            </a>
+        </li>
+    }
+</ul>
+
+
+<nav>
+    <ul class="pagination justify-content-center" style="padding-top:30px; margin-bottom:0px;">
+        @if (this.Model.CurrentPage == 1)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="#">Previous</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-route="filmsList" asp-route-id="@(this.Model.CurrentPage - 1)">Previous</a>
+            </li>
+        }
+
+        @for (int i = 1; i <= this.Model.PagesCount; i++)
+        {
+            var active = i == this.Model.CurrentPage ? "active" : String.Empty;
+            <li class="page-item @active">
+                <a class="page-link"
+                   asp-route="filmsList" asp-route-id="@i">@i</a>
+            </li>
+        }
+
+        @if (this.Model.CurrentPage == this.Model.PagesCount)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-route="filmsList" asp-route-id="@(this.Model.CurrentPage + 1)">Next</a>
+            </li>
+        }
+    </ul>
+</nav>

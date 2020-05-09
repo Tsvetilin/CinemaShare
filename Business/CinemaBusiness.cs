@@ -3,6 +3,7 @@ using Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,11 +29,22 @@ namespace Business
             return await context.Cinemas.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Cinema>> GetAll()
+        public IEnumerable<Cinema> GetAll()
         {
-            return await context.Cinemas.ToListAsync();
+            return context.Cinemas.ToList();
         }
 
+        public int CountAllCinemas()
+        {
+            return context.Cinemas.Count();
+
+        }
+        public IEnumerable<TModel> GetPageItems<TModel>(int page, int cinemasOnPage, Func<Cinema, TModel> mapToModelFunc)
+        {
+            var cinemas = GetAll();
+            var selectedCinemas = cinemas.Skip(cinemasOnPage * (page - 1)).Take(cinemasOnPage);
+            return selectedCinemas.Select(x => mapToModelFunc(x));
+        }
         public async Task Update(Cinema cinema)
         {
             var cinemaInContext = await context.Cinemas.FindAsync(cinema.Id);

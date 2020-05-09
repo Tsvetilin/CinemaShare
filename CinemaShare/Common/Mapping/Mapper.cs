@@ -1,5 +1,6 @@
 ﻿using CinemaShare.Models;
 using CinemaShare.Models.JsonModels;
+using CinemaShare.Models.ViewModels;
 using Data.Enums;
 using Data.Models;
 using System;
@@ -132,6 +133,18 @@ namespace CinemaShare.Common.Mapping
             model.Film = film;
             model.Genre = input.Genre.Select(x => new GenreType() { Genre = x }).ToList();
             return model;
+        }
+
+        public CinemaCardViewModel MapToCinemaCardViewModel(Cinema rawCinema)
+        {
+            return new CinemaCardViewModel
+            {
+                City = rawCinema.City,
+                Country = rawCinema.Country,
+                Name = rawCinema.Name,
+                Id = rawCinema.Id,
+                Mananger = rawCinema.Manager.UserName
+            };
         }
     }
 }

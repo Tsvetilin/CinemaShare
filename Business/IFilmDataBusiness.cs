@@ -33,6 +33,9 @@ namespace Business
 
         public IEnumerable<TModel> GetRecentFilms<TModel>(Func<IEnumerable<FilmData>,
                                                                IEnumerable<TModel>> mapToModelFunc);
+
+        public IEnumerable<TModel> GetAllByName<TModel>(string searchString, Func<FilmData, TModel> mapToModelFunc);
+
         public int CountAllFilms();
 
         public Task Update(FilmData filmData);

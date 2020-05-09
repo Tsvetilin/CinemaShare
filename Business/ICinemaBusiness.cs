@@ -12,10 +12,13 @@ namespace Business
 
         public Task<Cinema> Get(string id);
 
-        public Task<IEnumerable<Cinema>> GetAll();
+        public IEnumerable<Cinema> GetAll();
 
         public Task Update(Cinema cinema);
 
         public Task Delete(string id);
+        public int CountAllCinemas();
+        public IEnumerable<TModel> GetPageItems<TModel>(int page, int cinemasOnPage,
+                                                       Func<Cinema, TModel> mapToModelFunc);
     }
 }

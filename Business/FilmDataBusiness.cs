@@ -39,6 +39,12 @@ namespace Business
             return context.FilmDatas.ToList();
         }
 
+        public IEnumerable<TModel> GetAllByName<TModel>(string searchString, Func<FilmData, TModel> mapToModelFunc)
+        {
+           return GetAll().Where(x => x.Title.ToLower().Contains(searchString.ToLower()))
+                                                .Select(x => mapToModelFunc(x)).ToList();
+        }
+
         public IEnumerable<TModel> GetFilmsOnPageByName<TModel>(int page, int filmsOnPage,
                                                                 Func<FilmData, TModel> mapToModelFunc)
         {
