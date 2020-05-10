@@ -4,7 +4,15 @@
 }
 
 <h1>Detail</h1>
-
+@if (Model.Mananger == User.Identity.Name)
+{
+    <form asp-controller="Cinemas" asp-action="Update" asp-route-id="@Model.Id" method="get">
+        <input class="bg-info" type="submit" value="Update" />
+    </form>
+    <form asp-controller="Cinemas" asp-action="Delete" asp-route-id="@Model.Id" method="post">
+        <input class="bg-danger" type="submit" onclick="return confirm('Are you sure you want to delete the cinema and the related projections?');" value="Delete" />
+    </form>
+}
 <div class="content-heading clearfix media">
     <div style="margin-left:30px;">
         <h3 class="text-dark font-weight-bold">Name: @Model.Name</h3>

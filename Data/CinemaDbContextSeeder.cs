@@ -21,7 +21,6 @@ namespace Data
             await new UsersSeeder().SeedAsync(context);
             await new FilmsSeeder().SeedAsync(context);
             await new CinemaSeeder().SeedAsync(context);
-
         }
     }
 }

@@ -25,9 +25,10 @@ namespace CinemaShare.Common.Mapping
                 var modelType = viewModel?.GetType();
                 foreach (var prop in props)
                 {
-                    if (modelType?.GetProperty(prop.Name)?.PropertyType?.Equals(prop.PropertyType) ?? false)
+                    var modelProperty = modelType?.GetProperty(prop.Name);
+                    if (modelProperty?.PropertyType?.Equals(prop.PropertyType) ?? false)
                     {
-                        modelType.GetProperty(prop.Name).SetValue(viewModel, prop.GetValue(fromObject));
+                        modelProperty.SetValue(viewModel, prop.GetValue(fromObject));
                     }
                 }
             }
@@ -79,12 +80,6 @@ namespace CinemaShare.Common.Mapping
             {
                 viewModel.Genre = filmData.Genre.Select(x => x.Genre).ToList();
             }
-            return viewModel;
-        }
-
-        public CinemaInputModel MapToCinemaUpdateInputModel(Cinema cinema)
-        {
-            var viewModel = MapSimilarProperties<Cinema, CinemaInputModel>(cinema);
             return viewModel;
         }
 
@@ -179,6 +174,18 @@ namespace CinemaShare.Common.Mapping
                 Id = rawCinema.Id,
                 Mananger = rawCinema.Manager.UserName
             };
+        }
+
+        public CinemaInputModel MapToCinemaUpdateInputModel(Cinema cinema)
+        {
+            var viewModel = MapSimilarProperties<Cinema, CinemaInputModel>(cinema);
+            return viewModel;
+        }
+
+        public Cinema MapToCinemaData(CinemaInputModel input)
+        {
+            var model = MapSimilarProperties< CinemaInputModel, Cinema>(input);
+            return model;
         }
     }
 }

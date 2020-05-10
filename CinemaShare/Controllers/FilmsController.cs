@@ -58,7 +58,7 @@ namespace CinemaShare.Controllers
             int pageCount = 1;
             List<ExtendedFilmCardViewModel> films = new List<ExtendedFilmCardViewModel>();
             FilmsIndexViewModel viewModel = new FilmsIndexViewModel();
-            if (!String.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search))
             {
                 films = filmDataBusiness.GetAllByName(search, mapper.MapToExtendedFilmCardViewModel).ToList();
                 if (films.Count != 0)
@@ -70,9 +70,14 @@ namespace CinemaShare.Controllers
                         Films = films
                     });
                 }
-                ModelState.AddModelError("found", "Film not found!");
+                ModelState.AddModelError("Found", "Film not found!");
             }
+
             pageCount = (int)Math.Ceiling((double)filmDataBusiness.CountAllFilms() / filmsOnPage);
+            if (id > pageCount || id < 1)
+            {
+                id = 1;
+            }
 
             if (sort == "Name")
             {
@@ -94,10 +99,7 @@ namespace CinemaShare.Controllers
                 films = filmDataBusiness.GetPageItems(id, filmsOnPage,
                                                                 mapper.MapToExtendedFilmCardViewModel).ToList();
             }
-            if (id > pageCount || id < 1)
-            {
-                id = 1;
-            }
+            
             viewModel = new FilmsIndexViewModel
             {
                 PagesCount = pageCount,
@@ -134,7 +136,7 @@ namespace CinemaShare.Controllers
                 if (inputModel.Error != null)
                 {
                     ModelState.Clear();
-                    ModelState.AddModelError("found", "Film not found!");
+                    ModelState.AddModelError("Error", inputModel.Error);
                 }
                 return this.View(inputModel);
             }
@@ -197,16 +199,20 @@ namespace CinemaShare.Controllers
             {
                 return RedirectToAction("Add", "Films");
             }
+
+            var id = Guid.NewGuid().ToString();
             if (filmDataBusiness.IsAlreadyAdded(title))
             {
-                ModelState.AddModelError("Added", "Film already added!");
-                //Ne vryshta errora
-                return this.RedirectToAction("Add", "Films");
+                var inputModel = new FilmInputModel();
+                inputModel.Error = "Film already added!";
+                TempData[id] = JsonConvert.SerializeObject(inputModel);
             }
+            else
+            {
                 string apiKey = configuration.GetSection("OMDb").Value;
-                var id = Guid.NewGuid().ToString();
                 TempData[id] = await filmFetchApi.FetchFilmAsync<FilmJsonModel, FilmInputModel>
                     (apiKey, title, mapper.MapToFilmInputModel);
+            }
 
             return this.RedirectToAction("Add", "Films", new { Id = id });
         }
@@ -264,18 +270,17 @@ namespace CinemaShare.Controllers
             return RedirectToAction("Index", "Films");
         }
 
-        /*[Authorize]
-        [HttpPost]
-        public async Task<IActionResult> Delete(string id)
-        {
-            var user = await userManager.GetUserAsync(User);
-            var film = await filmBusiness.GetAsync(id);
-            if (user?.Id == film?.AddedByUserId)
-            {
-                await filmBusiness.DeleteAsync(id);
-            }
-
-            return RedirectToAction("Index", "Films");
-        }*/
+        //[Authorize]
+        //[HttpPost]
+        //public async Task<IActionResult> Delete(string id)
+        //{
+        //    var user = await userManager.GetUserAsync(User);
+        //    var film = await filmBusiness.GetAsync(id);
+        //    if (user?.Id == film?.AddedByUserId)
+        //    {
+        //        await filmBusiness.DeleteAsync(id);
+        //    }
+        //    return RedirectToAction("Index", "Films");
+        //}
     }
 }

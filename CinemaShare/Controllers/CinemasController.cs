@@ -36,9 +36,9 @@ namespace CinemaShare.Controllers
             if (!String.IsNullOrEmpty(search))
             {
                 List<CinemaCardViewModel> cinemasName = cinemaBusiness.GetAllByName(search,
-                                                 mapper.MapToCinemaCardViewModel).ToList();
+                                                        mapper.MapToCinemaCardViewModel).ToList();
                 List<CinemaCardViewModel> cinemasCity = cinemaBusiness.GetAllByCity(search,
-                                                mapper.MapToCinemaCardViewModel).ToList();
+                                                        mapper.MapToCinemaCardViewModel).ToList();
                 if (cinemasName.Count != 0 || cinemasCity.Count != 0)
                 {
                     if (cinemasName.Count != 0)
@@ -56,15 +56,15 @@ namespace CinemaShare.Controllers
                         Cinemas = cinemas
                     });
                 }
-                ModelState.AddModelError("found", "Film not found!");
+                ModelState.AddModelError("Found", "Cinema not found!");
             }
-            pageCount = (int)Math.Ceiling((double)cinemaBusiness.CountAllCinemas() / cinemasOnPage);
 
-            cinemas = cinemaBusiness.GetPageItems(id, cinemasOnPage, mapper.MapToCinemaCardViewModel).ToList();
             if (id > pageCount || id < 1)
             {
                 id = 1;
             }
+            pageCount = (int)Math.Ceiling((double)cinemaBusiness.CountAllCinemas() / cinemasOnPage);
+            cinemas = cinemaBusiness.GetPageItems(id, cinemasOnPage, mapper.MapToCinemaCardViewModel).ToList();
             CinemasIndexViewModel viewModel = new CinemasIndexViewModel
             {
                 PagesCount = pageCount,
@@ -90,17 +90,17 @@ namespace CinemaShare.Controllers
             return this.View(viewModel);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Manager, Admin")]
         public IActionResult Add(string id = null)
         {
-            if (userManager.GetUserAsync(User).GetAwaiter().GetResult().Cinema != null)
+            if (userManager.GetUserAsync(User).GetAwaiter().GetResult()?.Cinema != null)
             {
-                return RedirectToAction("Home", "Index");
+                return RedirectToAction("Index", "Home");
             }
             return this.View();
         }
 
-        [Authorize]
+        [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
         public async Task<IActionResult> Add(CinemaInputModel input)
         {
@@ -125,11 +125,10 @@ namespace CinemaShare.Controllers
             return this.RedirectToAction("Detail", "Cinemas", new { Id = cinema.Id });
         }
 
-        [Authorize]
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Update(string id)
         {
             var user = await userManager.GetUserAsync(User);
-            //tuka go vzema null
             var cinema = await cinemaBusiness.GetAsync(id);
             if (user?.Id == cinema?.ManagerId)
             {
@@ -143,27 +142,40 @@ namespace CinemaShare.Controllers
             return RedirectToAction("Index", "Cinemas");
         }
 
-      /*  [Authorize]
+        [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
-        public async Task<IActionResult> Update(FilmUpdateInputModel input, string id)
+        public async Task<IActionResult> Update(CinemaInputModel input, string id)
         {
             var user = await userManager.GetUserAsync(User);
-            var film = await cinemaBusiness.GetAsync(id);
-            if (user?.Id == film?.AddedByUserId)
+            var cinema = await cinemaBusiness.GetAsync(id);
+            if (user?.Id == cinema?.ManagerId)
             {
                 if (!ModelState.IsValid)
                 {
                     return this.View(input);
                 }
 
-                var data = mapper.MapToFilmData(input);
-                data.FilmId = film.Id;
-                data.Title = film.FilmData.Title;
-                await cinemaBusiness.Update(data);
-                return RedirectToAction("Detail", "Films", new { Id = id });
+                var data = mapper.MapToCinemaData(input);
+                data.Id = cinema.Id;
+                data.ManagerId = cinema.ManagerId;
+                await cinemaBusiness.UpdateAsync(data);
+                return RedirectToAction("Detail", "Cinemas", new { Id = id });
             }
 
-            return RedirectToAction("Index", "Films");
-        }*/
+            return RedirectToAction("Index", "Cinemas");
+        }
+
+        [Authorize(Roles = "Manager, Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await userManager.GetUserAsync(User);
+            var cinema = await cinemaBusiness.GetAsync(id);
+            if (user?.Id == cinema?.ManagerId)
+            {
+                await cinemaBusiness.DeleteAsync(id);
+            }
+            return RedirectToAction("Index", "Cinemas");
+        }
     }
 }

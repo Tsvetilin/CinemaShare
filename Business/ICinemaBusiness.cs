@@ -18,12 +18,15 @@ namespace Business
 
         public IEnumerable<Cinema> GetAll();
 
-        public Task Update(Cinema cinema);
+        public Task UpdateAsync(Cinema cinema);
 
-        public Task Delete(string id);
+        public Task DeleteAsync(string id);
+
         public int CountAllCinemas();
+
         public IEnumerable<TModel> GetPageItems<TModel>(int page, int cinemasOnPage,
                                                        Func<Cinema, TModel> mapToModelFunc);
+
         public IEnumerable<TModel> GetAllByName<TModel>(string searchString, Func<Cinema, TModel> mapToModelFunc);
 
         public IEnumerable<TModel> GetAllByCity<TModel>(string searchString, Func<Cinema, TModel> mapToModelFunc);

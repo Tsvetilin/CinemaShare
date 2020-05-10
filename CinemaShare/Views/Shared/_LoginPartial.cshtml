@@ -9,7 +9,8 @@
         {
             if (SignInManager.Context.User.IsInRole("Manager") || SignInManager.Context.User.IsInRole("Admin"))
             {
-                if (UserManager.GetUserAsync(User).GetAwaiter().GetResult().Cinema == null)
+                var user = UserManager.GetUserAsync(User).GetAwaiter().GetResult();
+                if (user?.Cinema == null)
                 {
                     <li class="nav-item">
                         <form id="addCinema" class="form-inline" asp-controller="Cinemas" asp-action="Add" method="get">
@@ -20,7 +21,7 @@
                 else
                 {
                     <li class="nav-item">
-                        <form id="updateCinema" class="form-inline" asp-controller="Cinemas" asp-action="Update" method="get">
+                        <form id="updateCinema" class="form-inline" asp-controller="Cinemas" asp-action="Update" asp-route-id="@user.Cinema.Id" method="get">
                             <button id="updateCinemaBut" type="submit" class="nav-link btn btn-link text-dark">Update Cinema</button>
                         </form>
                     </li>

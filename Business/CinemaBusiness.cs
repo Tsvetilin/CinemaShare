@@ -51,7 +51,8 @@ namespace Business
             var cinema = await context.Cinemas.FindAsync(id);
             return mapToModelFunc(cinema);
         }
-        public async Task Update(Cinema cinema)
+
+        public async Task UpdateAsync(Cinema cinema)
         {
             var cinemaInContext = await context.Cinemas.FindAsync(cinema.Id);
             if (cinemaInContext != null)
@@ -61,7 +62,7 @@ namespace Business
             }
         }
 
-        public async Task Delete(string id)
+        public async Task DeleteAsync(string id)
         {
             var cinemaInContext = await context.Cinemas.FindAsync(id);
             if (cinemaInContext != null)
