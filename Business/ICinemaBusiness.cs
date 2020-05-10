@@ -12,6 +12,8 @@ namespace Business
 
         public Task<Cinema> Get(string id);
 
+        public Task<TModel> GetAsync<TModel>(string id, Func<Cinema, TModel> mapToModelFunc);
+
         public IEnumerable<Cinema> GetAll();
 
         public Task Update(Cinema cinema);

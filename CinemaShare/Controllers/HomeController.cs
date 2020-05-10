@@ -11,6 +11,7 @@ using Data.Models;
 using Data.Enums;
 using Data;
 using CinemaShare.Common.Mapping;
+using CinemaShare.Models.ViewModels;
 
 namespace CinemaShare.Controllers
 {

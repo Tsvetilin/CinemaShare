@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
+using CinemaShare.Models.ViewModels;
 
 namespace CinemaShare.Controllers
 {
