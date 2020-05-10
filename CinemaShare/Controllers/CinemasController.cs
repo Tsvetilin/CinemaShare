@@ -125,5 +125,45 @@ namespace CinemaShare.Controllers
             return this.RedirectToAction("Detail", "Cinemas", new { Id = cinema.Id });
         }
 
+        [Authorize]
+        public async Task<IActionResult> Update(string id)
+        {
+            var user = await userManager.GetUserAsync(User);
+            //tuka go vzema null
+            var cinema = await cinemaBusiness.GetAsync(id);
+            if (user?.Id == cinema?.ManagerId)
+            {
+                var inputModel = mapper.MapToCinemaUpdateInputModel(cinema);
+                return this.View(inputModel);
+            }
+            else if (cinema != null)
+            {
+                return RedirectToAction("Detail", "Cinemas", new { Id = id });
+            }
+            return RedirectToAction("Index", "Cinemas");
+        }
+
+      /*  [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Update(FilmUpdateInputModel input, string id)
+        {
+            var user = await userManager.GetUserAsync(User);
+            var film = await cinemaBusiness.GetAsync(id);
+            if (user?.Id == film?.AddedByUserId)
+            {
+                if (!ModelState.IsValid)
+                {
+                    return this.View(input);
+                }
+
+                var data = mapper.MapToFilmData(input);
+                data.FilmId = film.Id;
+                data.Title = film.FilmData.Title;
+                await cinemaBusiness.Update(data);
+                return RedirectToAction("Detail", "Films", new { Id = id });
+            }
+
+            return RedirectToAction("Index", "Films");
+        }*/
     }
 }

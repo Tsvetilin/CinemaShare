@@ -17,13 +17,8 @@ namespace CinemaShare.Models.InputModels
         public string Title { get; set; }
 
         [Required]
-        [Range(1,5,ErrorMessage ="Rating can be between 1 and 5")]
+        [Range(0,5,ErrorMessage ="Rating can be between 0 and 5")]
         public int Rating { get; set; }
-
-        [Required]
-        [StringLength(maximumLength: 100,
-                      ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
-                      MinimumLength = 3)]
         
         public string Error { get; set; }
     }

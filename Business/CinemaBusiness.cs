@@ -24,7 +24,7 @@ namespace Business
             await context.SaveChangesAsync();
         }
 
-        public async Task<Cinema> Get(string id)
+        public async Task<Cinema> GetAsync(string id)
         {
             return await context.Cinemas.FindAsync(id);
         }
@@ -45,6 +45,7 @@ namespace Business
             var selectedCinemas = cinemas.Skip(cinemasOnPage * (page - 1)).Take(cinemasOnPage);
             return selectedCinemas.Select(x => mapToModelFunc(x));
         }
+
         public async Task<TModel> GetAsync<TModel>(string id, Func<Cinema, TModel> mapToModelFunc)
         {
             var cinema = await context.Cinemas.FindAsync(id);

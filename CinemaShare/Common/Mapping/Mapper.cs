@@ -82,6 +82,12 @@ namespace CinemaShare.Common.Mapping
             return viewModel;
         }
 
+        public CinemaInputModel MapToCinemaUpdateInputModel(Cinema cinema)
+        {
+            var viewModel = MapSimilarProperties<Cinema, CinemaInputModel>(cinema);
+            return viewModel;
+        }
+
         public FilmInputModel MapToFilmInputModel(FilmJsonModel filmData)
         {
             if (filmData.Response == "False")

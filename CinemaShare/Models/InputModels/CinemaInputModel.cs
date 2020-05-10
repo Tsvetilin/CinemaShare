@@ -10,14 +10,17 @@ namespace CinemaShare.Models.InputModels
     {
         [MaxLength(50)]
         [Required]
+        [Display(Name="Name")]
         public string Name { get; set; }
 
         [MaxLength(50)]
         [Required]
+        [Display(Name="Country")]
         public string Country { get; set; }
 
         [MaxLength(50)]
         [Required]
+        [Display(Name="City")]
         public string City { get; set; }
 
         public string Error { get; set; }

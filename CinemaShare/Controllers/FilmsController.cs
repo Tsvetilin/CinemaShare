@@ -197,10 +197,16 @@ namespace CinemaShare.Controllers
             {
                 return RedirectToAction("Add", "Films");
             }
-            string apiKey = configuration.GetSection("OMDb").Value;
-            var id = Guid.NewGuid().ToString();
-            TempData[id] = await filmFetchApi.FetchFilmAsync<FilmJsonModel, FilmInputModel>
-                (apiKey, title, mapper.MapToFilmInputModel);
+            if (filmDataBusiness.IsAlreadyAdded(title))
+            {
+                ModelState.AddModelError("Added", "Film already added!");
+                //Ne vryshta errora
+                return this.RedirectToAction("Add", "Films");
+            }
+                string apiKey = configuration.GetSection("OMDb").Value;
+                var id = Guid.NewGuid().ToString();
+                TempData[id] = await filmFetchApi.FetchFilmAsync<FilmJsonModel, FilmInputModel>
+                    (apiKey, title, mapper.MapToFilmInputModel);
 
             return this.RedirectToAction("Add", "Films", new { Id = id });
         }

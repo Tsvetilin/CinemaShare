@@ -10,7 +10,7 @@ namespace Business
     {
         public Task AddAsync(Cinema cinema);
 
-        public Task<Cinema> Get(string id);
+        public Task<Cinema> GetAsync(string id);
 
         public bool IsAlreadyAdded(string cinemaName);
 
