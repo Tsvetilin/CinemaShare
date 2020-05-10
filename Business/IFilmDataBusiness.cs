@@ -12,6 +12,8 @@ namespace Business
 
         public Task<TModel> GetAsync<TModel>(string id, Func<FilmData, TModel> mapToModelFunc);
 
+        public Task<FilmData> GetAsync(string id);
+
         public bool IsAlreadyAdded(string filmTitle);
 
         public IEnumerable<FilmData> GetAll();

@@ -7,6 +7,12 @@
     <ul class="navbar-nav">
         @if (SignInManager.IsSignedIn(User))
         {
+            <li class="nav-item">
+                <form id="watchList" class="form-inline" asp-controller="Films" asp-action="WatchList" method="get">
+                    <button id="watchListBut" type="submit" class="nav-link btn btn-link text-dark">WatchList</button>
+                </form>
+            </li>
+
             if (SignInManager.Context.User.IsInRole("Manager") || SignInManager.Context.User.IsInRole("Admin"))
             {
                 var user = UserManager.GetUserAsync(User).GetAwaiter().GetResult();

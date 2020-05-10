@@ -1,5 +1,6 @@
 ﻿using Data;
 using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -30,7 +31,7 @@ namespace Business
 
         public IEnumerable<Film> GetAll()
         {
-            return context.Films.Include("FilmData").ToList();
+            return context.Films.ToList();
         }
 
         public async Task RateAsync(string filmId, string userId, int rating)
@@ -52,6 +53,35 @@ namespace Business
                                                                     filmInContext.Ratings.Count();
                 await context.SaveChangesAsync();
             }
+        }
+
+        public async Task AddToWatchListAsync(string userId, Film film)
+        {
+            var userInContext = await context.Users.FindAsync(userId);
+            if (userInContext != null)
+            {
+                userInContext.WatchList = userInContext.WatchList.Append(film).ToList();
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task RemoveFromWatchListAsync(string userId, Film film)
+        {
+            var userInContext = await context.Users.FindAsync(userId);
+            if (userInContext != null)
+            {
+                if (userInContext.WatchList.Any(x => x.Id == film.Id))
+                {
+                    userInContext.WatchList = userInContext.WatchList.Where(x => x.Id != film.Id).ToList();
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+
+        public IEnumerable<TModel> GetWatchList<TModel>(string userId, Func<FilmData, TModel> mapToModelFunc)
+        {
+            var userInContext = context.Users.FirstOrDefault(x => x.Id == userId);
+            return userInContext?.WatchList?.Select(x => mapToModelFunc(x.FilmData)).ToList();
         }
 
         public async Task UpdateAsync(Film film)

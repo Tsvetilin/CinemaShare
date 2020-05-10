@@ -19,5 +19,11 @@ namespace Business
         public Task UpdateAsync(Film film);
 
         public Task DeleteAsync(string id);
+
+        public Task AddToWatchListAsync(string userId, Film film);
+
+        public IEnumerable<TModel> GetWatchList<TModel>(string userId, Func<FilmData, TModel> mapToModelFunc);
+
+        public Task RemoveFromWatchListAsync(string userId, Film film);
     }
 }

@@ -1,0 +1,36 @@
+﻿@model CinemaShare.Models.ViewModels.FilmsIndexViewModel
+@{
+    ViewData["Title"] = "WatchList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>WatchList</h1>
+
+@if (Model.Films.Count == 0)
+{
+    <h3>No films added to watchlist!</h3>
+    <a asp-controller="Films" asp-action="Index">Go add one</a>
+}
+else
+{
+    <ul class="list-inline text-dark">
+        @foreach (var filmCard in Model?.Films)
+        {
+            <li style="padding-bottom: 20px;">
+                <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
+                   class="content-heading clearfix media box-hover" style="text-decoration:none;">
+                    <img class="rounded float-left h-25 w-25" style="margin-left:320px;" src="@filmCard.Poster" alt="Film poster">
+                    <div style="margin-left:30px;">
+                        <h3 class="text-dark font-weight-bold">@filmCard.Title</h3>
+                        <h5 class="text-dark ">Rating: @filmCard.Rating</h5>
+                        <p class="text-dark ">Director: @filmCard.Director</p>
+                        <p class="text-dark ">@filmCard.Runtime minutes</p>
+                        <p class="text-dark ">Genres: @filmCard.Genres</p>
+                        <p class="text-dark ">Release date: @filmCard.ReleaseDate.ToShortDateString()</p>
+                        <p class="font-weight-bold " style="color:black">@filmCard.Description</p>
+                    </div>
+                </a>
+            </li>
+        }
+    </ul>
+}

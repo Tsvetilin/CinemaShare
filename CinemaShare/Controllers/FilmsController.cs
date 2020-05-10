@@ -99,7 +99,7 @@ namespace CinemaShare.Controllers
                 films = filmDataBusiness.GetPageItems(id, filmsOnPage,
                                                                 mapper.MapToExtendedFilmCardViewModel).ToList();
             }
-            
+
             viewModel = new FilmsIndexViewModel
             {
                 PagesCount = pageCount,
@@ -282,5 +282,42 @@ namespace CinemaShare.Controllers
         //    }
         //    return RedirectToAction("Index", "Films");
         //}
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddToWatchList(string id)
+        {
+            var film = await filmDataBusiness.GetAsync(id);
+            if (film != null)
+            {
+                var userId = userManager.GetUserId(User);
+                await filmBusiness.AddToWatchListAsync(userId, film.Film);
+                return RedirectToAction("Detail", "Films", new { Id = id });
+            }
+            return RedirectToAction("Index", "Films");
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> RemoveFromWatchList(string id)
+        {
+            var film = await filmDataBusiness.GetAsync(id);
+            if (film != null)
+            {
+                var userId = userManager.GetUserId(User);
+                await filmBusiness.RemoveFromWatchListAsync(userId, film.Film);
+                return RedirectToAction("Detail", "Films", new { Id = id });
+            }
+            return RedirectToAction("Index", "Films");
+        }
+
+        [Authorize]
+        public IActionResult WatchList()
+        {
+            var userId = userManager.GetUserId(User);
+            var films = filmBusiness.GetWatchList(userId, mapper.MapToExtendedFilmCardViewModel).ToList();
+            return this.View(new FilmsIndexViewModel { Films = films });
+        }
     }
 }
