@@ -14,6 +14,7 @@ namespace CinemaShare.Common.Mapping
         public ExtendedFilmCardViewModel MapToExtendedFilmCardViewModel(FilmData filmData);
 
         public FilmDataViewModel MapToFilmDataViewModel(FilmData filmData);
+        public CinemaDataViewModel MapToCinemaDataViewModel(Cinema cinema);
 
         public IEnumerable<FilmCardViewModel> MapToFilmCardViewModel(IEnumerable<FilmData> rawFilms);
 

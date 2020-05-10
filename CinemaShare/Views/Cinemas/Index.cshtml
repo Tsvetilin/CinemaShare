@@ -6,16 +6,16 @@
 <h1>Cinemas</h1>
 
 <ul class="list-inline text-dark">
-    @foreach (var filmCard in Model?.Cinemas)
+    @foreach (var cinemaCard in Model?.Cinemas)
     {
         <li style="padding-bottom: 20px;">
-            <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
+            <a asp-controller="Cinemas" asp-action="Detail" asp-route-id="@cinemaCard.Id"
                class="content-heading clearfix media box-hover" style="text-decoration:none;">
                 <div style="margin-left:30px;">
-                    <h3 class="text-dark font-weight-bold">@filmCard.Name</h3>
-                    <h5 class="text-dark ">City: @filmCard.City</h5>
-                    <p class="text-dark ">Country: @filmCard.Country</p>
-                    <p class="text-dark ">Manager: @filmCard.Mananger</p>
+                    <h3 class="text-dark font-weight-bold">@cinemaCard.Name</h3>
+                    <h5 class="text-dark ">City: @cinemaCard.City</h5>
+                    <h5 class="text-dark ">Country: @cinemaCard.Country</h5>
+                    <h5 class="text-dark ">Manager: @cinemaCard.Mananger</h5>
                 </div>
             </a>
         </li>

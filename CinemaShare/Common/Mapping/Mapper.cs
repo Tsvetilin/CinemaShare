@@ -58,6 +58,16 @@ namespace CinemaShare.Common.Mapping
             return viewModel;
         }
 
+        public CinemaDataViewModel MapToCinemaDataViewModel(Cinema cinema)
+        {
+            var viewModel = MapSimilarProperties<Cinema, CinemaDataViewModel>(cinema);
+            if (cinema!=null)
+            {
+                viewModel.Mananger = cinema.Manager.UserName;
+            }    
+            return viewModel;
+        }
+
 
         public IEnumerable<FilmCardViewModel> MapToFilmCardViewModel(IEnumerable<FilmData> rawFilms)
         {
