@@ -3,15 +3,28 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Cinemas</h1>
+<div style="display:inline-flex;" class="w-100">
+    <h1>Cinemas</h1>
+    <form style="margin: 0 auto;width:40%;
+          display: inline-flex;"
+          asp-controller="Cinemas" asp-action="Index" method="get">
+        <div class="row1">
+            <input name="Search" placeholder="Cinema name or city" />
+            <input type="submit" value="Try Find Cinema" />
+        </div>
+    </form>
+</div>
+<div asp-validation-summary="All"  style="margin: 0 auto;width:30%; display: flex;" class="text-danger"></div>
 
-<ul class="list-inline text-dark">
+<ul class="list-unstyled d-inline-block m-auto w-100 text-dark">
     @foreach (var cinemaCard in Model?.Cinemas)
     {
         <li style="padding-bottom: 20px;">
             <a asp-controller="Cinemas" asp-action="Detail" asp-route-id="@cinemaCard.Id"
-               class="content-heading clearfix media box-hover" style="text-decoration:none;">
-                <div style="margin-left:30px;">
+               class="content-heading clearfix media box-hover"
+               style="text-decoration:none;margin: 0 auto;width: 30%;">
+                <div style="        margin-left: 30px;
+">
                     <h3 class="text-dark font-weight-bold">@cinemaCard.Name</h3>
                     <h5 class="text-dark ">City: @cinemaCard.City</h5>
                     <h5 class="text-dark ">Country: @cinemaCard.Country</h5>

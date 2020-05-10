@@ -8,9 +8,11 @@ namespace Business
 {
     public interface ICinemaBusiness
     {
-        public Task Add(Cinema cinema);
+        public Task AddAsync(Cinema cinema);
 
         public Task<Cinema> Get(string id);
+
+        public bool IsAlreadyAdded(string cinemaName);
 
         public Task<TModel> GetAsync<TModel>(string id, Func<Cinema, TModel> mapToModelFunc);
 
@@ -22,5 +24,9 @@ namespace Business
         public int CountAllCinemas();
         public IEnumerable<TModel> GetPageItems<TModel>(int page, int cinemasOnPage,
                                                        Func<Cinema, TModel> mapToModelFunc);
+        public IEnumerable<TModel> GetAllByName<TModel>(string searchString, Func<Cinema, TModel> mapToModelFunc);
+
+        public IEnumerable<TModel> GetAllByCity<TModel>(string searchString, Func<Cinema, TModel> mapToModelFunc);
+
     }
 }

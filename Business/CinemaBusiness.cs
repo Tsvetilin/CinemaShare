@@ -18,7 +18,7 @@ namespace Business
             this.context = context;
         }
 
-        public async Task Add(Cinema cinema)
+        public async Task AddAsync(Cinema cinema)
         {
             await context.Cinemas.AddAsync(cinema);
             await context.SaveChangesAsync();
@@ -68,6 +68,23 @@ namespace Business
                 context.Cinemas.Remove(cinemaInContext);
                 await context.SaveChangesAsync();
             }
+        }
+
+        public bool IsAlreadyAdded(string cinemaName)
+        {
+            return context.Cinemas.Any(x => x.Name.ToLower().Equals(cinemaName.ToLower()));
+        }
+
+        public IEnumerable<TModel> GetAllByName<TModel>(string searchString, Func<Cinema, TModel> mapToModelFunc)
+        {
+            return GetAll().Where(x => x.Name.ToLower().Contains(searchString.ToLower()))
+                                                .Select(x => mapToModelFunc(x)).ToList();
+        }
+
+        public IEnumerable<TModel> GetAllByCity<TModel>(string searchString, Func<Cinema, TModel> mapToModelFunc)
+        {
+            return GetAll().Where(x => x.City.ToLower().Contains(searchString.ToLower()))
+                                                .Select(x => mapToModelFunc(x)).ToList();
         }
     }
 }
