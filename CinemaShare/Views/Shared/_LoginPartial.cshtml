@@ -4,39 +4,50 @@
 @inject SignInManager<CinemaUser> SignInManager
 @inject UserManager<CinemaUser> UserManager
 
-<ul class="navbar-nav">
-    @if (SignInManager.IsSignedIn(User))
-    {
-        if (SignInManager.Context.User.IsInRole("Manager")|| SignInManager.Context.User.IsInRole("Admin"))
+    <ul class="navbar-nav">
+        @if (SignInManager.IsSignedIn(User))
         {
-        <li class="nav-item">
-            <form id="addCinema" class="form-inline" asp-controller="Cinemas" asp-action="Add" method="get">
-                <button id="addCinemaBut" type="submit" class="nav-link btn btn-link text-dark">Add Cinema</button>
-            </form>
-        </li>
-        }
-        <li class="nav-item">
-            <form id="addFilm" class="form-inline" asp-controller="Films" asp-action="Add" method="get">
-                <button id="addFilmBut" type="submit" class="nav-link btn btn-link text-dark">Add film</button>
-            </form>
-        </li>
+            if (SignInManager.Context.User.IsInRole("Manager") || SignInManager.Context.User.IsInRole("Admin"))
+            {
+                if (UserManager.GetUserAsync(User).GetAwaiter().GetResult().Cinema == null)
+                {
+                    <li class="nav-item">
+                        <form id="addCinema" class="form-inline" asp-controller="Cinemas" asp-action="Add" method="get">
+                            <button id="addCinemaBut" type="submit" class="nav-link btn btn-link text-dark">Add Cinema</button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <form id="updateCinema" class="form-inline" asp-controller="Cinemas" asp-action="Update" method="get">
+                            <button id="updateCinemaBut" type="submit" class="nav-link btn btn-link text-dark">Update Cinema</button>
+                        </form>
+                    </li>
+                }
+            }
+            <li class="nav-item">
+                <form id="addFilm" class="form-inline" asp-controller="Films" asp-action="Add" method="get">
+                    <button id="addFilmBut" type="submit" class="nav-link btn btn-link text-dark">Add film</button>
+                </form>
+            </li>
 
-        <li class="nav-item">
-            <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-        </li>
-        <li class="nav-item">
-            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-            </form>
-        </li>
-    }
-    else
-    {
-        <li class="nav-item">
-            <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        </li>
-    }
-</ul>
+            <li class="nav-item">
+                <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+            </li>
+            <li class="nav-item">
+                <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button id="logout" type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                </form>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            </li>
+        }
+    </ul>

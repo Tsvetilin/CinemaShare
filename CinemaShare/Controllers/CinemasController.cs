@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Business;
 using CinemaShare.Common.Mapping;
 using CinemaShare.Models;
+using CinemaShare.Models.InputModels;
 using CinemaShare.Models.ViewModels;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -28,10 +29,36 @@ namespace CinemaShare.Controllers
             this.userManager = userManager;
         }
 
-        public IActionResult Index(int id = 1)
+        public IActionResult Index(int id = 1, string search = "")
         {
+            int pageCount = 1;
             List<CinemaCardViewModel> cinemas = new List<CinemaCardViewModel>();
-            int pageCount = (int)Math.Ceiling((double)cinemaBusiness.CountAllCinemas() / cinemasOnPage);
+            if (!String.IsNullOrEmpty(search))
+            {
+                List<CinemaCardViewModel> cinemasName = cinemaBusiness.GetAllByName(search,
+                                                 mapper.MapToCinemaCardViewModel).ToList();
+                List<CinemaCardViewModel> cinemasCity = cinemaBusiness.GetAllByCity(search,
+                                                mapper.MapToCinemaCardViewModel).ToList();
+                if (cinemasName.Count != 0 || cinemasCity.Count != 0)
+                {
+                    if (cinemasName.Count != 0)
+                    {
+                        cinemas.AddRange(cinemasName);
+                    }
+                    if (cinemasCity.Count != 0)
+                    {
+                        cinemas.AddRange(cinemasCity);
+                    }
+                    return View(new CinemasIndexViewModel
+                    {
+                        PagesCount = 1,
+                        CurrentPage = 1,
+                        Cinemas = cinemas
+                    });
+                }
+                ModelState.AddModelError("found", "Film not found!");
+            }
+            pageCount = (int)Math.Ceiling((double)cinemaBusiness.CountAllCinemas() / cinemasOnPage);
 
             cinemas = cinemaBusiness.GetPageItems(id, cinemasOnPage, mapper.MapToCinemaCardViewModel).ToList();
             if (id > pageCount || id < 1)
@@ -63,31 +90,23 @@ namespace CinemaShare.Controllers
             return this.View(viewModel);
         }
 
-       /* [Authorize]
+        [Authorize]
         public IActionResult Add(string id = null)
         {
-            if (id == null ? false : TempData[id] != null)
+            if (userManager.GetUserAsync(User).GetAwaiter().GetResult().Cinema != null)
             {
-                var serializedFilm = TempData[id];
-                var inputModel = JsonConvert.DeserializeObject<FilmInputModel>(serializedFilm.ToString());
-                if (inputModel.Error != null)
-                {
-                    ModelState.Clear();
-                    ModelState.AddModelError("found", "Film not found!");
-                }
-                return this.View(inputModel);
+                return RedirectToAction("Home", "Index");
             }
-
             return this.View();
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Add(FilmInputModel input)
+        public async Task<IActionResult> Add(CinemaInputModel input)
         {
-            if (filmDataBusiness.IsAlreadyAdded(input.Title))
+            if (cinemaBusiness.IsAlreadyAdded(input.Name))
             {
-                ModelState.AddModelError("Added", "Film already added!");
+                ModelState.AddModelError("Added", "Cinema already added!");
             }
 
             if (!ModelState.IsValid)
@@ -95,15 +114,16 @@ namespace CinemaShare.Controllers
                 return this.View();
             }
 
-            var film = new Film
+            var cinema = new Cinema
             {
-                UserId = userManager.GetUserId(User)
+                Name = input.Name,
+                Country = input.Country,
+                City = input.City,
+                ManagerId = userManager.GetUserId(User)
             };
-            await filmBusiness.AddAsync(film);
-            await filmDataBusiness.AddAsync(input, film, mapper.MapToFilmData);
-
-            return this.RedirectToAction("Detail", "Films", new { Id = film.Id });
-        }*/
+            await cinemaBusiness.AddAsync(cinema);
+            return this.RedirectToAction("Detail", "Cinemas", new { Id = cinema.Id });
+        }
 
     }
 }
