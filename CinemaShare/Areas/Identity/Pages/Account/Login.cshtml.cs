@@ -68,6 +68,7 @@ namespace CinemaShare.Areas.Identity.Pages.Account
                 ModelState.AddModelError(string.Empty, ErrorMessage);
             }
 
+            returnUrl=returnUrl?.Replace("AddReview", "Detail");
             returnUrl = returnUrl ?? Url.Content("~/");
 
             // Clear the existing external cookie to ensure a clean login process
@@ -81,6 +82,7 @@ namespace CinemaShare.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             CinemaUser user = _userManager.FindByNameAsync(Input.UserName).GetAwaiter().GetResult();
+            returnUrl = returnUrl?.Replace("AddReview", "Detail");
             returnUrl = returnUrl ?? Url.Content("~/");
 
             if (ModelState.IsValid)

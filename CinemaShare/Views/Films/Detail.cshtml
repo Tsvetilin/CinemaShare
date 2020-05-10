@@ -21,6 +21,21 @@
     </div>
 </div>
 
+@if(User.Identity.IsAuthenticated)
+{
+<form asp-controller="Films" asp-action="RateFilm" method="post">
+    <input type="submit" name="rating" value="1" />
+    <input type="submit" name="rating" value="2" />
+    <input type="submit" name="rating" value="3" />
+    <input type="submit" name="rating" value="4" />
+    <input type="submit" name="rating" value="5" />
+</form>
+}
+else
+{
+    <a href="#">Log in to rate the film</a>
+}
+
 @foreach (var projection in Model.FilmProjections)
 {
     <h5>@projection.Cinema</h5>

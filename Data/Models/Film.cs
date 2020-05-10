@@ -17,13 +17,15 @@ namespace Data.Models
         [Key]
         public string Id { get; set; }
 
-        public byte Rating { get; set; }
+        public double Rating { get; set; }
 
-        public string UserId { get; set; }
+        public string AddedByUserId { get; set; }
 
         public virtual CinemaUser AddedByUser { get; set; }
 
         public virtual FilmData FilmData { get; set; }
+
+        public virtual IEnumerable<CinemaUser> RatedByUsers { get; set; }
 
         public virtual IEnumerable<FilmProjection> FilmProjection { get; set; }
 

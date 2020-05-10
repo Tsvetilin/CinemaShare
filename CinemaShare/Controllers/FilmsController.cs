@@ -155,7 +155,7 @@ namespace CinemaShare.Controllers
 
             var film = new Film
             {
-                UserId = userManager.GetUserId(User)
+                AddedByUserId = userManager.GetUserId(User)
             };
             await filmBusiness.AddAsync(film);
             await filmDataBusiness.AddAsync(input, film, mapper.MapToFilmData);
@@ -197,6 +197,13 @@ namespace CinemaShare.Controllers
                 (apiKey, title, mapper.MapToFilmInputModel);
 
             return this.RedirectToAction("Add", "Films", new { Id = id });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> RateFilm(string id, double rating)
+        {
+            return Json(rating);
         }
 
         /*  [Authorize]

@@ -87,7 +87,7 @@ namespace Data.Seeders
 
             foreach (var filmData in filmsData)
             {
-                var film = new Film { Rating= (byte)randomNumber.Next(4,6)};
+                var film = new Film { Rating= randomNumber.Next(4,6)};
                 filmData.FilmId = film.Id;
                 await context.Films.AddAsync(film) ;
                 await context.FilmDatas.AddAsync(filmData);

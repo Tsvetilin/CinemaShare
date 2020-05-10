@@ -32,6 +32,9 @@ namespace CinemaShare.Models
             ErrorMessage ="The {0} must conatains at least {1} genre")]
         public List<Genre> Genre { get; set; }
 
+        [Required]
+        [Range(1,5,ErrorMessage ="Rating can be between 1 and 5")]
+        public int Rating { get; set; }
 
         [Required]
         [StringLength(maximumLength: 100,
