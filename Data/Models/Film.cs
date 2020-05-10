@@ -12,6 +12,7 @@ namespace Data.Models
         {
             this.Id = Guid.NewGuid().ToString();
             this.FilmReviews = new HashSet<FilmReview>();
+            this.Ratings = new HashSet<FilmRating>();
         }
 
         [Key]
@@ -25,7 +26,7 @@ namespace Data.Models
 
         public virtual FilmData FilmData { get; set; }
 
-        public virtual IEnumerable<CinemaUser> RatedByUsers { get; set; }
+        public virtual IEnumerable<FilmRating> Ratings { get; set; }
 
         public virtual IEnumerable<FilmProjection> FilmProjection { get; set; }
 

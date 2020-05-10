@@ -154,9 +154,12 @@ namespace CinemaShare.Controllers
                 return this.View();
             }
 
+            var userId = userManager.GetUserId(User);
             var film = new Film
             {
-                AddedByUserId = userManager.GetUserId(User)
+                AddedByUserId = userId,
+                Rating=input.Rating,
+                Ratings= new List<FilmRating> { new FilmRating { Rating=input.Rating, UserId= userId} }
             };
             await filmBusiness.AddAsync(film);
             await filmDataBusiness.AddAsync(input, film, mapper.MapToFilmData);
@@ -202,36 +205,14 @@ namespace CinemaShare.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> RateFilm(string id, double rating)
+        public async Task<IActionResult> RateFilm(string id, int rating)
         {
-            return Json(rating);
+            //TODO: improve conditions
+            if (rating > 0 && rating < 6 && id!=null)
+            {
+                await filmBusiness.RateAsync(id,userManager.GetUserId(User),rating);
+            }
+            return RedirectToAction("Detail","Films",new {Id=id});
         }
-
-        /*  [Authorize]
-          [HttpPost]
-          public IActionResult GetByName(int id = 1, string title = null)
-          {
-              List<ExtendedFilmCardViewModel> films = filmDataBusiness.GetFilmsOnPageByName(id, filmsOnPage,
-                                                                mapper.MapToExtendedFilmCardViewModel)
-                                                               .Where(x => x.Title.ToLower()
-                                                               .Contains(title.ToLower())).ToList();
-              int pageCount = (int)Math.Ceiling((double)films.Count() / filmsOnPage);
-              if (id > pageCount || id < 1)
-              {
-                  id = 1;
-              }
-
-              if (title == null || films == null)
-              {
-                  return this.NotFound();
-              }
-              FilmsIndexViewModel viewModel = new FilmsIndexViewModel
-              {
-                  PagesCount = pageCount,
-                  CurrentPage = id,
-                  Films = films
-              };
-              return this.RedirectToAction("Index","Films", View(viewModel));
-          }*/
     }
 }

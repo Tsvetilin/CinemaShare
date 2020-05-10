@@ -23,7 +23,7 @@
 
 @if(User.Identity.IsAuthenticated)
 {
-<form asp-controller="Films" asp-action="RateFilm" method="post">
+<form asp-controller="Films" asp-action="RateFilm" asp-route-id="@Model.Id" method="post">
     <input type="submit" name="rating" value="1" />
     <input type="submit" name="rating" value="2" />
     <input type="submit" name="rating" value="3" />
@@ -48,13 +48,20 @@ else
                 <h1 class="text-center">Reviews</h1>
             </div>
             <div class="panel-body">
-                <form asp-controller="Films" asp-action="AddReview" method="post" asp-route-id="@Model.Id">
-                    <input type="text" name="Content" class="form-control" placeholder="Write a review..." rows="3" />
-                    <br>
-                    <button type="submit" class="btn btn-info pull-right">Post</button>
-                    <div class="clearfix"></div>
-                    <hr>
-                </form>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form asp-controller="Films" asp-action="AddReview" method="post" asp-route-id="@Model.Id">
+                        <input type="text" name="Content" class="form-control" placeholder="Write a review..." rows="3" />
+                        <br>
+                        <button type="submit" class="btn btn-info pull-right">Post</button>
+                        <div class="clearfix"></div>
+                        <hr>
+                    </form>
+                }
+                else
+                {
+                    <a href="#">Log in to review the film</a>
+                }
             </div>
         </div>
     </div>

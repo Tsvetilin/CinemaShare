@@ -14,6 +14,8 @@ namespace Business
 
         public IEnumerable<Film> GetAll();
 
+        public Task RateAsync(string filmId, string userId, int rating);
+
         public Task UpdateAsync(Film film);
 
         public Task DeleteAsync(string id);

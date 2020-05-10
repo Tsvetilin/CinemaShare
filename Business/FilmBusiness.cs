@@ -33,10 +33,31 @@ namespace Business
             return context.Films.Include("FilmData").ToList();
         }
 
+        public async Task RateAsync(string filmId, string userId, int rating)
+        {
+            var filmInContext = await context.Films.FindAsync(filmId);
+            if (filmInContext != null)
+            {
+                if (filmInContext.Ratings.Any(x => x.UserId == userId))
+                {
+                    filmInContext.Ratings.First(x => x.UserId == userId).Rating = rating;
+                }
+                else
+                {
+                    filmInContext.Ratings = filmInContext.Ratings.Append(new FilmRating { Rating = rating,
+                                                                                          UserId = userId 
+                                                                                        }).ToList();
+                }
+                filmInContext.Rating = (double)filmInContext.Ratings.Select(x => x.Rating).Sum() /
+                                                                    filmInContext.Ratings.Count();
+                await context.SaveChangesAsync();
+            }
+        }
+
         public async Task UpdateAsync(Film film)
         {
             var filmInContext = await context.Films.FindAsync(film.Id);
-            if(filmInContext!=null)
+            if (filmInContext != null)
             {
                 context.Entry(filmInContext).CurrentValues.SetValues(film);
                 await context.SaveChangesAsync();

@@ -21,11 +21,12 @@ namespace CinemaShare.Common.Mapping
             if (fromObject != null)
             {
                 PropertyInfo[] props = fromObject.GetType().GetProperties();
+                var modelType = viewModel?.GetType();
                 foreach (var prop in props)
                 {
-                    if (viewModel?.GetType()?.GetProperty(prop.Name)?.PropertyType?.Equals(prop.PropertyType) ?? false)
+                    if (modelType?.GetProperty(prop.Name)?.PropertyType?.Equals(prop.PropertyType) ?? false)
                     {
-                        viewModel.GetType().GetProperty(prop.Name).SetValue(viewModel, prop.GetValue(fromObject));
+                        modelType.GetProperty(prop.Name).SetValue(viewModel, prop.GetValue(fromObject));
                     }
                 }
             }
@@ -39,7 +40,7 @@ namespace CinemaShare.Common.Mapping
             {
                 viewModel.Id = filmData.FilmId;
                 viewModel.Genres = string.Join(", ", filmData.Genre.Select(a => a.Genre.ToString()));
-                viewModel.Rating = filmData.Film.Rating.ToString();
+                viewModel.Rating = Math.Round(filmData.Film.Rating, 1).ToString();
             }
             return viewModel;
         }
@@ -51,7 +52,7 @@ namespace CinemaShare.Common.Mapping
             {
                 viewModel.Id = filmData.FilmId;
                 viewModel.Genres = string.Join(", ", filmData.Genre.Select(a => a.Genre.ToString()));
-                viewModel.Rating = filmData.Film.Rating.ToString();
+                viewModel.Rating = Math.Round(filmData.Film.Rating, 1).ToString();
                 viewModel.FilmProjections = filmData.Film.FilmProjection.ToList();
                 viewModel.FilmReviews = filmData.Film.FilmReviews.ToList();
             }
@@ -76,7 +77,7 @@ namespace CinemaShare.Common.Mapping
                 Title = x.Title,
                 Genres = string.Join(", ", x.Genre.Select(a => a.Genre.ToString())),
                 Poster = x.Poster,
-                Rating = x.Film.Rating.ToString(),
+                Rating = Math.Round(x.Film.Rating,1).ToString(),
                 Id = x.FilmId
             });
         }

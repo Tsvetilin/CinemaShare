@@ -85,14 +85,21 @@ namespace Data.Seeders
 
             var randomNumber = new Random();
 
+            var userId = context.Users.FirstOrDefault(x => x.UserName == "Admin")?.Id;
             foreach (var filmData in filmsData)
             {
-                var film = new Film { Rating= randomNumber.Next(4,6)};
+                var rating = randomNumber.Next(4, 6);
+                var film = new Film
+                {
+                    Rating = rating,
+                    AddedByUserId = userId,
+                    Ratings = new List<FilmRating> { new FilmRating { UserId = userId, Rating = rating } }
+                };
                 filmData.FilmId = film.Id;
-                await context.Films.AddAsync(film) ;
+                await context.Films.AddAsync(film);
                 await context.FilmDatas.AddAsync(filmData);
             }
-            
+
             await context.SaveChangesAsync();
         }
     }
