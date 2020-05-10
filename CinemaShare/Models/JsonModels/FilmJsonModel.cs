@@ -8,8 +8,6 @@ using Newtonsoft.Json.Converters;
 
 namespace CinemaShare.Models.JsonModels
 {
-
-
     public partial class FilmJsonModel
     {
         [JsonProperty("Title")]

@@ -1,4 +1,5 @@
 ﻿using CinemaShare.Models;
+using CinemaShare.Models.InputModels;
 using CinemaShare.Models.JsonModels;
 using CinemaShare.Models.ViewModels;
 using Data.Models;
@@ -22,6 +23,10 @@ namespace CinemaShare.Common.Mapping
 
         public FilmInputModel MapToFilmInputModel(FilmJsonModel filmData);
 
+        public FilmUpdateInputModel MapToFilmUpdateInputModel(FilmData filmData);
+
         public FilmData MapToFilmData(FilmInputModel input, Film film);
+
+        public FilmData MapToFilmData(FilmUpdateInputModel input);
     }
 }

@@ -1,27 +1,16 @@
-﻿@model CinemaShare.Models.InputModels.FilmInputModel
-@using Data.Enums;
+﻿@using Data.Enums
+@model CinemaShare.Models.InputModels.FilmUpdateInputModel
 @{
-    ViewData["Title"] = "Add";
+    ViewData["Title"] = "Update";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Add</h1>
-<span asp-validation-summary=""></span>
-
+<h1>Update</h1>
 <div class="row1">
     <div class="col-md-4">
-        <form asp-controller="Films" asp-action="FetchFilm" method="post">
-            <input name="Title" placeholder="Film title"/>
-            <input type="submit" value="Try Fetch Film"/>
-        </form>
-        <form asp-controller="Films" asp-action="Add" method="post">
+        <form asp-controller="Films" asp-action="Update" method="post">
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="@Model.Title"></label>
-                <input asp-for="@Model.Title" class="form-control" />
-                <span asp-validation-for="@Model.Title" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="@Model.Director"></label>
                 <input asp-for="@Model.Director" class="form-control" />
@@ -41,11 +30,6 @@
                 <label asp-for="@Model.Description"></label>
                 <textarea asp-for="@Model.Description" class="form-control" ></textarea>
                 <span asp-validation-for="@Model.Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="@Model.Rating"></label>
-                <input asp-for="@Model.Rating" class="form-control" />
-                <span asp-validation-for="@Model.Rating" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="@Model.Runtime"></label>
@@ -70,7 +54,8 @@
                 </select>
                 <span asp-validation-for="@Model.Genre" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary">Add Film</button>
+            <button type="submit" class="btn btn-primary">Update Film</button>
         </form>
     </div>
 </div>
+

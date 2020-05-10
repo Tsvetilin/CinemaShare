@@ -20,9 +20,11 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 using CinemaShare.Models.ViewModels;
+using CinemaShare.Models.InputModels;
 
 namespace CinemaShare.Controllers
 {
+    [AutoValidateAntiforgeryToken]
     public class FilmsController : Controller
     {
         private readonly IFilmDataBusiness filmDataBusiness;
@@ -158,8 +160,8 @@ namespace CinemaShare.Controllers
             var film = new Film
             {
                 AddedByUserId = userId,
-                Rating=input.Rating,
-                Ratings= new List<FilmRating> { new FilmRating { Rating=input.Rating, UserId= userId} }
+                Rating = input.Rating,
+                Ratings = new List<FilmRating> { new FilmRating { Rating = input.Rating, UserId = userId } }
             };
             await filmBusiness.AddAsync(film);
             await filmDataBusiness.AddAsync(input, film, mapper.MapToFilmData);
@@ -208,11 +210,66 @@ namespace CinemaShare.Controllers
         public async Task<IActionResult> RateFilm(string id, int rating)
         {
             //TODO: improve conditions
-            if (rating > 0 && rating < 6 && id!=null)
+            if (rating > 0 && rating < 6 && id != null)
             {
-                await filmBusiness.RateAsync(id,userManager.GetUserId(User),rating);
+                await filmBusiness.RateAsync(id, userManager.GetUserId(User), rating);
             }
-            return RedirectToAction("Detail","Films",new {Id=id});
+            return RedirectToAction("Detail", "Films", new { Id = id });
         }
+
+
+        [Authorize]
+        public async Task<IActionResult> Update(string id)
+        {
+            var user = await userManager.GetUserAsync(User);
+            var film = await filmBusiness.GetAsync(id);
+            if (user?.Id == film?.AddedByUserId)
+            {
+                var inputModel = mapper.MapToFilmUpdateInputModel(film.FilmData);
+                return this.View(inputModel);
+            }
+            else if (film != null)
+            {
+                return RedirectToAction("Detail", "Films", new { Id = id });
+            }
+            return RedirectToAction("Index", "Films");
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Update(FilmUpdateInputModel input, string id)
+        {
+            var user = await userManager.GetUserAsync(User);
+            var film = await filmBusiness.GetAsync(id);
+            if (user?.Id == film?.AddedByUserId)
+            {
+                if (!ModelState.IsValid)
+                {
+                    return this.View(input);
+                }
+
+                var data = mapper.MapToFilmData(input);
+                data.FilmId = film.Id;
+                data.Title = film.FilmData.Title;
+                await filmDataBusiness.Update(data);
+                return RedirectToAction("Detail", "Films", new { Id = id });
+            }
+
+            return RedirectToAction("Index", "Films");
+        }
+
+        /*[Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await userManager.GetUserAsync(User);
+            var film = await filmBusiness.GetAsync(id);
+            if (user?.Id == film?.AddedByUserId)
+            {
+                await filmBusiness.DeleteAsync(id);
+            }
+
+            return RedirectToAction("Index", "Films");
+        }*/
     }
 }

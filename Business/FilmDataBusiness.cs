@@ -98,7 +98,7 @@ namespace Business
 
         public async Task Update(FilmData filmData)
         {
-            var filmDataInContext = await context.Films.FindAsync(filmData.Film);
+            var filmDataInContext = await context.FilmDatas.FindAsync(filmData.FilmId);
             if (filmDataInContext != null)
             {
                 context.Entry(filmDataInContext).CurrentValues.SetValues(filmData);
@@ -108,10 +108,11 @@ namespace Business
 
         public async Task Delete(string id)
         {
-            var filmInContext = await context.Films.FindAsync(id);
+            var filmInContext = await context.FilmDatas.FindAsync(id);
             if (filmInContext != null)
             {
-                context.Films.Remove(filmInContext);
+                context.FilmDatas.Remove(filmInContext);
+                context.Films.Remove(filmInContext.Film);
                 await context.SaveChangesAsync();
             }
         }

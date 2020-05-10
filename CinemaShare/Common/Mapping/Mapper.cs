@@ -1,4 +1,5 @@
 ﻿using CinemaShare.Models;
+using CinemaShare.Models.InputModels;
 using CinemaShare.Models.JsonModels;
 using CinemaShare.Models.ViewModels;
 using Data.Enums;
@@ -32,6 +33,17 @@ namespace CinemaShare.Common.Mapping
             }
             return viewModel;
         }
+        public IEnumerable<FilmCardViewModel> MapToFilmCardViewModel(IEnumerable<FilmData> rawFilms)
+        {
+            return rawFilms.Select(x => new FilmCardViewModel
+            {
+                Title = x.Title,
+                Genres = string.Join(", ", x.Genre.Select(a => a.Genre.ToString())),
+                Poster = x.Poster,
+                Rating = Math.Round(x.Film.Rating, 1).ToString(),
+                Id = x.FilmId
+            });
+        }
 
         public ExtendedFilmCardViewModel MapToExtendedFilmCardViewModel(FilmData filmData)
         {
@@ -55,31 +67,19 @@ namespace CinemaShare.Common.Mapping
                 viewModel.Rating = Math.Round(filmData.Film.Rating, 1).ToString();
                 viewModel.FilmProjections = filmData.Film.FilmProjection.ToList();
                 viewModel.FilmReviews = filmData.Film.FilmReviews.ToList();
+                viewModel.CreatedByUserId = filmData.Film.AddedByUserId;
             }
             return viewModel;
         }
 
-        public CinemaDataViewModel MapToCinemaDataViewModel(Cinema cinema)
+        public FilmUpdateInputModel MapToFilmUpdateInputModel(FilmData filmData)
         {
-            var viewModel = MapSimilarProperties<Cinema, CinemaDataViewModel>(cinema);
-            if (cinema!=null)
+            var viewModel = MapSimilarProperties<FilmData, FilmUpdateInputModel>(filmData);
+            if (filmData != null)
             {
-                viewModel.Mananger = cinema.Manager.UserName;
-            }    
+                viewModel.Genre = filmData.Genre.Select(x => x.Genre).ToList();
+            }
             return viewModel;
-        }
-
-
-        public IEnumerable<FilmCardViewModel> MapToFilmCardViewModel(IEnumerable<FilmData> rawFilms)
-        {
-            return rawFilms.Select(x => new FilmCardViewModel
-            {
-                Title = x.Title,
-                Genres = string.Join(", ", x.Genre.Select(a => a.Genre.ToString())),
-                Poster = x.Poster,
-                Rating = Math.Round(x.Film.Rating,1).ToString(),
-                Id = x.FilmId
-            });
         }
 
         public FilmInputModel MapToFilmInputModel(FilmJsonModel filmData)
@@ -144,6 +144,23 @@ namespace CinemaShare.Common.Mapping
             model.Film = film;
             model.Genre = input.Genre.Select(x => new GenreType() { Genre = x }).ToList();
             return model;
+        }
+
+        public FilmData MapToFilmData(FilmUpdateInputModel input)
+        {
+            var model = MapSimilarProperties<FilmUpdateInputModel, FilmData>(input);
+            model.Genre = input.Genre.Select(x => new GenreType() { Genre = x }).ToList();
+            return model;
+        }
+
+        public CinemaDataViewModel MapToCinemaDataViewModel(Cinema cinema)
+        {
+            var viewModel = MapSimilarProperties<Cinema, CinemaDataViewModel>(cinema);
+            if (cinema != null)
+            {
+                viewModel.Mananger = cinema.Manager.UserName;
+            }
+            return viewModel;
         }
 
         public CinemaCardViewModel MapToCinemaCardViewModel(Cinema rawCinema)
