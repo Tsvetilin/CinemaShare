@@ -35,7 +35,7 @@ namespace Business
 
         public async Task<TModel> GetAsync<TModel>(string id, Func<FilmData, TModel> mapToModelFunc)
         {
-            var film = await context.FilmDatas.FindAsync(id);
+            var film = await GetAsync(id);
             return mapToModelFunc(film);
         }
 
@@ -48,6 +48,11 @@ namespace Business
         {
            return GetAll().Where(x => x.Title.ToLower().Contains(searchString.ToLower()))
                                                 .Select(x => mapToModelFunc(x)).ToList();
+        }
+
+        public async Task<FilmData> GetByNameAsync(string title)
+        {
+            return await context.FilmDatas.FirstOrDefaultAsync(x => x.Title.ToLower() == title.ToLower());
         }
 
         public IEnumerable<TModel> GetFilmsOnPageByName<TModel>(int page, int filmsOnPage,

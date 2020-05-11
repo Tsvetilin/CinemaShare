@@ -1,7 +1,9 @@
 ﻿using Data;
 using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Business
@@ -26,9 +28,20 @@ namespace Business
             return await context.FilmProjections.FindAsync(id);
         }
 
-        public async Task<IEnumerable<FilmProjection>> GetAll()
+        public async Task<TModel> GetAsync<TModel>(string id, Func<FilmProjection, TModel> mapToModelFunc)
         {
-            return await context.FilmProjections.ToListAsync();
+            var projection = await Get(id);
+            return mapToModelFunc(projection);
+        }
+
+        public IEnumerable<FilmProjection> GetAll()
+        {
+            return context.FilmProjections.ToList();
+        }
+
+        public IEnumerable<TModel> GetAll<TModel>(Func<FilmProjection, TModel> mapToModelFunc)
+        {
+            return GetAll().Select(x => mapToModelFunc(x)).ToList();
         }
 
         public async Task Update(FilmProjection film)

@@ -185,5 +185,33 @@ namespace CinemaShare.Common.Mapping
             var model = MapSimilarProperties< CinemaInputModel, Cinema>(input);
             return model;
         }
+
+        public FilmProjection MapToFilmProjection(ProjectionInputModel input, FilmData film, Cinema cinema)
+        {
+            return new FilmProjection
+            {
+                CinemaId = cinema.Id,
+                Date = input.Date,
+                FilmId = film.FilmId,
+                ProjectionType = input.ProjectionType,
+                TotalTickets = input.TotalTickets
+            };
+        }
+
+        public ProjectionViewModel MapToProjectionViewModel(FilmProjection filmProjection)
+        {
+            return new ProjectionViewModel
+            {
+
+            };
+        }
+
+        public  ProjectionInputModel MapToProjectionInputModel (FilmProjection filmProjection)
+        {
+            return new ProjectionInputModel
+            { 
+
+            };
+        }
     }
 }

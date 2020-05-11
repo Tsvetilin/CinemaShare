@@ -29,5 +29,11 @@ namespace CinemaShare.Common.Mapping
         public FilmData MapToFilmData(FilmUpdateInputModel input);
 
         public Cinema MapToCinemaData(CinemaInputModel input);
+    
+        public FilmProjection MapToFilmProjection(ProjectionInputModel input, FilmData film, Cinema cinema);
+
+        public ProjectionViewModel MapToProjectionViewModel(FilmProjection filmProjection);
+
+        public ProjectionInputModel MapToProjectionInputModel(FilmProjection filmProjection);
     }
 }
