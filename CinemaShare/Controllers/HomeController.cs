@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using CinemaShare.Models;
 using Business;
-using Data.Models;
-using Data.Enums;
-using Data;
 using CinemaShare.Common.Mapping;
 using CinemaShare.Models.ViewModels;
 
@@ -47,6 +39,11 @@ namespace CinemaShare.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult StatusError(int code = 404)
+        {
+            return this.View(code);
         }
     }
 }

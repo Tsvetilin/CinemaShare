@@ -13,6 +13,10 @@ namespace Data
             //this.Database.Migrate();
         }
 
+        public CinemaDbContext()
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             //Rewrite the default max length of the fields to be suitable for MySql database
@@ -48,11 +52,11 @@ namespace Data
             base.OnModelCreating(builder);
         }
 
-        public DbSet<Film> Films { get; set; }
-        public DbSet<FilmData> FilmDatas { get; set; }
-        public DbSet<FilmProjection> FilmProjections { get; set; }
-        public DbSet<FilmReview> FilmReviews { get; set; }
-        public DbSet<ProjectionTicket> ProjectionTickets { get; set; }
-        public DbSet<Cinema> Cinemas { get; set; }
+        public virtual DbSet<Film> Films { get; set; }
+        public virtual DbSet<FilmData> FilmDatas { get; set; }
+        public virtual DbSet<FilmProjection> FilmProjections { get; set; }
+        public virtual DbSet<FilmReview> FilmReviews { get; set; }
+        public virtual DbSet<ProjectionTicket> ProjectionTickets { get; set; }
+        public virtual DbSet<Cinema> Cinemas { get; set; }
     }
 }

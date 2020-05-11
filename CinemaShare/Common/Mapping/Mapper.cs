@@ -1,5 +1,4 @@
-﻿using CinemaShare.Models;
-using CinemaShare.Models.InputModels;
+﻿using CinemaShare.Models.InputModels;
 using CinemaShare.Models.JsonModels;
 using CinemaShare.Models.ViewModels;
 using Data.Enums;
@@ -8,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace CinemaShare.Common.Mapping
 {

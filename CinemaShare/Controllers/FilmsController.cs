@@ -1,24 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
-using System.Text;
 using Business;
 using CinemaShare.Common.Mapping;
-using CinemaShare.Models;
 using CinemaShare.Models.JsonModels;
-using Data.Enums;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Schema;
 using CinemaShare.Models.ViewModels;
 using CinemaShare.Models.InputModels;
 
@@ -319,5 +311,6 @@ namespace CinemaShare.Controllers
             var films = filmBusiness.GetWatchList(userId, mapper.MapToExtendedFilmCardViewModel).ToList();
             return this.View(new FilmsIndexViewModel { Films = films });
         }
+
     }
 }

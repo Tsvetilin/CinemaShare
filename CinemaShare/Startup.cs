@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Data;
 using Data.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,7 +39,7 @@ namespace CinemaShare
             services.AddSingleton(this.Configuration);
 
             //Add service providers from business layer
-            services.AddTransient<Business.IEmailSender>(x=>new EmailSender(Configuration.GetSection("EmailSender").Value));
+            services.AddTransient<IEmailSender>(x=>new EmailSender(Configuration.GetSection("EmailSender").Value));
             services.AddTransient<ICinemaBusiness, CinemaBusiness>();
             services.AddTransient<IFilmBusiness, FilmBusiness>();
             services.AddTransient<IFilmDataBusiness, FilmDataBusiness>();
@@ -78,6 +73,9 @@ namespace CinemaShare
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseStatusCodePagesWithRedirects("/Home/StatusError?code={0}");
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();

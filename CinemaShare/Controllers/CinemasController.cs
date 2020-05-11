@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Business;
 using CinemaShare.Common.Mapping;
-using CinemaShare.Models;
 using CinemaShare.Models.InputModels;
 using CinemaShare.Models.ViewModels;
 using Data.Models;
