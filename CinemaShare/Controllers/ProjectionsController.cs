@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Business;
 using CinemaShare.Common.Mapping;
 using CinemaShare.Models.InputModels;
+using CinemaShare.Models.ViewModels;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -30,15 +31,15 @@ namespace CinemaShare.Controllers
             this.mapper = mapper;
         }
 
-        public IActionResult Index()
+       public IActionResult Index()
         {
-            var allProjectionsList = filmProjectionBusiness.GetAll(mapper.MapToProjectionViewModel).ToList();
-            return View(allProjectionsList);
+            var allProjectionsList = filmProjectionBusiness.GetAll(mapper.MapToProjectionCardViewModel).ToList();
+            return View(new ProjectionIndexViewModel {Projectitons = allProjectionsList });
         }
 
-        public IActionResult Detail(string id)
+        public async Task<IActionResult> Detail(string id)
         {
-            var viewModel = filmProjectionBusiness.GetAsync(id, mapper.MapToProjectionViewModel);
+            var viewModel = await filmProjectionBusiness.GetAsync(id, mapper.MapToProjectionDataViewModel);
             if (viewModel == null)
             {
                 return this.RedirectToAction("Index", "Projections");
@@ -47,7 +48,7 @@ namespace CinemaShare.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> AddProjection()
+        public async Task<IActionResult> Add()
         {
             var user = await userManager.GetUserAsync(User);
             var cinema = user?.Cinema;
@@ -60,7 +61,7 @@ namespace CinemaShare.Controllers
 
         [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
-        public async Task<IActionResult> AddProjection(ProjectionInputModel input)
+        public async Task<IActionResult> Add(ProjectionInputModel input)
         {
             var user = await userManager.GetUserAsync(User);
             var cinema = user?.Cinema;
@@ -69,7 +70,7 @@ namespace CinemaShare.Controllers
                 return this.RedirectToAction("Index", "Projections");
             }
 
-            var film = await filmDataBusiness.GetByNameAsync(input.FilmTitle);
+            var film = filmDataBusiness.GetByName(input.FilmTitle);
             if (film?.FilmId == null)
             {
                 ModelState.AddModelError("Found", "Film not found!");
@@ -114,7 +115,7 @@ namespace CinemaShare.Controllers
                 return this.RedirectToAction("Index", "Projections");
             }
 
-            var film = await filmDataBusiness.GetByNameAsync(input.FilmTitle);
+            var film = filmDataBusiness.GetByName(input.FilmTitle);
             if (film?.FilmId == null)
             {
                 ModelState.AddModelError("Found", "Film not found!");

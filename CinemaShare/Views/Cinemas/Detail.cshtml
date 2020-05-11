@@ -1,4 +1,8 @@
-﻿@model CinemaShare.Models.ViewModels.CinemaDataViewModel
+﻿@using Microsoft.AspNetCore.Identity
+@using Data.Models
+@model CinemaShare.Models.ViewModels.CinemaDataViewModel
+@inject UserManager<CinemaUser> UserManager
+
 @{
     ViewData["Title"] = "Detail";
 }

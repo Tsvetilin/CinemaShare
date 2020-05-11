@@ -1,5 +1,6 @@
 ﻿using Data;
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -50,9 +51,10 @@ namespace Business
                                                 .Select(x => mapToModelFunc(x)).ToList();
         }
 
-        public async Task<FilmData> GetByNameAsync(string title)
+        public FilmData GetByName(string title)
         {
-            return await context.FilmDatas.FirstOrDefaultAsync(x => x.Title.ToLower() == title.ToLower());
+            var film = context.FilmDatas.FirstOrDefault(x => x.Title.ToLower() == title.ToLower());
+            return film;
         }
 
         public IEnumerable<TModel> GetFilmsOnPageByName<TModel>(int page, int filmsOnPage,

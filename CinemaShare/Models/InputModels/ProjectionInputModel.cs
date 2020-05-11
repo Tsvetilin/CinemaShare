@@ -14,6 +14,8 @@ namespace CinemaShare.Models.InputModels
         public string FilmTitle { get; set; }
 
         [Required]
+       // [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm}")]
         public DateTime Date { get; set; }
 
         [Required]

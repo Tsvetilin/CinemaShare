@@ -1,8 +1,18 @@
-﻿@model CinemaShare.Models.ViewModels.ProjectionViewModel
+﻿@model CinemaShare.Models.ViewModels.ProjectionDataViewModel
 @{
     ViewData["Title"] = "Projection details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Detail</h1>
+<div class="content-heading clearfix media box-hover"
+    style="text-decoration:none;margin: 0 auto;width: 30%;">
+    <div style="margin-left: 30px;">
+        <h3 class="text-dark font-weight-bold">@Model.cinema.Name</h3>
+        <h5 class="text-dark ">City: @Model.film.FilmData.Title</h5>
+        <h5 class="text-dark ">Country: @Model.Date</h5>
+        <h5 class="text-dark ">Projection type: @Model.ProjectionType</h5>
+        <h5 class="text-dark ">Manager: @Model.TotalTickets</h5>
+    </div>
+</div>
 

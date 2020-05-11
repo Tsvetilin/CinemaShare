@@ -13,7 +13,7 @@ namespace Business
 
         public Task<FilmData> GetAsync(string id);
 
-        public Task<FilmData> GetByNameAsync(string title);
+        public FilmData GetByName(string title);
 
         public bool IsAlreadyAdded(string filmTitle);
 

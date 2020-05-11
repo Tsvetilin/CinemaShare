@@ -198,19 +198,35 @@ namespace CinemaShare.Common.Mapping
             };
         }
 
-        public ProjectionViewModel MapToProjectionViewModel(FilmProjection filmProjection)
-        {
-            return new ProjectionViewModel
-            {
+         public ProjectionCardViewModel MapToProjectionCardViewModel(FilmProjection filmProjection)
+         {
+             return new ProjectionCardViewModel
+             {
+                 Id = filmProjection.Id,
+                 cinema=filmProjection.Cinema,
+                 film = filmProjection.Film,
+                 ProjectionType = filmProjection.ProjectionType,
+                 Date = filmProjection.Date
+             };
+         }
 
-            };
-        }
-
-        public  ProjectionInputModel MapToProjectionInputModel (FilmProjection filmProjection)
+        public ProjectionInputModel MapToProjectionInputModel (FilmProjection filmProjection)
         {
             return new ProjectionInputModel
             { 
+                //TODO...
+            };
+        }
 
+        public ProjectionDataViewModel MapToProjectionDataViewModel(FilmProjection filmProjection)
+        {
+            return new ProjectionDataViewModel
+            {
+                cinema = filmProjection.Cinema,
+                film = filmProjection.Film,
+                ProjectionType = filmProjection.ProjectionType,
+                Date = filmProjection.Date,
+                TotalTickets = filmProjection.TotalTickets
             };
         }
     }

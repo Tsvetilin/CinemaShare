@@ -5,4 +5,35 @@
 }
 
 <h1>Add</h1>
+<span asp-validation-summary=""></span>
 
+<div class="row1">
+    <div class="col-md-4">
+        <form asp-controller="Projections" asp-action="Add" method="post">
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.FilmTitle"></label>
+                <input asp-for="@Model.FilmTitle" class="form-control" />
+                <span asp-validation-for="@Model.FilmTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Date"></label>
+                <input asp-for="@Model.Date" class="form-control" />
+                <span asp-validation-for="@Model.Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.ProjectionType"></label>
+                <select class="form-control" multiple="multiple" asp-for="@Model.ProjectionType" asp-items="Html.GetEnumSelectList<Data.Enums.ProjectionType>()">
+                </select>
+                <span asp-validation-for="@Model.ProjectionType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.TotalTickets"></label>
+                <input asp-for="@Model.TotalTickets" class="form-control" />
+                <span asp-validation-for="@Model.TotalTickets" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Projection</button>
+        </form>
+    </div>
+</div>
