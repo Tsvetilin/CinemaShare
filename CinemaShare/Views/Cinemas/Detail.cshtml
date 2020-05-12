@@ -10,11 +10,8 @@
 <h1>Detail</h1>
 @if (Model.Mananger == User.Identity.Name)
 {
-    <form asp-controller="Cinemas" asp-action="Update" asp-route-id="@Model.Id" method="get">
-        <input class="bg-info" type="submit" value="Update" />
-    </form>
-    <form asp-controller="Cinemas" asp-action="Delete" asp-route-id="@Model.Id" method="post">
-        <input class="bg-danger" type="submit" onclick="return confirm('Are you sure you want to delete the cinema and the related projections?');" value="Delete" />
+    <form asp-controller="Cinemas" asp-action="Manage" asp-route-id="@Model.Id" method="get">
+        <input class="bg-info" type="submit" value="Manage cinema" />
     </form>
 }
 <div class="content-heading clearfix media">
@@ -25,4 +22,27 @@
         <h5 class="text-dark ">Manager: @Model.Mananger</h5>
     </div>
 </div>
+
+<h1 class="text-center">Projecions</h1>
+<hr>
+@if (Model.FilmProjections?.Count == 0)
+{
+    <h5>No projections added yet.</h5>
+}
+else
+{
+    <ul>
+        @foreach (var projection in Model.FilmProjections)
+        {
+            <li>
+                <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id">
+                    <h5>Cinema: @projection.CinemaName</h5>
+                    <h5>City: @projection.CinemaCity</h5>
+                    <h5>Projection type: @projection.ProjectionType.ToString()</h5>
+                    <h5>Date: @projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
+                </a>
+            </li>
+        }
+    </ul>
+}
 

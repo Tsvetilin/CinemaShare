@@ -16,54 +16,45 @@ namespace CinemaShare.Controllers
     public class CinemasController : Controller
     {
         private readonly ICinemaBusiness cinemaBusiness;
+        private readonly IFilmProjectionBusiness filmProjectionBusiness;
         private readonly IMapper mapper;
         private readonly UserManager<CinemaUser> userManager;
         private const int cinemasOnPage = 3;
         public CinemasController(ICinemaBusiness cinemaBusiness,
+                                 IFilmProjectionBusiness filmProjectionBusiness,
                                  IMapper mapper,
                                  UserManager<CinemaUser> userManager)
         {
             this.cinemaBusiness = cinemaBusiness;
+            this.filmProjectionBusiness = filmProjectionBusiness;
             this.mapper = mapper;
             this.userManager = userManager;
         }
 
         public IActionResult Index(int id = 1, string search = "")
         {
-            int pageCount = 1;
-            List<CinemaCardViewModel> cinemas = new List<CinemaCardViewModel>();
             if (!String.IsNullOrEmpty(search))
             {
-                List<CinemaCardViewModel> cinemasName = cinemaBusiness.GetAllByName(search,
-                                                        mapper.MapToCinemaCardViewModel).ToList();
-                List<CinemaCardViewModel> cinemasCity = cinemaBusiness.GetAllByCity(search,
-                                                        mapper.MapToCinemaCardViewModel).ToList();
-                if (cinemasName.Count != 0 || cinemasCity.Count != 0)
+                var searchResult = cinemaBusiness.GetSearchResults(search, mapper.MapToCinemaCardViewModel).ToList();
+                    
+                if (searchResult.Count != 0 )
                 {
-                    if (cinemasName.Count != 0)
-                    {
-                        cinemas.AddRange(cinemasName);
-                    }
-                    if (cinemasCity.Count != 0)
-                    {
-                        cinemas.AddRange(cinemasCity);
-                    }
                     return View(new CinemasIndexViewModel
                     {
                         PagesCount = 1,
                         CurrentPage = 1,
-                        Cinemas = cinemas
+                        Cinemas = searchResult
                     });
                 }
                 ModelState.AddModelError("Found", "Cinema not found!");
             }
 
+            int pageCount = (int)Math.Ceiling((double)cinemaBusiness.CountAllCinemas() / cinemasOnPage);
             if (id > pageCount || id < 1)
             {
                 id = 1;
             }
-            pageCount = (int)Math.Ceiling((double)cinemaBusiness.CountAllCinemas() / cinemasOnPage);
-            cinemas = cinemaBusiness.GetPageItems(id, cinemasOnPage, mapper.MapToCinemaCardViewModel).ToList();
+            var  cinemas = cinemaBusiness.GetPageItems(id, cinemasOnPage, mapper.MapToCinemaCardViewModel).ToList();
             CinemasIndexViewModel viewModel = new CinemasIndexViewModel
             {
                 PagesCount = pageCount,
@@ -86,6 +77,8 @@ namespace CinemaShare.Controllers
                 return this.NotFound();
             }
 
+            var projections = filmProjectionBusiness.GetAllByCinemaId(id, mapper.MapToProjectionCardViewModel);
+            viewModel.FilmProjections = projections.ToList();
             return this.View(viewModel);
         }
 
@@ -121,7 +114,7 @@ namespace CinemaShare.Controllers
                 ManagerId = userManager.GetUserId(User)
             };
             await cinemaBusiness.AddAsync(cinema);
-            return this.RedirectToAction("Detail", "Cinemas", new { Id = cinema.Id });
+            return this.RedirectToAction("Manage", "Cinemas", new { Id = cinema.Id });
         }
 
         [Authorize(Roles = "Manager, Admin")]
@@ -136,7 +129,7 @@ namespace CinemaShare.Controllers
             }
             else if (cinema != null)
             {
-                return RedirectToAction("Detail", "Cinemas", new { Id = id });
+                return RedirectToAction("Manage", "Cinemas", new { Id = id });
             }
             return RedirectToAction("Index", "Cinemas");
         }
@@ -158,7 +151,7 @@ namespace CinemaShare.Controllers
                 data.Id = cinema.Id;
                 data.ManagerId = cinema.ManagerId;
                 await cinemaBusiness.UpdateAsync(data);
-                return RedirectToAction("Detail", "Cinemas", new { Id = id });
+                return RedirectToAction("Manage", "Cinemas", new { Id = id });
             }
 
             return RedirectToAction("Index", "Cinemas");
@@ -173,6 +166,21 @@ namespace CinemaShare.Controllers
             if (user?.Id == cinema?.ManagerId)
             {
                 await cinemaBusiness.DeleteAsync(id);
+            }
+            return RedirectToAction("Index", "Cinemas");
+        }
+
+        [Authorize(Roles = "Manager, Admin")]
+        public async Task<IActionResult> Manage(string id)
+        {
+            var user = await userManager.GetUserAsync(User);
+            var cinema = await cinemaBusiness.GetAsync(id);
+            if (user?.Id == cinema?.ManagerId)
+            {
+                var projections = filmProjectionBusiness.GetAllByCinemaId(id, mapper.MapToProjectionCardViewModel);
+                var viewModel = mapper.MapToCinemaDataViewModel(cinema);
+                viewModel.FilmProjections = projections.ToList();
+                return this.View(viewModel);
             }
             return RedirectToAction("Index", "Cinemas");
         }

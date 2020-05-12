@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace CinemaShare.Models.ViewModels
 {
-    public class ProjectionIndexViewModel :PageViewModel
+    public class PageViewModel
     {
-        public List<ProjectionCardViewModel> Projectitons { get; set; }
+        public int CurrentPage { get; set; }
+        public int PagesCount { get; set; }
     }
 }

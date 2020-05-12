@@ -12,8 +12,8 @@
                class="content-heading clearfix media box-hover"
                style="text-decoration:none;margin: 0 auto;width: 30%;">
                 <div style="margin-left: 30px;">
-                    <h3 class="text-dark font-weight-bold">Name: @projectionCard.cinema.Name</h3>
-                    <h5 class="text-dark ">Title: @projectionCard.film.FilmData.Title</h5>
+                    <h3 class="text-dark font-weight-bold">Cinema: @projectionCard.CinemaName</h3>
+                    <h5 class="text-dark ">Film: @projectionCard.FilmTitle</h5>
                     <h5 class="text-dark ">Date: @projectionCard.Date</h5>
                     <h5 class="text-dark ">Projection type: @projectionCard.ProjectionType</h5>
                 </div>
@@ -33,8 +33,7 @@
         else
         {
             <li class="page-item">
-                <a class="page-link"
-                   asp-route="filmsList" asp-route-id="@(this.Model.CurrentPage - 1)">Previous</a>
+                <a class="page-link" asp-route-id="@(this.Model.CurrentPage - 1)">Previous</a>
             </li>
         }
 
@@ -42,8 +41,7 @@
         {
             var active = i == this.Model.CurrentPage ? "active" : String.Empty;
             <li class="page-item @active">
-                <a class="page-link"
-                   asp-route="filmsList" asp-route-id="@i">@i</a>
+                <a class="page-link" asp-route-id="@i">@i</a>
             </li>
         }
 
@@ -56,8 +54,7 @@
         else
         {
             <li class="page-item">
-                <a class="page-link"
-                   asp-route="filmsList" asp-route-id="@(this.Model.CurrentPage + 1)">Next</a>
+                <a class="page-link" asp-route-id="@(this.Model.CurrentPage + 1)">Next</a>
             </li>
         }
     </ul>

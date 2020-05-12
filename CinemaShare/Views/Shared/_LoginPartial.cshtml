@@ -27,8 +27,8 @@
             else
             {
                 <li class="nav-item">
-                    <form id="addProjection" class="form-inline" asp-controller="Projections" asp-action="Add" method="get">
-                        <button id="addProjBut" type="submit" class="nav-link btn btn-link text-dark">Add Projection</button>
+                    <form id="manageCinema" class="form-inline" asp-controller="Cinemas" asp-action="Manage" asp-route-id="@user?.Cinema?.Id" method="get">
+                        <button id="addProjBut" type="submit" class="nav-link btn btn-link text-dark">Manage Cinema</button>
                     </form>
                 </li>
             }

@@ -11,12 +11,14 @@ namespace CinemaShare.Models.ViewModels
     {
         public string Id { get; set; }
        
-        public Film film { get; set; }
+        public string FilmTitle { get; set; }
 
         public DateTime Date { get; set; }
 
         public ProjectionType ProjectionType { get; set; }
 
-        public Cinema cinema { get; set; }
+        public string CinemaName { get; set; }
+
+        public string CinemaCity { get; set; }
     }
 }

@@ -19,6 +19,7 @@ namespace CinemaShare.Controllers
         private readonly IFilmDataBusiness filmDataBusiness;
         private readonly UserManager<CinemaUser> userManager;
         private readonly IMapper mapper;
+        private const int projectionsOnPage = 3;
 
         public ProjectionsController(IFilmProjectionBusiness filmProjectionBusiness,
                                      IFilmDataBusiness filmDataBusiness,
@@ -31,10 +32,23 @@ namespace CinemaShare.Controllers
             this.mapper = mapper;
         }
 
-       public IActionResult Index()
+       public IActionResult Index(int id=1)
         {
             var allProjectionsList = filmProjectionBusiness.GetAll(mapper.MapToProjectionCardViewModel).ToList();
-            return View(new ProjectionIndexViewModel {Projectitons = allProjectionsList });
+            var pageCount = (int)Math.Ceiling((double)filmProjectionBusiness.CountAllProjections() / projectionsOnPage);
+            if (id > pageCount || id < 1)
+            {
+                id = 1;
+            }
+            var projections = filmProjectionBusiness.GetPageItems(id, projectionsOnPage, mapper.MapToProjectionCardViewModel).ToList();
+            ProjectionIndexViewModel viewModel = new ProjectionIndexViewModel
+            {
+                PagesCount = pageCount,
+                CurrentPage = id,
+                Projectitons = projections
+            };
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Detail(string id)
@@ -87,7 +101,7 @@ namespace CinemaShare.Controllers
         }
 
         [Authorize(Roles = "Manager, Admin")]
-        public async Task<IActionResult> UpdateProjection(string id)
+        public async Task<IActionResult> Update(string id)
         {
             var user = await userManager.GetUserAsync(User);
             var cinema = user?.Cinema;
@@ -104,7 +118,7 @@ namespace CinemaShare.Controllers
 
         [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
-        public async Task<IActionResult> UpdateProjection(string id, ProjectionInputModel input)
+        public async Task<IActionResult> Update(string id, ProjectionInputModel input)
         {
             var user = await userManager.GetUserAsync(User);
             var cinema = user?.Cinema;
@@ -127,14 +141,14 @@ namespace CinemaShare.Controllers
             }
 
             var updatedProjection = mapper.MapToFilmProjection(input, film, cinema);
-            updatedProjection.Id = projection.Id;
-            await filmProjectionBusiness.Update(projection);
+            updatedProjection.Id = id;
+            await filmProjectionBusiness.Update(updatedProjection);
             return this.RedirectToAction("Detail", "Projections", new { Id = projection.Id });
         }
 
         [Authorize(Roles ="Manager, Admin")]
         [HttpPost]
-        public async Task<IActionResult> DeleteProjection(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             var user = await userManager.GetUserAsync(User);
             var cinema = user?.Cinema;
@@ -142,7 +156,7 @@ namespace CinemaShare.Controllers
             {
                 await filmProjectionBusiness.Delete(id);
             }
-            return this.RedirectToAction("Index", "Projections");
+            return this.RedirectToAction("Manage", "Cinemas",new { Id = cinema?.Id });
         }
     }
 }

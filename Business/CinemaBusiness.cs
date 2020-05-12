@@ -87,5 +87,22 @@ namespace Business
             return GetAll().Where(x => x.City.ToLower().Contains(searchString.ToLower()))
                                                 .Select(x => mapToModelFunc(x)).ToList();
         }
+
+        public IEnumerable<TModel> GetSearchResults<TModel>(string searchString, Func<Cinema, TModel> mapToModelFunc)
+        {
+            var result = new List<TModel>();
+            var nameResults = GetAllByName(searchString, mapToModelFunc);
+            var cityResults = GetAllByCity(searchString, mapToModelFunc);
+            if(nameResults?.Count()!=0)
+            {
+                result.AddRange(nameResults);
+            }
+            if (cityResults?.Count() != 0)
+            {
+                result.AddRange(cityResults);
+            }
+            return result;
+        }
+
     }
 }

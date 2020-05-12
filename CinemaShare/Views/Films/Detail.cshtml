@@ -45,28 +45,46 @@
         <p class="text-dark ">Target audience: @Model.TargetAudience</p>
         <p class="text-dark ">Release date: @Model.ReleaseDate.ToString("dd/MM/yyyyг.")</p>
         <p class="font-weight-bold " style="color:black">Description: @Model.Description</p>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <p>Rate: </p>
+            <form asp-controller="Films" asp-action="RateFilm" asp-route-id="@Model.Id" method="post">
+                <input type="submit" name="rating" value="1" />
+                <input type="submit" name="rating" value="2" />
+                <input type="submit" name="rating" value="3" />
+                <input type="submit" name="rating" value="4" />
+                <input type="submit" name="rating" value="5" />
+            </form>
+        }
+        else
+        {
+            <a id="login" asp-area="Identity" asp-page="/Account/Login">Log in to rate the film</a>
+        }
     </div>
 </div>
 
-@if (User.Identity.IsAuthenticated)
+
+<h1 class="text-center">Projecions</h1>
+<hr>
+@if (Model.FilmProjections?.Count == 0)
 {
-    <form asp-controller="Films" asp-action="RateFilm" asp-route-id="@Model.Id" method="post">
-        <input type="submit" name="rating" value="1" />
-        <input type="submit" name="rating" value="2" />
-        <input type="submit" name="rating" value="3" />
-        <input type="submit" name="rating" value="4" />
-        <input type="submit" name="rating" value="5" />
-    </form>
+    <h5>No projections added yet.</h5>
 }
 else
 {
-    <a href="#">Log in to rate the film</a>
-}
-
-@foreach (var projection in Model.FilmProjections)
-{
-    <h5>@projection.Cinema</h5>
-    <h5>@projection.Date.ToString()</h5>
+    <ul>
+        @foreach (var projection in Model.FilmProjections)
+        {
+            <li>
+                <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id">
+                    <h5>Cinema: @projection.CinemaName</h5>
+                    <h5>City: @projection.CinemaCity</h5>
+                    <h5>Projection type: @projection.ProjectionType.ToString()</h5>
+                    <h5>Date: @projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
+                </a>
+            </li>
+        }
+    </ul>
 }
 
 <div class="row bootstrap snippets">
@@ -87,32 +105,37 @@ else
             }
             else
             {
-                <a href="#">Log in to review the film</a>
+                <a id="login" asp-area="Identity" asp-page="/Account/Login">Log in to review the film</a>
             }
         </div>
     </div>
 </div>
 
-@foreach (var review in Model.FilmReviews)
+@if (Model.FilmReviews.Count == 0)
 {
-    <ul class="media-list" style="margin-bottom:20px">
-        <li class="media">
-            <div class="pull-left">
-                @{var source = ((int)review.User.Gender).ToString() + ".jpg";}
-                <img src="https://bootdey.com/img/Content/user_@source"
-                     alt="Avatar" class="img-circle">
-            </div>
-            <div class="media-body">
-                <span class="text-muted pull-right">
-                    <small class="text-muted">@review.CreatedOn.ToLocalTime().ToString("dd/MM/yyyyг. HH:mm:ss")</small>
-                </span>
-                <strong class="text-success">@review.User.UserName</strong>
-                <p>
-                    @review.Content
-                </p>
-            </div>
-        </li>
+    <h5>No reviews added yet.</h5>
+}
+else
+{<ul class="media-list" style="margin-bottom:20px">
+        @foreach (var review in Model.FilmReviews)
+        {
+            <li class="media">
+                <div class="pull-left">
+                    @{var source = ((int)review.User.Gender).ToString() + ".jpg";}
+                    <img src="https://bootdey.com/img/Content/user_@source"
+                         alt="Avatar" class="img-circle">
+                </div>
+                <div class="media-body">
+                    <span class="text-muted pull-right">
+                        <small class="text-muted">@review.CreatedOn.ToLocalTime().ToString("dd/MM/yyyyг. HH:mm:ss")</small>
+                    </span>
+                    <strong class="text-success">@review.User.UserName</strong>
+                    <p>
+                        @review.Content
+                    </p>
+                </div>
+            </li>
+        }
     </ul>
 }
-
 <div style="margin-bottom:80px;"></div>

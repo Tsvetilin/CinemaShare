@@ -12,11 +12,11 @@ namespace CinemaShare.Common.Mapping
 {
     public class Mapper : IMapper
     {
-        private TTo MapSimilarProperties<TFrom, TTo>(TFrom fromObject)
-             where TFrom : class
-             where TTo : class, new()
+        private TToModel MapSimilarProperties<TFromModel, TToModel>(TFromModel fromObject)
+             where TFromModel : class
+             where TToModel : class, new()
         {
-            TTo viewModel = new TTo();//Activator.CreateInstance<TTo>();
+            TToModel viewModel = new TToModel();
             if (fromObject != null)
             {
                 PropertyInfo[] props = fromObject.GetType().GetProperties();
@@ -64,7 +64,8 @@ namespace CinemaShare.Common.Mapping
                 viewModel.Id = filmData.FilmId;
                 viewModel.Genres = string.Join(", ", filmData.Genre.Select(a => a.Genre.ToString()));
                 viewModel.Rating = Math.Round(filmData.Film.Rating, 1).ToString();
-                viewModel.FilmProjections = filmData.Film.FilmProjection.ToList();
+                viewModel.FilmProjections = filmData.Film.FilmProjection.Select(x=>MapToProjectionCardViewModel(x))
+                                                                        .ToList();
                 viewModel.FilmReviews = filmData.Film.FilmReviews.ToList();
                 viewModel.CreatedByUserId = filmData.Film.AddedByUserId;
             }
@@ -182,7 +183,7 @@ namespace CinemaShare.Common.Mapping
 
         public Cinema MapToCinemaData(CinemaInputModel input)
         {
-            var model = MapSimilarProperties< CinemaInputModel, Cinema>(input);
+            var model = MapSimilarProperties<CinemaInputModel, Cinema>(input);
             return model;
         }
 
@@ -203,18 +204,22 @@ namespace CinemaShare.Common.Mapping
              return new ProjectionCardViewModel
              {
                  Id = filmProjection.Id,
-                 cinema=filmProjection.Cinema,
-                 film = filmProjection.Film,
+                 CinemaName= filmProjection.Cinema.Name,
+                 FilmTitle= filmProjection.Film.FilmData.Title,
                  ProjectionType = filmProjection.ProjectionType,
-                 Date = filmProjection.Date
+                 Date = filmProjection.Date,
+                 CinemaCity = filmProjection.Cinema.City,
              };
          }
 
         public ProjectionInputModel MapToProjectionInputModel (FilmProjection filmProjection)
         {
             return new ProjectionInputModel
-            { 
-                //TODO...
+            {
+                Date = filmProjection.Date,
+                FilmTitle = filmProjection.Film.FilmData.Title,
+                ProjectionType=filmProjection.ProjectionType,
+                TotalTickets=filmProjection.TotalTickets,
             };
         }
 
@@ -222,11 +227,16 @@ namespace CinemaShare.Common.Mapping
         {
             return new ProjectionDataViewModel
             {
-                cinema = filmProjection.Cinema,
-                film = filmProjection.Film,
+                Id = filmProjection.Id,
+                CinemaName = filmProjection.Cinema.Name,
+                FilmTitle = filmProjection.Film.FilmData.Title,
                 ProjectionType = filmProjection.ProjectionType,
                 Date = filmProjection.Date,
-                TotalTickets = filmProjection.TotalTickets
+                TotalTickets = filmProjection.TotalTickets,
+                FilmRuntime = filmProjection.Film.FilmData.Runtime,
+                FilmTargetAudience = filmProjection.Film.FilmData.TargetAudience,
+                CinemaCity = filmProjection.Cinema.City,
+                TicketsSold = filmProjection.ProjectionTickets.Count(),
             };
         }
     }

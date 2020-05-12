@@ -2,10 +2,8 @@
 
 namespace CinemaShare.Models.ViewModels
 {
-    public class FilmsIndexViewModel
+    public class FilmsIndexViewModel:PageViewModel
     {
-        public int CurrentPage { get; set; }
-        public int PagesCount { get; set; }
         public List<ExtendedFilmCardViewModel> Films { get; set; }
     }
 }

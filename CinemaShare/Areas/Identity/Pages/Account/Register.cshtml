@@ -1,5 +1,6 @@
 ﻿@page
 @using CinemaShare.Common;
+@using Data.Enums;
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
@@ -37,8 +38,8 @@
                 <label asp-for="Input.Gender"></label>
                 <br />
                 <select class="form-control" asp-for="Input.Gender">
-                    <option value="@GenderTypeInput.Male">Male</option>
-                    <option value="@GenderTypeInput.Female">Female</option>
+                    <option value="@GenderType.Male">Male</option>
+                    <option value="@GenderType.Female">Female</option>
                 </select>
                 <span asp-validation-for="Input.Gender" class="text-danger"></span>
             </div>

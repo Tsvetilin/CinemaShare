@@ -5,6 +5,6 @@ namespace CinemaShare.Models.ViewModels
 {
     public class CinemaDataViewModel: CinemaCardViewModel
     {
-        public List<FilmProjection> FilmProjections { get; set; }
+        public List<ProjectionCardViewModel> FilmProjections { get; set; }
     }
 }
