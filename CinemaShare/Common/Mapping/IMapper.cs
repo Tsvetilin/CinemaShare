@@ -2,6 +2,7 @@
 using CinemaShare.Models.JsonModels;
 using CinemaShare.Models.ViewModels;
 using Data.Models;
+using System;
 using System.Collections.Generic;
 
 namespace CinemaShare.Common.Mapping
@@ -29,7 +30,7 @@ namespace CinemaShare.Common.Mapping
         public FilmData MapToFilmData(FilmUpdateInputModel input);
 
         public Cinema MapToCinemaData(CinemaInputModel input);
-    
+
         public FilmProjection MapToFilmProjection(ProjectionInputModel input, FilmData film, Cinema cinema);
 
         public ProjectionCardViewModel MapToProjectionCardViewModel(FilmProjection filmProjection);
@@ -37,5 +38,7 @@ namespace CinemaShare.Common.Mapping
         public ProjectionInputModel MapToProjectionInputModel(FilmProjection filmProjection);
 
         public ProjectionDataViewModel MapToProjectionDataViewModel(FilmProjection filmProjection);
+
+        public ProjectionTicket MapToProjectionTicket(string userId, TicketInputModel input, FilmProjection projection, DateTime timeStamp);
     }
 }

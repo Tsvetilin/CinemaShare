@@ -1,4 +1,5 @@
 ﻿using Data.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +15,7 @@ namespace CinemaShare.Models.InputModels
         public TicketType TicketType { get; set; }
 
         [Required]
-        [Display(Name ="Available seats")]
-        public List<int> Seat { get; set; }
+        [Display(Name ="Your seat")]
+        public int Seat { get; set; }
     }
 }

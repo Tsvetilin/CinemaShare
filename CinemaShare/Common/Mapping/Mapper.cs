@@ -32,6 +32,7 @@ namespace CinemaShare.Common.Mapping
             }
             return viewModel;
         }
+
         public IEnumerable<FilmCardViewModel> MapToFilmCardViewModel(IEnumerable<FilmData> rawFilms)
         {
             return rawFilms.Select(x => new FilmCardViewModel
@@ -64,7 +65,7 @@ namespace CinemaShare.Common.Mapping
                 viewModel.Id = filmData.FilmId;
                 viewModel.Genres = string.Join(", ", filmData.Genre.Select(a => a.Genre.ToString()));
                 viewModel.Rating = Math.Round(filmData.Film.Rating, 1).ToString();
-                viewModel.FilmProjections = filmData.Film.FilmProjection.Select(x=>MapToProjectionCardViewModel(x))
+                viewModel.FilmProjections = filmData.Film.FilmProjection.Select(x => MapToProjectionCardViewModel(x))
                                                                         .ToList();
                 viewModel.FilmReviews = filmData.Film.FilmReviews.ToList();
                 viewModel.CreatedByUserId = filmData.Film.AddedByUserId;
@@ -196,26 +197,29 @@ namespace CinemaShare.Common.Mapping
                 FilmId = film.FilmId,
                 ProjectionType = input.ProjectionType,
                 TotalTickets = input.TotalTickets,
-                TicketPrices = new TicketPrices { AdultPrice=input.AdultsTicketPrice,
-                                                StudentPrice=input.StudentsTicketPrice,
-                                                ChildrenPrice = input.ChildrenTicketPrice}
+                TicketPrices = new TicketPrices
+                {
+                    AdultPrice = input.AdultsTicketPrice,
+                    StudentPrice = input.StudentsTicketPrice,
+                    ChildrenPrice = input.ChildrenTicketPrice
+                }
             };
         }
 
-         public ProjectionCardViewModel MapToProjectionCardViewModel(FilmProjection filmProjection)
-         {
-             return new ProjectionCardViewModel
-             {
-                 Id = filmProjection.Id,
-                 CinemaName= filmProjection.Cinema.Name,
-                 FilmTitle= filmProjection.Film.FilmData.Title,
-                 ProjectionType = filmProjection.ProjectionType,
-                 Date = filmProjection.Date,
-                 CinemaCity = filmProjection.Cinema.City,
-             };
-         }
+        public ProjectionCardViewModel MapToProjectionCardViewModel(FilmProjection filmProjection)
+        {
+            return new ProjectionCardViewModel
+            {
+                Id = filmProjection.Id,
+                CinemaName = filmProjection.Cinema.Name,
+                FilmTitle = filmProjection.Film.FilmData.Title,
+                ProjectionType = filmProjection.ProjectionType,
+                Date = filmProjection.Date,
+                CinemaCity = filmProjection.Cinema.City,
+            };
+        }
 
-        public ProjectionInputModel MapToProjectionInputModel (FilmProjection filmProjection)
+        public ProjectionInputModel MapToProjectionInputModel(FilmProjection filmProjection)
         {
             return new ProjectionInputModel
             {
@@ -223,7 +227,7 @@ namespace CinemaShare.Common.Mapping
                 FilmTitle = filmProjection.Film.FilmData.Title,
                 ProjectionType = filmProjection.ProjectionType,
                 TotalTickets = filmProjection.TotalTickets,
-                ChildrenTicketPrice =filmProjection.TicketPrices.ChildrenPrice,
+                ChildrenTicketPrice = filmProjection.TicketPrices.ChildrenPrice,
                 AdultsTicketPrice = filmProjection.TicketPrices.AdultPrice,
                 StudentsTicketPrice = filmProjection.TicketPrices.StudentPrice
             };
@@ -248,5 +252,21 @@ namespace CinemaShare.Common.Mapping
                 StudentsTicketPrice = filmProjection.TicketPrices.StudentPrice
             };
         }
+
+        public ProjectionTicket MapToProjectionTicket(string userId, TicketInputModel input, FilmProjection projection, DateTime timeStamp)
+        {
+            return new ProjectionTicket
+            {
+                ProjectionId = projection.Id,
+                Seat = input.Seat,
+                Type = input.TicketType,
+                Price = (double)projection.TicketPrices.GetType().
+                                                        GetProperty($"{input.TicketType.ToString()}Price").
+                                                        GetValue(projection.TicketPrices),
+                HolderId = userId,
+                ReservedOn = timeStamp
+            };
+        }
+
     }
 }

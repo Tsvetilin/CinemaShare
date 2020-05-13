@@ -23,7 +23,9 @@ namespace Data.Models
         public double Price { get; set; }
 
         public int Seat { get; set; }
-        
+
+        public DateTime ReservedOn { get; set; }
+
         public virtual FilmProjection Projection { get; set; }
 
         public virtual CinemaUser Holder { get; set; }

@@ -1,4 +1,5 @@
-﻿@model CinemaShare.Models.InputModels.TicketInputModel
+﻿@model CinemaShare.Models.InputModels.ReserveTicketInputModel
+@using Data.Enums;
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,53 +9,84 @@
 
 <div class="row1">
     <div class="col-md-4">
-        <form asp-controller="Tickets" asp-action="Add" method="post">
+        <form asp-controller="Tickets" asp-action="Reserve" method="post">
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
             <div id="inputForm">
-                <div id="fields">
+                <div id="inputFields">
                     <div class="form-group">
-                        <label asp-for="@Model.TicketType"></label>
-                        <input asp-for="@Model.TicketType" class="form-control" />
-                        <span asp-validation-for="@Model.TicketType" class="text-danger"></span>
+                        <label asp-for="@Model.TicketInputModels[0].TicketType"></label>
+                        <select id="ticketType" asp-for="@Model.TicketInputModels[0].TicketType" asp-items="@Html.GetEnumSelectList<TicketType>()" class="form-control"></select>
+                        <span asp-validation-for="@Model.TicketInputModels[0].TicketType" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="@Model.Seat"></label>
-                        <input asp-for="@Model.Seat" class="form-control" />
-                        <span asp-validation-for="@Model.Seat" class="text-danger"></span>
+                        <label asp-for="@Model.TicketInputModels[0].Seat"></label>
+                        <select asp-for="@Model.TicketInputModels[0].Seat" asp-items="@Model.AvailableSeats" class="form-control"></select>
+                        <span asp-validation-for="@Model.TicketInputModels[0].Seat" class="text-danger"></span>
                     </div>
                 </div>
+                <hr />
+                @if (Model.TicketInputModels?.Count > 1)
+                {
+                    @foreach (var ticket in Model.TicketInputModels?.Select(x => x.Value).Skip(1))
+                    {
+                        <div>
+                            <div class="form-group">
+                                <label asp-for="@ticket.TicketType"></label>
+                                <select id="ticketType" asp-for="@ticket.TicketType" asp-items="@Html.GetEnumSelectList<TicketType>()" class="form-control"></select>
+                                <span asp-validation-for="@ticket..TicketType" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="@ticket.Seat"></label>
+                                <select asp-for="@ticket.Seat" asp-items="@Model.AvailableSeats" class="form-control"></select>
+                                <span asp-validation-for="@ticket.Seat" class="text-danger"></span>
+                            </div>
+                            <hr />
+                        </div>
+                    }
+                }
             </div>
-            <button type="button" id="addBut" class="btn btn-primary">Add</button>
-            <button type="submit" class="btn btn-primary">Reserve</button>
+            <button type="button" id="addBut" class="btn btn-primary">Add ticket</button>
+            <label id="totalPrice"></label>
+            <button type="submit" class="btn btn-success">Reserve all</button>
         </form>
         <script>
             $(document).ready(function () {
-                console.log("Vleze")
-                var max_fields = 10;
+                const max_fields = 9;
                 var wrapper = $("#inputForm");
                 var add_button = $("#addBut");
-                var field = $("#fields");
-                var x = 1;
+                var fields = $("#inputFields");
+                var price_field = $("#totalPrice");
+                @{var fields = Model.TicketInputModels?.Count ?? 0;}
+                var fields_count = @fields;
+                var total_fields_append = 0;
+                var total_price = 0;
+                const children_price = @Model.ChildrenPrice;
+                const student_price = @Model.StudentPrice;
+                const adult_price = @Model.AdultPrice;
+
                 $(add_button).click(function (e) {
-                    console.log("Dobavq")
                     e.preventDefault();
-                    if (x < max_fields) {
-                        x++;  
-                        $(wrapper).append(field.html() + '<button type="button" id="delBut"' 
-                            + 'class= "btn btn - primary" >Delete</button > ')
-                        console.log("Dobaviha se")
+                    if (fields_count < max_fields) {
+                        fields_count++;
+                        total_fields_append++;
+                        $(wrapper).append('<div>' + fields.html().replace(/[[0]]/g, `${total_fields_append}]`) +
+                            '<button type="button" id="delBut" class="btn btn-danger" >Delete</button ><hr /></div>');
                     }
                     else {
-                        alert('You Reached the limits')
+                        alert('You reached the maximum number of allowed tickets to reserve');
                     }
                 });
 
                 $(wrapper).on("click", "#delBut", function (e) {
                     e.preventDefault();
-                    $(this).parent('div').get().remove();
-                    x--;
-                })
+                    $(this).parent('div').remove();
+                    fields_count--;
+                });
+                $(wrapper).on("click", "#ticketType > *", function (e) {
+                    alert("stava");
+                    price_field.text = "raboti do tuk";
+                });
             });
         </script>
     </div>

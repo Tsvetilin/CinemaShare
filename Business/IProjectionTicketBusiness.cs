@@ -6,14 +6,18 @@ namespace Business
 {
     public interface IProjectionTicketBusiness
     {
-        public Task Add(Cinema cinema);
+        public Task AddMultipleAsync(IEnumerable<ProjectionTicket> tickets);
+               
+        public Task<ProjectionTicket> GetAsync(string id);
 
-        public Task<Cinema> Get(string id);
+        public IEnumerable<ProjectionTicket> GetAll();
 
-        public Task<IEnumerable<Cinema>> GetAll();
+        public IEnumerable<ProjectionTicket> GetForProjectionAndUser(string projectionId, string userId);
+        
+        public IEnumerable<ProjectionTicket> GetForUser(string userId);
 
-        public Task Update(Cinema cinema);
+        public Task UpdateAsync(ProjectionTicket ticket);
 
-        public Task Delete(string id);
+        public Task DeleteAsync(string id);
     }
 }

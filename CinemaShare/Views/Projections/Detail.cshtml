@@ -13,19 +13,19 @@
         <h5 class="text-dark ">Date: @Model.Date</h5>
         <h5 class="text-dark ">Projection type: @Model.ProjectionType</h5>
         <h5 class="text-dark ">Total tickets: @Model.TotalTickets</h5>
-        <h5 class="text-dark ">Total sold tickets: @Model.TicketsSold</h5>
+        <h5 class="text-dark ">Total sold tickets: @Model.TicketsSold</h5
+        <h5 class="text-dark ">Children ticket price: @Model.ChildrenTicketPrice</h5>
+        <h5 class="text-dark ">Students ticket price: @Model.StudentsTicketPrice</h5>
+        <h5 class="text-dark ">Adults ticket price: @Model.AdultsTicketPrice</h5>
         @if (Model.AvailableTickets > 0)
         {
             <h5 class="text-dark ">Available tickets: @Model.AvailableTickets</h5>
-            <a href="#">Reserve a ticket</a>
+            <a asp-controller="Tickets" asp-action="Reserve" asp-route-id="@Model.Id">Reserve a ticket</a>
         }
         else
         {
             <h5 class="text-danfer ">No tickets available</h5>
         }
-        <h5 class="text-dark ">Children ticket price: @Model.ChildrenTicketPrice</h5>
-        <h5 class="text-dark ">Students ticket price: @Model.StudentsTicketPrice</h5>
-        <h5 class="text-dark ">Adults ticket price: @Model.AdultsTicketPrice</h5>
     </div>
 </div>
 

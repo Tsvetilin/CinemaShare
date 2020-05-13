@@ -24,7 +24,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="@Model.ProjectionType"></label>
-                <select class="form-control" multiple="multiple" asp-for="@Model.ProjectionType" asp-items="Html.GetEnumSelectList<Data.Enums.ProjectionType>()">
+                <select class="form-control" asp-for="@Model.ProjectionType" asp-items="Html.GetEnumSelectList<Data.Enums.ProjectionType>()">
                 </select>
                 <span asp-validation-for="@Model.ProjectionType" class="text-danger"></span>
             </div>

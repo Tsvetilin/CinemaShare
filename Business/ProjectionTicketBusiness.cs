@@ -2,6 +2,7 @@
 using Data.Models;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Business
@@ -15,33 +16,48 @@ namespace Business
             this.context = context;
         }
 
-        public async Task Add(Cinema cinema)
+        public async Task AddMultipleAsync(IEnumerable<ProjectionTicket> tickets)
         {
-            await context.Cinemas.AddAsync(cinema);
+            foreach (var ticket in tickets)
+            {
+                await context.ProjectionTickets.AddAsync(ticket);
+            }
             await context.SaveChangesAsync();
         }
 
-        public async Task<Cinema> Get(string id)
+        public async Task<ProjectionTicket> GetAsync(string id)
         {
-            return await context.Cinemas.FindAsync(id);
+            return await context.ProjectionTickets.FindAsync(id);
         }
 
-        public async Task<IEnumerable<Cinema>> GetAll()
+        public IEnumerable<ProjectionTicket> GetAll()
         {
-            return await context.Cinemas.ToListAsync();
+            return context.ProjectionTickets.ToList();
         }
 
-        public async Task Update(Cinema cinema)
+        public IEnumerable<ProjectionTicket> GetForProjectionAndUser(string projectionId, string userId)
         {
-            var cinemaDataInContext = await context.Cinemas.FindAsync(cinema.Id);
+            var allTickets = GetAll().ToList();
+            return allTickets.Where(x=>x.Projection.Id==projectionId && x.HolderId==userId).ToList();
+        }
+
+        public IEnumerable<ProjectionTicket> GetForUser(string userId)
+        {
+            var allTickets = GetAll().ToList();
+            return allTickets.Where(x => x.HolderId == userId).ToList();
+        }
+
+        public async Task UpdateAsync(ProjectionTicket ticket)
+        {
+            var cinemaDataInContext = await context.Cinemas.FindAsync(ticket.Id);
             if (cinemaDataInContext != null)
             {
-                context.Entry(cinemaDataInContext).CurrentValues.SetValues(cinema);
+                context.Entry(cinemaDataInContext).CurrentValues.SetValues(ticket);
                 await context.SaveChangesAsync();
             }
         }
 
-        public async Task Delete(string id)
+        public async Task DeleteAsync(string id)
         {
             var cinemaInContext = await context.Cinemas.FindAsync(id);
             if (cinemaInContext != null)

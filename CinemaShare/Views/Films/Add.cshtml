@@ -59,7 +59,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="@Model.TargetAudience"></label>
-                <select class="form-control" multiple="multiple" asp-for="@Model.TargetAudience" asp-items="Html.GetEnumSelectList<TargetAudience>()">
+                <select class="form-control" asp-for="@Model.TargetAudience" asp-items="Html.GetEnumSelectList<TargetAudience>()">
                 </select>
                 <span asp-validation-for="@Model.TargetAudience" class="text-danger"></span>
             </div>
