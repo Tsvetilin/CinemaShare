@@ -1,0 +1,62 @@
+﻿@model CinemaShare.Models.InputModels.TicketInputModel
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>Reserve</h1>
+<span asp-validation-summary=""></span>
+
+<div class="row1">
+    <div class="col-md-4">
+        <form asp-controller="Tickets" asp-action="Add" method="post">
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div id="inputForm">
+                <div id="fields">
+                    <div class="form-group">
+                        <label asp-for="@Model.TicketType"></label>
+                        <input asp-for="@Model.TicketType" class="form-control" />
+                        <span asp-validation-for="@Model.TicketType" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.Seat"></label>
+                        <input asp-for="@Model.Seat" class="form-control" />
+                        <span asp-validation-for="@Model.Seat" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <button type="button" id="addBut" class="btn btn-primary">Add</button>
+            <button type="submit" class="btn btn-primary">Reserve</button>
+        </form>
+        <script>
+            $(document).ready(function () {
+                console.log("Vleze")
+                var max_fields = 10;
+                var wrapper = $("#inputForm");
+                var add_button = $("#addBut");
+                var field = $("#fields");
+                var x = 1;
+                $(add_button).click(function (e) {
+                    console.log("Dobavq")
+                    e.preventDefault();
+                    if (x < max_fields) {
+                        x++;  
+                        $(wrapper).append(field.html() + '<button type="button" id="delBut"' 
+                            + 'class= "btn btn - primary" >Delete</button > ')
+                        console.log("Dobaviha se")
+                    }
+                    else {
+                        alert('You Reached the limits')
+                    }
+                });
+
+                $(wrapper).on("click", "#delBut", function (e) {
+                    e.preventDefault();
+                    $(this).parent('div').get().remove();
+                    x--;
+                })
+            });
+        </script>
+    </div>
+</div>
+

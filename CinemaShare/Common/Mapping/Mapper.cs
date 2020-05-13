@@ -195,7 +195,10 @@ namespace CinemaShare.Common.Mapping
                 Date = input.Date,
                 FilmId = film.FilmId,
                 ProjectionType = input.ProjectionType,
-                TotalTickets = input.TotalTickets
+                TotalTickets = input.TotalTickets,
+                TicketPrices = new TicketPrices { AdultPrice=input.AdultsTicketPrice,
+                                                StudentPrice=input.StudentsTicketPrice,
+                                                ChildrenPrice = input.ChildrenTicketPrice}
             };
         }
 
@@ -218,8 +221,11 @@ namespace CinemaShare.Common.Mapping
             {
                 Date = filmProjection.Date,
                 FilmTitle = filmProjection.Film.FilmData.Title,
-                ProjectionType=filmProjection.ProjectionType,
-                TotalTickets=filmProjection.TotalTickets,
+                ProjectionType = filmProjection.ProjectionType,
+                TotalTickets = filmProjection.TotalTickets,
+                ChildrenTicketPrice =filmProjection.TicketPrices.ChildrenPrice,
+                AdultsTicketPrice = filmProjection.TicketPrices.AdultPrice,
+                StudentsTicketPrice = filmProjection.TicketPrices.StudentPrice
             };
         }
 
@@ -237,6 +243,9 @@ namespace CinemaShare.Common.Mapping
                 FilmTargetAudience = filmProjection.Film.FilmData.TargetAudience,
                 CinemaCity = filmProjection.Cinema.City,
                 TicketsSold = filmProjection.ProjectionTickets.Count(),
+                ChildrenTicketPrice = filmProjection.TicketPrices.ChildrenPrice,
+                AdultsTicketPrice = filmProjection.TicketPrices.AdultPrice,
+                StudentsTicketPrice = filmProjection.TicketPrices.StudentPrice
             };
         }
     }

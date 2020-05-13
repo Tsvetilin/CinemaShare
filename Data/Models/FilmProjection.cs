@@ -32,5 +32,7 @@ namespace Data.Models
 
         public virtual IEnumerable<ProjectionTicket> ProjectionTickets { get; set; }
 
+        public virtual TicketPrices TicketPrices { get; set; }
+
     }
 }

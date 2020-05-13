@@ -67,7 +67,10 @@ namespace Business
             if (filmInContext != null)
             {
                 context.Entry(filmInContext).CurrentValues.SetValues(film);
-                await context.SaveChangesAsync();
+                filmInContext.TicketPrices.AdultPrice = film.TicketPrices.AdultPrice;
+                filmInContext.TicketPrices.StudentPrice = film.TicketPrices.StudentPrice;
+                filmInContext.TicketPrices.ChildrenPrice = film.TicketPrices.ChildrenPrice;
+                await context.SaveChangesAsync(); 
             }
         }
 
