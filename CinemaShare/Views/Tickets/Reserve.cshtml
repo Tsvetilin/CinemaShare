@@ -21,7 +21,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="@Model.TicketInputModels[0].Seat"></label>
-                        <select asp-for="@Model.TicketInputModels[0].Seat" asp-items="@Model.AvailableSeats" class="form-control"></select>
+                        <select id="seatField" asp-for="@Model.TicketInputModels[0].Seat" asp-items="@Model.AvailableSeats" class="form-control"></select>
                         <span asp-validation-for="@Model.TicketInputModels[0].Seat" class="text-danger"></span>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="@ticket.Seat"></label>
-                                <select asp-for="@ticket.Seat" asp-items="@Model.AvailableSeats" class="form-control"></select>
+                                <select id="seatField" asp-for="@ticket.Seat" asp-items="@Model.AvailableSeats" class="form-control"></select>
                                 <span asp-validation-for="@ticket.Seat" class="text-danger"></span>
                             </div>
                             <hr />
@@ -47,8 +47,10 @@
                 }
             </div>
             <button type="button" id="addBut" class="btn btn-primary">Add ticket</button>
+            <br /><hr />
             <label id="totalPrice"></label>
-            <button type="submit" class="btn btn-success">Reserve all</button>
+            <br /><hr />
+            <button type="submit" id="submitBut" class="btn btn-success">Reserve all</button>
         </form>
         <script>
             $(document).ready(function () {
@@ -61,17 +63,36 @@
                 var fields_count = @fields;
                 var total_fields_append = 0;
                 var total_price = 0;
-                const children_price = @Model.ChildrenPrice;
-                const student_price = @Model.StudentPrice;
-                const adult_price = @Model.AdultPrice;
-
+                var prices = {};
+                var ticketPrices = { 0:@Model.AdultPrice, 1:@Model.StudentPrice, 2:@Model.ChildrenPrice};
+                $(wrapper).find("#ticketType").each(function () {
+                    var textToShow = $(this).parent().html();
+                    var index = textToShow.match(/[[0-9]]/g)[0][0];
+                    var fieldValue = $(this).val();
+                    prices[index] = ticketPrices[fieldValue];
+                    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+                    total_price = Object.values(prices).reduce(reducer);
+                    price_field.text("Total price:" + total_price.toString());
+                });
                 $(add_button).click(function (e) {
                     e.preventDefault();
                     if (fields_count < max_fields) {
                         fields_count++;
                         total_fields_append++;
+                        prices[total_fields_append] = ticketPrices[0];
+                        const reducer = (accumulator, currentValue) => accumulator + currentValue;
+                        total_price = Object.values(prices).reduce(reducer);
+                        price_field.text(total_price.toString());
                         $(wrapper).append('<div>' + fields.html().replace(/[[0]]/g, `${total_fields_append}]`) +
                             '<button type="button" id="delBut" class="btn btn-danger" >Delete</button ><hr /></div>');
+                        //TODO....
+                        $("#seatField  option").each(function (x) {
+                            $("#seatField option:selected").each(function (a) {
+                                alert("aval:" + selectedSeat + " thisval: " + $(this).val())
+                                if (selectedSeat == $(this).val())
+                                    alert("This seat is already taken!");
+                            });
+                        });
                     }
                     else {
                         alert('You reached the maximum number of allowed tickets to reserve');
@@ -80,12 +101,31 @@
 
                 $(wrapper).on("click", "#delBut", function (e) {
                     e.preventDefault();
+                    var textToShow = $(this).parent().html();
+                    var index = textToShow.match(/[[0-9]]/g)[0][0];
+                    prices[index] = 0;
+                    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+                    total_price = Object.values(prices).reduce(reducer);
+                    price_field.text(total_price.toString());
                     $(this).parent('div').remove();
                     fields_count--;
                 });
-                $(wrapper).on("click", "#ticketType > *", function (e) {
-                    alert("stava");
-                    price_field.text = "raboti do tuk";
+                $(wrapper).on("change", "#ticketType", function (e) {
+                    var textToShow = $(this).parent().html();
+                    var index = textToShow.match(/[[0-9]]/g)[0][0];
+                    var fieldValue = $(this).val();
+                    prices[index] = ticketPrices[fieldValue];
+                    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+                    total_price = Object.values(prices).reduce(reducer);
+                    price_field.text(total_price.toString());
+                });
+                $(wrapper).on("change", "#seatField", function () {
+                    var selectedSeat = $(this).val();
+                    $("#seatField option:selected").each(function (a) {
+                        alert("aval:" + selectedSeat + " thisval: " + $(this).val())
+                        if (selectedSeat == $(this).val())
+                            alert("This seat is already taken!");
+                    });
                 });
             });
         </script>
