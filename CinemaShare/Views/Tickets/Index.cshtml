@@ -4,3 +4,32 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h1>My tickets</h1>
+@if (Model.Tickets?.Count == 0)
+{
+    <h5>No reservations made yet.</h5>
+}
+else
+{
+    <ul>
+        @foreach (var ticket in Model.Tickets)
+        {
+            <li>
+                <h5>Cinema: @ticket.Projection.Cinema.Name</h5>
+                <h5>Film: @ticket.Projection.Film.FilmData.Title</h5>
+                <h5>Ticket type: @ticket.Type.ToString()</h5>
+                <h5>Seat: @ticket.Seat</h5>
+                <h5>Projection type: @ticket.Projection.ProjectionType</h5>
+                <h5>Date: @ticket.Projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
+                <h5>Price: @ticket.Price</h5>
+            </li>
+            <div>
+                <form asp-controller="Tickets" asp-action="Update" asp-route-id="@ticket.Id" method="get">
+                    <input class="bg-info" type="submit" value="Change ticket" />
+                </form>
+                <form asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id" method="post">
+                    <input class="bg-info" type="submit" value="Deny ticket" />
+                </form>
+            </div>
+        }
+    </ul>
+}

@@ -1,5 +1,6 @@
 ﻿using Data;
 using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -41,30 +42,30 @@ namespace Business
             return allTickets.Where(x=>x.Projection.Id==projectionId && x.HolderId==userId).ToList();
         }
 
-        public IEnumerable<ProjectionTicket> GetForUser(string userId)
-        {
-            var allTickets = GetAll().ToList();
-            return allTickets.Where(x => x.HolderId == userId).ToList();
-        }
-
         public async Task UpdateAsync(ProjectionTicket ticket)
         {
-            var cinemaDataInContext = await context.Cinemas.FindAsync(ticket.Id);
-            if (cinemaDataInContext != null)
+            var ticketDataInContext = await context.ProjectionTickets.FindAsync(ticket.Id);
+            if (ticketDataInContext != null)
             {
-                context.Entry(cinemaDataInContext).CurrentValues.SetValues(ticket);
+                context.Entry(ticketDataInContext).CurrentValues.SetValues(ticket);
                 await context.SaveChangesAsync();
             }
         }
 
         public async Task DeleteAsync(string id)
         {
-            var cinemaInContext = await context.Cinemas.FindAsync(id);
-            if (cinemaInContext != null)
+            var ticketInContext = await context.ProjectionTickets.FindAsync(id);
+            if (ticketInContext != null)
             {
-                context.Cinemas.Remove(cinemaInContext);
+                context.ProjectionTickets.Remove(ticketInContext);
                 await context.SaveChangesAsync();
             }
+        }
+
+        public IEnumerable<TModel> GetForUser<TModel>(string userId, Func<ProjectionTicket, TModel> mapToModelFunc)
+        {
+            var allTickets = GetAll().ToList();
+            return allTickets.Where(x => x.HolderId == userId).Select(x=> mapToModelFunc(x)).ToList();
         }
     }
 }

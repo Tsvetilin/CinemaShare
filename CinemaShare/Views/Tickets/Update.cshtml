@@ -1,0 +1,53 @@
+﻿@model CinemaShare.Models.InputModels.UpdateTicketInputModel
+@using Data.Enums;
+@{
+    ViewData["Title"] = "Update";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>Update</h1>
+<span asp-validation-summary=""></span>
+
+<div class="row1">
+    <div class="col-md-4">
+        <form asp-controller="Tickets" asp-action="Update" method="post">
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div id="inputForm">
+                    <div class="form-group">
+                        <label asp-for="@Model.Ticket.TicketType"></label>
+                        <select id="ticketType" asp-for="@Model.Ticket.TicketType" asp-items="@Html.GetEnumSelectList<TicketType>()" class="form-control"></select>
+                        <span asp-validation-for="@Model.Ticket.TicketType" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.Ticket.Seat"></label>
+                        <select asp-for="@Model.Ticket.Seat" asp-items="@Model.AvailableSeats" class="form-control"></select>
+                        <span asp-validation-for="@Model.Ticket.Seat" class="text-danger"></span>
+                    </div>
+                <hr />
+            </div>
+            <label id="totalPrice"></label>
+            <br /><hr />
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
+        <script>
+            $(document).ready(function () {
+                var wrapper = $("#inputForm");
+                var price_field = $("#totalPrice");
+                var ticketPrices = {
+                                    0:@Model.AdultPrice,
+                                    1:@Model.StudentPrice,
+                                    2:@Model.ChildrenPrice};
+                @{var index = (int)Model.Ticket.TicketType;}
+
+                var total_price = ticketPrices[@index];
+                price_field.text("Total price:" + total_price.toString());
+                $(wrapper).on("change", "#ticketType", function (e) {
+                    var fieldValue = $(this).val();
+                    total_price = ticketPrices[fieldValue];
+                    price_field.text("Ticket price: "+total_price.toString());
+                });
+            });
+        </script>
+    </div>
+</div>
+

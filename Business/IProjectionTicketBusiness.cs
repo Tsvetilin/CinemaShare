@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace Business
 
         public IEnumerable<ProjectionTicket> GetForProjectionAndUser(string projectionId, string userId);
         
-        public IEnumerable<ProjectionTicket> GetForUser(string userId);
+        public IEnumerable<TModel> GetForUser<TModel>(string userId, Func<ProjectionTicket, TModel> mapToModelFunc);
 
         public Task UpdateAsync(ProjectionTicket ticket);
 

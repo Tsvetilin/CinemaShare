@@ -7,16 +7,8 @@ using System.Threading.Tasks;
 
 namespace CinemaShare.Models.InputModels
 {
-    public class ReserveTicketInputModel
+    public class ReserveTicketInputModel: TicketInputDataModel
     {
         public Dictionary<int,TicketInputModel> TicketInputModels { get; set; }
-
-        [Display(Name = "Available seats")]
-        public SelectList AvailableSeats { get; set; }
-
-        public double ChildrenPrice { get; set; }
-        public double StudentPrice { get; set; }
-        public double AdultPrice { get; set; }
-
     }
 }

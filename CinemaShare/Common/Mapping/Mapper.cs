@@ -253,6 +253,33 @@ namespace CinemaShare.Common.Mapping
             };
         }
 
+        public TicketCardViewModel MapToTicketCardViewModel(ProjectionTicket ticket)
+        {
+            return new TicketCardViewModel
+            {
+                Id = ticket.Id,
+                Price = ticket.Price,
+                Projection = ticket.Projection,
+                Seat = ticket.Seat,
+                Type = ticket.Type
+            };
+        }
+
+        public ProjectionTicket MapToProjectionTicket(string userId, UpdateTicketInputModel input, FilmProjection projection, DateTime timeStamp)
+        {
+            return new ProjectionTicket
+            {
+                ProjectionId = projection.Id,
+                Seat = input.Ticket.Seat,
+                Type = input.Ticket.TicketType,
+                Price = (double)projection.TicketPrices.GetType().
+                                                        GetProperty($"{input.Ticket.TicketType.ToString()}Price").
+                                                        GetValue(projection.TicketPrices),
+                HolderId = userId,
+                ReservedOn = timeStamp
+            };
+        }
+
         public ProjectionTicket MapToProjectionTicket(string userId, TicketInputModel input, FilmProjection projection, DateTime timeStamp)
         {
             return new ProjectionTicket
@@ -267,6 +294,5 @@ namespace CinemaShare.Common.Mapping
                 ReservedOn = timeStamp
             };
         }
-
     }
 }

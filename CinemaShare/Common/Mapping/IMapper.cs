@@ -39,6 +39,10 @@ namespace CinemaShare.Common.Mapping
 
         public ProjectionDataViewModel MapToProjectionDataViewModel(FilmProjection filmProjection);
 
+        public TicketCardViewModel MapToTicketCardViewModel(ProjectionTicket ticket);
+
+        public ProjectionTicket MapToProjectionTicket(string userId, UpdateTicketInputModel input, FilmProjection projection, DateTime timeStamp);
+    
         public ProjectionTicket MapToProjectionTicket(string userId, TicketInputModel input, FilmProjection projection, DateTime timeStamp);
     }
 }
