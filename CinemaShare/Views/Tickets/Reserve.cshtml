@@ -21,7 +21,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="@Model.TicketInputModels[0].Seat"></label>
-                        <select id="seatField" asp-for="@Model.TicketInputModels[0].Seat" asp-items="@Model.AvailableSeats" class="form-control"></select>
+                        <select id="seatField" asp-for="@Model.TicketInputModels[0].Seat" asp-items="@Model.AvailableSeats" class="form-control seatclass"></select>
                         <span asp-validation-for="@Model.TicketInputModels[0].Seat" class="text-danger"></span>
                     </div>
                 </div>
@@ -61,38 +61,49 @@
                 var price_field = $("#totalPrice");
                 @{var fields = Model.TicketInputModels?.Count ?? 0;}
                 var fields_count = @fields;
+                const sumReducer = (accumulator, currentValue) => accumulator + currentValue;
+                const indexRegex = /[[0-9]]/g;
                 var total_fields_append = 0;
                 var total_price = 0;
                 var prices = {};
                 var ticketPrices = { 0:@Model.AdultPrice, 1:@Model.StudentPrice, 2:@Model.ChildrenPrice};
+
                 $(wrapper).find("#ticketType").each(function () {
-                    var textToShow = $(this).parent().html();
-                    var index = textToShow.match(/[[0-9]]/g)[0][0];
-                    var fieldValue = $(this).val();
-                    prices[index] = ticketPrices[fieldValue];
-                    const reducer = (accumulator, currentValue) => accumulator + currentValue;
-                    total_price = Object.values(prices).reduce(reducer);
-                    price_field.text("Total price:" + total_price.toString());
+                    var elementHtml = $(this).parent().html();
+                    var index = elementHtml.match(indexRegex)[0][0];
+                    var fieldValueTicketType = $(this).val();
+                    prices[index] = ticketPrices[fieldValueTicketType];
+                    updatePrice();
                 });
+
                 $(add_button).click(function (e) {
                     e.preventDefault();
                     if (fields_count < max_fields) {
                         fields_count++;
                         total_fields_append++;
                         prices[total_fields_append] = ticketPrices[0];
-                        const reducer = (accumulator, currentValue) => accumulator + currentValue;
-                        total_price = Object.values(prices).reduce(reducer);
-                        price_field.text(total_price.toString());
+                        updatePrice();
                         $(wrapper).append('<div>' + fields.html().replace(/[[0]]/g, `${total_fields_append}]`) +
                             '<button type="button" id="delBut" class="btn btn-danger" >Delete</button ><hr /></div>');
                         //TODO....
-                        $("#seatField  option").each(function (x) {
-                            $("#seatField option:selected").each(function (a) {
-                                alert("aval:" + selectedSeat + " thisval: " + $(this).val())
-                                if (selectedSeat == $(this).val())
-                                    alert("This seat is already taken!");
-                            });
+                        var found = false;
+                        $(fields).find("#seatField option").each(function (x) {
+                            if (!found) {
+                                var availableOption = $(this).val();
+                                console.log(availableOption);
+                                $(wrapper).find(".seatclass").each(function (a) {
+                                    if (!found && availableOption != $(this).val()) {
+                                        console.log($(this).val())
+                                        $(this).val(`${availableOption}`).change();
+                                        found = true;
+                                        return;
+                                    }
+                                });
+                            }
                         });
+                        if (!found) {
+                            alert("No empty seats found");
+                        }
                     }
                     else {
                         alert('You reached the maximum number of allowed tickets to reserve');
@@ -100,33 +111,46 @@
                 });
 
                 $(wrapper).on("click", "#delBut", function (e) {
-                    e.preventDefault();
-                    var textToShow = $(this).parent().html();
-                    var index = textToShow.match(/[[0-9]]/g)[0][0];
-                    prices[index] = 0;
-                    const reducer = (accumulator, currentValue) => accumulator + currentValue;
-                    total_price = Object.values(prices).reduce(reducer);
-                    price_field.text(total_price.toString());
+                    var elementHtml = $(this).parent().html();
+                    var indexOfTicket = elementHtml.match(indexRegex)[0][0];
+                    prices[indexOfTicket] = 0;
+                    updatePrice();
                     $(this).parent('div').remove();
                     fields_count--;
                 });
+
                 $(wrapper).on("change", "#ticketType", function (e) {
-                    var textToShow = $(this).parent().html();
-                    var index = textToShow.match(/[[0-9]]/g)[0][0];
-                    var fieldValue = $(this).val();
-                    prices[index] = ticketPrices[fieldValue];
-                    const reducer = (accumulator, currentValue) => accumulator + currentValue;
-                    total_price = Object.values(prices).reduce(reducer);
-                    price_field.text(total_price.toString());
+                    var elementHtml = $(this).parent().html();
+                    var indexOfTicket = elementHtml.match(indexRegex)[0][0];
+                    var fieldValueTicketType = $(this).val();
+                    prices[indexOfTicket] = ticketPrices[fieldValueTicketType];
+                    updatePrice();
                 });
-                $(wrapper).on("change", "#seatField", function () {
-                    var selectedSeat = $(this).val();
-                    $("#seatField option:selected").each(function (a) {
-                        alert("aval:" + selectedSeat + " thisval: " + $(this).val())
-                        if (selectedSeat == $(this).val())
-                            alert("This seat is already taken!");
+
+                var lastSelectdValue = 0;
+                $(wrapper).on("click", "#seatField", function (e) {
+                    lastSelectdValue = e.target.selectedIndex;
+                });
+
+                $(wrapper).on("change", "#seatField", function (e) {
+                    var selectedSeat = $(this).find("option:selected");
+                    var selectedValue = selectedSeat.val();
+                    $(wrapper).find(".seatclass").each(function (a) {
+                        var d = $(this).find("option:selected");
+                        if (!$(d).is($(selectedSeat))) {
+                            if (selectedValue == $(d).val()) {
+                                alert("This seat is already taken!");
+                                e.target.selectedIndex = lastSelectdValue;
+                                return;
+                            }
+                        }
                     });
                 });
+
+                function updatePrice() {
+                    total_price = Object.values(prices).reduce(sumReducer);
+                    price_field.text("Total price:" + total_price.toString());
+                }
             });
         </script>
     </div>
