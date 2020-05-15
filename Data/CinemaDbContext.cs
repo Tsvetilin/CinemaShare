@@ -47,7 +47,13 @@ namespace Data
             builder.Entity<CinemaUser>().HasMany(user => user.AddedFilms).WithOne();
             builder.Entity<CinemaUser>().HasMany(user => user.WatchList).WithOne();
             builder.Entity<Film>().HasOne(film => film.AddedByUser);
-            //builder.Entity<FilmData>().HasOne(filmData => filmData.Film).WithOne();
+            builder.Entity<Film>().HasMany(film => film.FilmProjection).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Film>().HasMany(film => film.FilmReviews).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Film>().HasOne(film => film.FilmData).WithOne(x => x.Film).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Cinema>().HasMany(x=>x.FilmProjections).WithOne(x=>x.Cinema).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<FilmProjection>().HasMany(x => x.ProjectionTickets).WithOne(x => x.Projection).OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<FilmReview>().HasOne(x => x.Film).WithMany(x => x.FilmReviews).HasForeignKey(x => x.FilmId);
+            builder.Entity<FilmProjection>().HasOne(x => x.Film).WithMany(x => x.FilmProjection).HasForeignKey(x => x.FilmId);
 
             base.OnModelCreating(builder);
         }

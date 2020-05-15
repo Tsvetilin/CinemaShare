@@ -94,6 +94,7 @@ namespace Data.Seeders
                     AddedByUserId = userId,
                     Ratings = new List<FilmRating> { new FilmRating { UserId = userId, Rating = rating } }
                 };
+
                 filmData.FilmId = film.Id;
                 await context.Films.AddAsync(film);
                 await context.FilmDatas.AddAsync(filmData);

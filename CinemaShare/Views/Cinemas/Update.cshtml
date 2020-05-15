@@ -1,10 +1,9 @@
 ﻿@model CinemaShare.Models.InputModels.CinemaInputModel
 @{
-    ViewData["Title"] = "Update";
+    ViewData["Title"] = "Update cinema";
 }
 
-<h1 class="row1">Update</h1>
-<span asp-validation-summary=""></span>
+<h1 class="text-center">Update Cinema</h1>
 
 <div class="row1">
     <div class="col-md-4">
@@ -30,3 +29,4 @@
         </form>
     </div>
 </div>
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

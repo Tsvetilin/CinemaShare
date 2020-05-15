@@ -4,12 +4,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>WatchList</h1>
+<h1 class="text-center">WatchList</h1>
 
 @if (Model.Films.Count == 0)
 {
-    <h3>No films added to watchlist!</h3>
-    <a asp-controller="Films" asp-action="Index">Go add one</a>
+    <br />
+    <h3 class="text-center">No films added to watchlist!</h3>
+    <a asp-controller="Films" asp-action="Index"  class="text-center text-primary">Go add one</a>
 }
 else
 {

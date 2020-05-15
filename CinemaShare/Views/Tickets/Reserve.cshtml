@@ -4,8 +4,7 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>Reserve</h1>
-<span asp-validation-summary=""></span>
+<h2 class="text-center">Reserve a ticket</h2>
 
 <div class="row1">
     <div class="col-md-4">
@@ -54,54 +53,62 @@
         </form>
         <script>
             $(document).ready(function () {
-                const max_fields = 9;
-                var wrapper = $("#inputForm");
-                var add_button = $("#addBut");
-                var fields = $("#inputFields");
-                var price_field = $("#totalPrice");
-                @{var fields = Model.TicketInputModels?.Count ?? 0;}
-                var fields_count = @fields;
+                const maxTicketFields = 9;
                 const sumReducer = (accumulator, currentValue) => accumulator + currentValue;
                 const indexRegex = /[[0-9]]/g;
-                var total_fields_append = 0;
-                var total_price = 0;
-                var prices = {};
+                var wrapper = $("#inputForm");
+                var addButton = $("#addBut");
+                var inputFields = $("#inputFields");
+                var priceField = $("#totalPrice");
                 var ticketPrices = { 0:@Model.AdultPrice, 1:@Model.StudentPrice, 2:@Model.ChildrenPrice};
+                @{var inputFieldsCount = Model.TicketInputModels?.Count ?? 0;}
+                var currentTicketsFieldsCount = @inputFieldsCount;
+                var totalFieldsAppended = 0;
+                var totalPrice = 0;
+                var fieldsPrices = {};
 
                 $(wrapper).find("#ticketType").each(function () {
                     var elementHtml = $(this).parent().html();
                     var index = elementHtml.match(indexRegex)[0][0];
                     var fieldValueTicketType = $(this).val();
-                    prices[index] = ticketPrices[fieldValueTicketType];
+                    fieldsPrices[index] = ticketPrices[fieldValueTicketType];
                     updatePrice();
                 });
 
-                $(add_button).click(function (e) {
+                $(addButton).click(function (e) {
                     e.preventDefault();
-                    if (fields_count < max_fields) {
-                        fields_count++;
-                        total_fields_append++;
-                        prices[total_fields_append] = ticketPrices[0];
+                    if (currentTicketsFieldsCount < maxTicketFields) {
+                        currentTicketsFieldsCount++;
+                        totalFieldsAppended++;
+                        fieldsPrices[totalFieldsAppended] = ticketPrices[0];
                         updatePrice();
-                        $(wrapper).append('<div>' + fields.html().replace(/[[0]]/g, `${total_fields_append}]`) +
+                        $(wrapper).append(`<div id="input${totalFieldsAppended}">` + inputFields.html().replace(/[[0]]/g, `${totalFieldsAppended}]`) +
                             '<button type="button" id="delBut" class="btn btn-danger" >Delete</button ><hr /></div>');
-                        //TODO....
-                        var found = false;
-                        $(fields).find("#seatField option").each(function (x) {
-                            if (!found) {
-                                var availableOption = $(this).val();
-                                console.log(availableOption);
-                                $(wrapper).find(".seatclass").each(function (a) {
-                                    if (!found && availableOption != $(this).val()) {
-                                        console.log($(this).val())
-                                        $(this).val(`${availableOption}`).change();
-                                        found = true;
-                                        return;
-                                    }
-                                });
+
+                        var isEmptySeatFound = false;
+                        $(inputFields).find("#seatField option").each(function () {
+                            if (isEmptySeatFound) {
+                                return;
+                            }
+
+                            var availableOption = $(this).val();
+                            var checkAll = true;
+                            $(wrapper).find(".seatclass").each(function () {
+                                if (availableOption == $(this).val()) {
+                                    checkAll = false;
+                                    return;
+                                }
+                            });
+
+                            if (checkAll) {
+                                $(`#input${totalFieldsAppended} #seatField`).val(`${availableOption}`).change();
+                                isEmptySeatFound = true;
+                                return;
                             }
                         });
-                        if (!found) {
+
+                        if (!isEmptySeatFound) {
+                            $(`#input${totalFieldsAppended}`).remove();
                             alert("No empty seats found");
                         }
                     }
@@ -113,17 +120,17 @@
                 $(wrapper).on("click", "#delBut", function (e) {
                     var elementHtml = $(this).parent().html();
                     var indexOfTicket = elementHtml.match(indexRegex)[0][0];
-                    prices[indexOfTicket] = 0;
+                    fieldsPrices[indexOfTicket] = 0;
                     updatePrice();
                     $(this).parent('div').remove();
-                    fields_count--;
+                    currentTicketsFieldsCount--;
                 });
 
                 $(wrapper).on("change", "#ticketType", function (e) {
                     var elementHtml = $(this).parent().html();
                     var indexOfTicket = elementHtml.match(indexRegex)[0][0];
                     var fieldValueTicketType = $(this).val();
-                    prices[indexOfTicket] = ticketPrices[fieldValueTicketType];
+                    fieldsPrices[indexOfTicket] = ticketPrices[fieldValueTicketType];
                     updatePrice();
                 });
 
@@ -133,23 +140,23 @@
                 });
 
                 $(wrapper).on("change", "#seatField", function (e) {
-                    var selectedSeat = $(this).find("option:selected");
-                    var selectedValue = selectedSeat.val();
-                    $(wrapper).find(".seatclass").each(function (a) {
-                        var d = $(this).find("option:selected");
-                        if (!$(d).is($(selectedSeat))) {
-                            if (selectedValue == $(d).val()) {
-                                alert("This seat is already taken!");
-                                e.target.selectedIndex = lastSelectdValue;
-                                return;
+                        var selectedSeat = $(this).find("option:selected");
+                        var selectedValue = selectedSeat.val();
+                        $(wrapper).find(".seatclass").each(function () {
+                            var d = $(this).find("option:selected");
+                            if (!$(d).is($(selectedSeat))) {
+                                if (selectedValue == $(d).val()) {
+                                    alert("This seat is already taken!");
+                                    e.target.selectedIndex = lastSelectdValue;
+                                    return;
+                                }
                             }
-                        }
-                    });
+                        });
                 });
 
                 function updatePrice() {
-                    total_price = Object.values(prices).reduce(sumReducer);
-                    price_field.text("Total price:" + total_price.toString());
+                    totalPrice = Object.values(fieldsPrices).reduce(sumReducer);
+                    priceField.text("Total price: " + totalPrice.toString());
                 }
             });
         </script>

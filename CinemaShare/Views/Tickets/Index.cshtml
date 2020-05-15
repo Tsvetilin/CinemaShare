@@ -3,7 +3,8 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>My tickets</h1>
+<h1 class="text-center">My tickets</h1>
+<hr />
 @if (Model.Tickets?.Count == 0)
 {
     <h5>No reservations made yet.</h5>
@@ -13,7 +14,8 @@ else
     <ul>
         @foreach (var ticket in Model.Tickets)
         {
-            <li>
+        <li class="list-unstyled col-md-12 py-3 box-hover">
+            <div class="col-md-8">
                 <h5>Cinema: @ticket.Projection.Cinema.Name</h5>
                 <h5>Film: @ticket.Projection.Film.FilmData.Title</h5>
                 <h5>Ticket type: @ticket.Type.ToString()</h5>
@@ -21,15 +23,20 @@ else
                 <h5>Projection type: @ticket.Projection.ProjectionType.ToString().Substring(1)</h5>
                 <h5>Date: @ticket.Projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
                 <h5>Price: @ticket.Price</h5>
-            </li>
-            <div>
-                <form asp-controller="Tickets" asp-action="Update" asp-route-id="@ticket.Id" method="get">
-                    <input class="bg-info" type="submit" value="Change ticket" />
-                </form>
-                <form asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id" method="post">
-                    <input class="bg-info" type="submit" value="Deny ticket" />
-                </form>
             </div>
+            <ul class="col-md-4 list-unstyled">
+                <li>
+                    <form asp-controller="Tickets" asp-action="Update" asp-route-id="@ticket.Id" class="py-1" method="get">
+                        <input class="btn btn-primary" type="submit" value="Change ticket" />
+                    </form>
+                </li>
+                <li>
+                    <form asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id" class="py-1" method="post">
+                        <input class=" btn btn-danger" type="submit" value="Deny ticket" />
+                    </form>
+                </li>
+            </ul>
+        </li>
         }
     </ul>
 }

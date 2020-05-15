@@ -11,7 +11,7 @@
 @if (Model.Mananger == User.Identity.Name)
 {
     <form asp-controller="Cinemas" asp-action="Manage" asp-route-id="@Model.Id" method="get">
-        <input class="bg-info" type="submit" value="Manage cinema" />
+        <input class="btn btn-info" type="submit" value="Manage cinema" />
     </form>
 }
 <div class="content-heading clearfix media">
@@ -35,7 +35,7 @@ else
         @foreach (var projection in Model.FilmProjections)
         {
             <li>
-                <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id">
+                <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id" class="text-decoration-none">
                     <h5>Cinema: @projection.CinemaName</h5>
                     <h5>City: @projection.CinemaCity</h5>
                     <h5>Projection type: @projection.ProjectionType.ToString().Substring(1)</h5>

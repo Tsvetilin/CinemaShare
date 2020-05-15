@@ -4,8 +4,7 @@
     ViewData["Title"] = "Update";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<<h1 class="row1">Update</h1>
-<span asp-validation-summary=""></span>
+<<h1 class="text-center">Update reserved ticket</h1>
 
 <div class="row1">
     <div class="col-md-4">
@@ -13,16 +12,16 @@
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
             <div id="inputForm">
-                    <div class="form-group">
-                        <label asp-for="@Model.Ticket.TicketType"></label>
-                        <select id="ticketType" asp-for="@Model.Ticket.TicketType" asp-items="@Html.GetEnumSelectList<TicketType>()" class="form-control"></select>
-                        <span asp-validation-for="@Model.Ticket.TicketType" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="@Model.Ticket.Seat"></label>
-                        <select asp-for="@Model.Ticket.Seat" asp-items="@Model.AvailableSeats" class="form-control"></select>
-                        <span asp-validation-for="@Model.Ticket.Seat" class="text-danger"></span>
-                    </div>
+                <div class="form-group">
+                    <label asp-for="@Model.Ticket.TicketType"></label>
+                    <select id="ticketType" asp-for="@Model.Ticket.TicketType" asp-items="@Html.GetEnumSelectList<TicketType>()" class="form-control"></select>
+                    <span asp-validation-for="@Model.Ticket.TicketType" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.Ticket.Seat"></label>
+                    <select asp-for="@Model.Ticket.Seat" asp-items="@Model.AvailableSeats" class="form-control"></select>
+                    <span asp-validation-for="@Model.Ticket.Seat" class="text-danger"></span>
+                </div>
                 <hr />
             </div>
             <label id="totalPrice"></label>
@@ -32,22 +31,26 @@
         <script>
             $(document).ready(function () {
                 var wrapper = $("#inputForm");
-                var price_field = $("#totalPrice");
+                var priceField = $("#totalPrice");
                 var ticketPrices = {
                                     0:@Model.AdultPrice,
                                     1:@Model.StudentPrice,
                                     2:@Model.ChildrenPrice};
-                @{var index = (int)Model.Ticket.TicketType;}
 
-                var total_price = ticketPrices[@index];
-                price_field.text("Total price:" + total_price.toString());
+                @{var index = (int)Model.Ticket.TicketType;}
+                var totalPrice = ticketPrices[@index];
+
+                priceField.text("Total price: " + totalPrice.toString());
+
                 $(wrapper).on("change", "#ticketType", function (e) {
                     var fieldValue = $(this).val();
-                    total_price = ticketPrices[fieldValue];
-                    price_field.text("Ticket price: "+total_price.toString());
+                    totalPrice = ticketPrices[fieldValue];
+                    priceField.text("Ticket price: "+totalPrice.toString());
                 });
             });
         </script>
     </div>
 </div>
+
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 

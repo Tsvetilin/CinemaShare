@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Data.Seeders
 {
-    public class CinemaSeeder
+    public class CinemasSeeder
     {
         public async Task SeedAsync(CinemaDbContext context)
         {
@@ -24,8 +24,6 @@ namespace Data.Seeders
                 ManagerId =  context.Users.FirstOrDefault(x=>x.UserName=="Admin").Id
                 }
             };
-
-            var randomNumber = new Random();
 
             foreach (var cinema in cinemas)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Data.Models
@@ -29,5 +30,6 @@ namespace Data.Models
 
         public virtual CinemaUser Manager { get; set; }
         
+        public virtual IEnumerable<FilmProjection> FilmProjections { get; set; }
     }
 }

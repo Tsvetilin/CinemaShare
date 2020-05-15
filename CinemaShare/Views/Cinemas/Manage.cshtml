@@ -7,19 +7,20 @@
     ViewData["Title"] = "Manage Cinema";
 }
 
-<h1>Manage your cinema</h1>
-@{
-    //<form asp-controller="Cinemas" asp-action="Update" asp-route-id="@Model.Id" method="get">
-    //<form asp-controller="Cinemas" asp-action="Update" asp-route-id="@Model.Id" method="get">
-    //  <input class="bg-info" type="submit" value="Update" />
-    //</form>
-}
-<a asp-controller="Cinemas" asp-action="Update" asp-route-id="@Model.Id">Update Cinema</a>
-<form asp-controller="Cinemas" asp-action="Delete" asp-route-id="@Model.Id" method="post">
-    <input class="bg-danger" type="submit" onclick="return confirm('Are you sure you want to delete the cinema and the related projections?');" value="Delete" />
-</form>
-<a asp-controller="Projections" asp-action="Add" asp-route-id="@Model.Id">Add projection</a>
-<hr />
+<h1 class="text-center">Manage your cinema</h1>
+<br />
+<div>
+    <form asp-controller="Cinemas" asp-action="Update" asp-route-id="@Model.Id" class="py-1" method="get">
+        <input class="btn btn-primary" type="submit" value="Update cinema" />
+    </form>
+    <form asp-controller="Cinemas" asp-action="Delete" asp-route-id="@Model.Id" class="py-1" method="post">
+        <input class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete the cinema and the related projections?');" value="Delete Cinema" />
+    </form>
+    <form asp-controller="Projections" asp-action="Add" asp-route-id="@Model.Id" class="py-1" method="get">
+        <input class="btn btn-info" type="submit" value="Add projection" />
+    </form>
+</div>
+<br />
 <div class="content-heading clearfix media">
     <div style="margin-left:30px;">
         <h3 class="text-dark font-weight-bold">Name: @Model.Name</h3>
@@ -28,9 +29,8 @@
         <h5 class="text-dark ">Manager: @Model.Mananger</h5>
     </div>
 </div>
-
 <br />
-<h1>Projections</h1>
+<h1 class="text-center">Projections</h1>
 <hr />
 <div>
     @if (Model.FilmProjections?.Count == 0)
@@ -42,15 +42,17 @@
         <ul>
             @foreach (var projection in Model.FilmProjections)
             {
-            <li>
-                <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id">
+            <li class="list-unstyled">
+                <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id" class="text-decoration-none box-hover">
                     <h5>Film: @projection.FilmTitle</h5>
                     <h5>Projection type: @projection.ProjectionType.ToString().Substring(1)</h5>
                     <h5>Date: @projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
                 </a>
-                <a asp-controller="Projections" asp-action="Update" asp-route-id="@projection.Id">Update Projection</a>
-                <form asp-controller="Projections" asp-action="Delete" asp-route-id="@projection.Id" method="post">
-                    <input class="bg-danger" type="submit" onclick="return confirm('Are you sure you want to delete the projection?');" value="Delete Projection" />
+                <form asp-controller="Projections" asp-action="Update" asp-route-id="@projection.Id" class="py-1" method="get">
+                    <input class="btn btn-primary" type="submit" value="Update Projection" />
+                </form>
+                <form asp-controller="Projections" asp-action="Delete" asp-route-id="@projection.Id" class="py-1" method="post">
+                    <input class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete the projection?');" value="Delete Projection" />
                 </form>
             </li>
             }

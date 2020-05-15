@@ -173,6 +173,7 @@ namespace CinemaShare.Controllers
         [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Manage(string id)
         {
+            //TODO: remove all projections and tickets
             var user = await userManager.GetUserAsync(User);
             var cinema = await cinemaBusiness.GetAsync(id);
             if (user?.Id == cinema?.ManagerId)

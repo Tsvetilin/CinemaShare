@@ -120,6 +120,7 @@ namespace CinemaShare.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(string id, ProjectionInputModel input)
         {
+            //TODO: remove tickets with seats > number of tickets && update ticket prices
             var user = await userManager.GetUserAsync(User);
             var cinema = user?.Cinema;
             var projection = await filmProjectionBusiness.Get(id);
@@ -150,6 +151,7 @@ namespace CinemaShare.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
+            //TODO: see if all tickets are removed
             var user = await userManager.GetUserAsync(User);
             var cinema = user?.Cinema;
             if (cinema != null)

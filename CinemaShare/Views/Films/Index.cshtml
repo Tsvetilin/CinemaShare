@@ -3,15 +3,13 @@
     ViewData["Title"] = "Films";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <div style="display:inline-flex;" class="w-100">
     <h1>Films</h1>
-    <form style="margin: 0 auto;width:50%;
-          display: inline-flex;"
+    <form class="d-inline-flex col-md-4" style="margin: 0 auto;"
           asp-controller="Films" asp-action="Index" method="get">
-        <div class="row1">
-            <input name="Search" placeholder="Film title" />
-            <input type="submit" value="Try Find Film" />
-        </div>
+        <input class="form-control" name="Search" placeholder="Film title" />
+        <input class="btn btn-primary" type="submit" value="Try Find Film" />
     </form>
 </div>
 <div asp-validation-summary="All" style="margin: 0 auto;width:40%; display: flex;" class="text-danger"></div>

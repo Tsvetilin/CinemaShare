@@ -5,7 +5,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Update</h1>
+<h1 class="text-center">Update film</h1>
+
 <div class="row1">
     <div class="col-md-4">
         <form asp-controller="Films" asp-action="Update" method="post">
@@ -28,7 +29,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="@Model.Description"></label>
-                <textarea asp-for="@Model.Description" class="form-control" ></textarea>
+                <textarea asp-for="@Model.Description" class="form-control"></textarea>
                 <span asp-validation-for="@Model.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -59,3 +60,4 @@
     </div>
 </div>
 
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

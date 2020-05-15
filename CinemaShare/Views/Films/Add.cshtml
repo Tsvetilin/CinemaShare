@@ -5,14 +5,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Add</h1>
-<span asp-validation-summary=""></span>
+<h1>Add film</h1>
 
 <div class="row1">
     <div class="col-md-4">
-        <form asp-controller="Films" asp-action="FetchFilm" method="post">
-            <input name="Title" placeholder="Film title"/>
-            <input type="submit" value="Try Fetch Film"/>
+        <form asp-controller="Films" asp-action="FetchFilm" class="d-inline-flex" method="post">
+            <input class="form-control" name="Title" placeholder="Film title" />
+            <input class="btn btn-primary" type="submit" value="Try Fetch Film" />
         </form>
         <form asp-controller="Films" asp-action="Add" method="post">
             <hr />
@@ -39,7 +38,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="@Model.Description"></label>
-                <textarea asp-for="@Model.Description" class="form-control" ></textarea>
+                <textarea asp-for="@Model.Description" class="form-control"></textarea>
                 <span asp-validation-for="@Model.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -74,3 +73,4 @@
         </form>
     </div>
 </div>
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

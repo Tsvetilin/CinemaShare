@@ -3,15 +3,14 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>Projections</h1>
+<h1 class="text-center">Projections</h1>
 <ul class="list-inline text-dark" style="text-align: center;">
     @foreach (var projectionCard in Model?.Projectitons)
     {
         <li style="padding-bottom: 20px;width:100%;">
             <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projectionCard.Id"
-               class="content-heading clearfix media box-hover"
-               style="text-decoration:none;margin: 0 auto;width: 100%;justify-content: center;">
-                <div >
+               class="content-heading clearfix media box-hover text-decoration-none m-auto w-100 justify-content-center">
+                <div>
                     <h3 class="text-dark font-weight-bold">Film: @projectionCard.FilmTitle</h3>
                     <h5 class="text-dark ">Cinema: @projectionCard.CinemaName</h5>
                     <h5 class="text-dark ">Date: @projectionCard.Date.ToString("dd/MM/yyyy HH:mm")</h5>
@@ -19,7 +18,7 @@
                 </div>
             </a>
         </li>
-    }
+        }
 </ul>
 
 <nav>
