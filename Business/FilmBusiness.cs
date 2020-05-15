@@ -16,17 +16,21 @@ namespace Business
             this.context = context;
         }
 
+        //Done
         public async Task AddAsync(Film film)
         {
             await context.Films.AddAsync(film);
             await context.SaveChangesAsync();
         }
 
+        //Done
         public async Task<Film> GetAsync(string id)
         {
-            return await context.Films.FindAsync(id);
+            var film = await context.Films.FindAsync(id);
+            return film;
         }
 
+        //Done
         public IEnumerable<Film> GetAll()
         {
             return context.Films.ToList();
@@ -82,6 +86,7 @@ namespace Business
             return userInContext?.WatchList?.Select(x => mapToModelFunc(x.FilmData)).ToList();
         }
 
+        //Isn't used
         public async Task UpdateAsync(Film film)
         {
             var filmInContext = await context.Films.FindAsync(film.Id);
@@ -92,6 +97,7 @@ namespace Business
             }
         }
 
+        //Done
         public async Task DeleteAsync(string id)
         {
             var filmInContext = await context.Films.FindAsync(id);

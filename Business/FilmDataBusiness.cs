@@ -28,12 +28,13 @@ namespace Business
         {
             return context.FilmDatas.Any(x => x.Title.ToLower().Equals(filmTitle.ToLower()));
         }
-
+        
         public async Task<FilmData> GetAsync(string id)
         {
             return await context.FilmDatas.FindAsync(id);
         }
 
+        
         public async Task<TModel> GetAsync<TModel>(string id, Func<FilmData, TModel> mapToModelFunc)
         {
             var film = await GetAsync(id);
