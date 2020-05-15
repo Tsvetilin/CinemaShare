@@ -47,7 +47,7 @@ namespace Data.Seeders
                 Runtime=113,
                 Director="Guy Ritchie",
                 Cast="Matthew McConaughey, Charlie Hunnam, Michelle Dockery",
-                ReleaseDate=new DateTime(2020,1,31),
+                ReleaseDate=new DateTime(2020,01,31),
                 TargetAudience= TargetAudience.Over12,
                 },
 
@@ -62,7 +62,7 @@ namespace Data.Seeders
                 Runtime=49,
                 Director="Carlo Bernard",
                 Cast="Pedro Pascal, Wagner Moura, Boyd Holbrook",
-                ReleaseDate=new DateTime(2017,4,20),
+                ReleaseDate=new DateTime(2017,04,20),
                 TargetAudience= TargetAudience.Over16,
                 },
 

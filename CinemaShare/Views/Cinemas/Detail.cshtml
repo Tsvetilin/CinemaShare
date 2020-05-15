@@ -23,7 +23,7 @@
     </div>
 </div>
 
-<h1 class="text-center">Projecions</h1>
+<h1 class="text-center">Projections</h1>
 <hr>
 @if (Model.FilmProjections?.Count == 0)
 {
@@ -38,7 +38,7 @@ else
                 <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id">
                     <h5>Cinema: @projection.CinemaName</h5>
                     <h5>City: @projection.CinemaCity</h5>
-                    <h5>Projection type: @projection.ProjectionType.ToString()</h5>
+                    <h5>Projection type: @projection.ProjectionType.ToString().Substring(1)</h5>
                     <h5>Date: @projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
                 </a>
             </li>

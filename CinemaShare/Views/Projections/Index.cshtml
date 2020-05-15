@@ -4,18 +4,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h1>Projections</h1>
-<ul class="list-inline text-dark">
+<ul class="list-inline text-dark" style="text-align: center;">
     @foreach (var projectionCard in Model?.Projectitons)
     {
-        <li style="padding-bottom: 20px;">
+        <li style="padding-bottom: 20px;width:100%;">
             <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projectionCard.Id"
                class="content-heading clearfix media box-hover"
-               style="text-decoration:none;margin: 0 auto;width: 30%;">
-                <div style="margin-left: 30px;">
-                    <h3 class="text-dark font-weight-bold">Cinema: @projectionCard.CinemaName</h3>
-                    <h5 class="text-dark ">Film: @projectionCard.FilmTitle</h5>
-                    <h5 class="text-dark ">Date: @projectionCard.Date</h5>
-                    <h5 class="text-dark ">Projection type: @projectionCard.ProjectionType</h5>
+               style="text-decoration:none;margin: 0 auto;width: 100%;justify-content: center;">
+                <div >
+                    <h3 class="text-dark font-weight-bold">Film: @projectionCard.FilmTitle</h3>
+                    <h5 class="text-dark ">Cinema: @projectionCard.CinemaName</h5>
+                    <h5 class="text-dark ">Date: @projectionCard.Date.ToString("dd/MM/yyyy HH:mm")</h5>
+                    <h5 class="text-dark ">Projection type: @projectionCard.ProjectionType.ToString().Substring(1)</h5>
                 </div>
             </a>
         </li>
@@ -23,7 +23,7 @@
 </ul>
 
 <nav>
-    <ul class="pagination justify-content-center" style="padding-top:30px; margin-bottom:0px;">
+    <ul class="pagination justify-content-center" style="padding-top: 30px; margin-bottom: 0px;">
         @if (this.Model.CurrentPage == 1)
         {
             <li class="page-item disabled">

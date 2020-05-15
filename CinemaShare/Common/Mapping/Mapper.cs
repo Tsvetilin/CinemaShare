@@ -216,6 +216,7 @@ namespace CinemaShare.Common.Mapping
                 ProjectionType = filmProjection.ProjectionType,
                 Date = filmProjection.Date,
                 CinemaCity = filmProjection.Cinema.City,
+                CinemaCountry = filmProjection.Cinema.Country
             };
         }
 
@@ -246,6 +247,7 @@ namespace CinemaShare.Common.Mapping
                 FilmRuntime = filmProjection.Film.FilmData.Runtime,
                 FilmTargetAudience = filmProjection.Film.FilmData.TargetAudience,
                 CinemaCity = filmProjection.Cinema.City,
+                CinemaCountry = filmProjection.Cinema.Country,
                 TicketsSold = filmProjection.ProjectionTickets.Count(),
                 ChildrenTicketPrice = filmProjection.TicketPrices.ChildrenPrice,
                 AdultsTicketPrice = filmProjection.TicketPrices.AdultPrice,

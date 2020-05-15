@@ -18,7 +18,7 @@ else
                 <h5>Film: @ticket.Projection.Film.FilmData.Title</h5>
                 <h5>Ticket type: @ticket.Type.ToString()</h5>
                 <h5>Seat: @ticket.Seat</h5>
-                <h5>Projection type: @ticket.Projection.ProjectionType</h5>
+                <h5>Projection type: @ticket.Projection.ProjectionType.ToString().Substring(1)</h5>
                 <h5>Date: @ticket.Projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
                 <h5>Price: @ticket.Price</h5>
             </li>

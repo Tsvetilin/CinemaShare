@@ -45,7 +45,7 @@
             <li>
                 <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id">
                     <h5>Film: @projection.FilmTitle</h5>
-                    <h5>Projection type: @projection.ProjectionType.ToString()</h5>
+                    <h5>Projection type: @projection.ProjectionType.ToString().Substring(1)</h5>
                     <h5>Date: @projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
                 </a>
                 <a asp-controller="Projections" asp-action="Update" asp-route-id="@projection.Id">Update Projection</a>

@@ -20,5 +20,7 @@ namespace CinemaShare.Models.ViewModels
         public string CinemaName { get; set; }
 
         public string CinemaCity { get; set; }
+
+        public string CinemaCountry { get; set; }
     }
 }
