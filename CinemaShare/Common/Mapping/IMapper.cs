@@ -3,7 +3,6 @@ using CinemaShare.Models.JsonModels;
 using CinemaShare.Models.ViewModels;
 using Data.Models;
 using System;
-using System.Collections.Generic;
 
 namespace CinemaShare.Common.Mapping
 {
@@ -15,7 +14,9 @@ namespace CinemaShare.Common.Mapping
 
         public CinemaDataViewModel MapToCinemaDataViewModel(Cinema cinema);
 
-        public IEnumerable<FilmCardViewModel> MapToFilmCardViewModel(IEnumerable<FilmData> rawFilms);
+        public FilmCardViewModel MapToFilmCardViewModel(FilmData filmData);
+
+        public FilmReviewViewModel MapToFilmReviewViewMode(FilmReview review);
 
         public CinemaCardViewModel MapToCinemaCardViewModel(Cinema rawCinemas);
 
@@ -41,8 +42,6 @@ namespace CinemaShare.Common.Mapping
 
         public TicketCardViewModel MapToTicketCardViewModel(ProjectionTicket ticket);
 
-        public ProjectionTicket MapToProjectionTicket(string userId, UpdateTicketInputModel input, FilmProjection projection, DateTime timeStamp);
-    
         public ProjectionTicket MapToProjectionTicket(string userId, TicketInputModel input, FilmProjection projection, DateTime timeStamp);
     }
 }

@@ -58,50 +58,35 @@ namespace Business
             return film;
         }
 
-        public IEnumerable<TModel> GetFilmsOnPageByName<TModel>(int page, int filmsOnPage,
-                                                                Func<FilmData, TModel> mapToModelFunc)
+        public IEnumerable<TModel> GetPageItems<TModel>(int page, int filmsOnPage, string sortOption,
+                                                        Func<FilmData, TModel> mapToModelFunc)
         {
-            var sortedFilms = context.FilmDatas.OrderBy(x => x.Title).ToList();
-            return GetPageItems(page, filmsOnPage, mapToModelFunc, sortedFilms).ToList();
-        }
-
-        public IEnumerable<TModel> GetFilmsOnPageByYear<TModel>(int page, int filmsOnPage,
-                                                                Func<FilmData, TModel> mapToModelFunc)
-        {
-            var sortedFilms = context.FilmDatas.OrderByDescending(x => x.ReleaseDate).ToList();
-            return GetPageItems(page, filmsOnPage, mapToModelFunc, sortedFilms).ToList();
-        }
-
-        public IEnumerable<TModel> GetFilmsOnPageByRating<TModel>(int page, int filmsOnPage,
-                                                                  Func<FilmData, TModel> mapToModelFunc)
-        {
-            var sortedFilms = context.FilmDatas.OrderByDescending(x => x.Film.Rating).ToList();
-            return GetPageItems(page, filmsOnPage, mapToModelFunc, sortedFilms).ToList();
-        }
-
-        public IEnumerable<TModel> GetPageItems<TModel>(int page, int filmsOnPage,
-                                                        Func<FilmData, TModel> mapToModelFunc,
-                                                        IEnumerable<FilmData> orderedFilms = null)
-        {
-            if (orderedFilms == null)
+            var sortedFilms = GetAll();
+            if (sortOption == "Name")
             {
-                orderedFilms = GetAll();
+                sortedFilms = sortedFilms.OrderBy(x => x.Title);
+            }
+            else if (sortOption == "Year")
+            {
+                sortedFilms = sortedFilms.OrderByDescending(x => x.ReleaseDate);
+            }
+            else if (sortOption == "Rating")
+            {
+                sortedFilms = sortedFilms.OrderByDescending(x => x.Film.Rating);
             }
 
-            var selectedFilms = orderedFilms.Skip(filmsOnPage * (page - 1)).Take(filmsOnPage);
+            var selectedFilms = sortedFilms.Skip(filmsOnPage * (page - 1)).Take(filmsOnPage);
             return selectedFilms.Select(x => mapToModelFunc(x));
         }
 
-        public IEnumerable<TModel> GetTopFilms<TModel>(Func<IEnumerable<FilmData>,
-                                                            IEnumerable<TModel>> mapToModelFunc)
+        public IEnumerable<TModel> GetTopFilms<TModel>(Func<FilmData,TModel> mapToModelFunc)
         {
-            return mapToModelFunc(this.GetAll().OrderByDescending(x => x.Film.Rating)?.Take(10)).ToList();
+            return this.GetAll().OrderByDescending(x => x.Film.Rating)?.Take(10).Select(x => mapToModelFunc(x)).ToList();
         }
 
-        public IEnumerable<TModel> GetRecentFilms<TModel>(Func<IEnumerable<FilmData>,
-                                                               IEnumerable<TModel>> mapToModelFunc)
+        public IEnumerable<TModel> GetRecentFilms<TModel>(Func<FilmData,TModel> mapToModelFunc)
         {
-            return mapToModelFunc(this.GetAll().OrderByDescending(x => x.ReleaseDate)?.Take(4)).ToList();
+            return this.GetAll().OrderByDescending(x => x.ReleaseDate)?.Take(4).Select(x=>mapToModelFunc(x)).ToList();
         }
 
         public int CountAllFilms()

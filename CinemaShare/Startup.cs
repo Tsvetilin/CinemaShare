@@ -20,10 +20,10 @@ namespace CinemaShare
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // Add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
-            //Database and Identity
+            // Database and Identity
             services.AddDbContext<CinemaDbContext>(options => {
                 options.UseMySQL( Configuration.GetConnectionString("DefaultConnection"));
                 options.UseLazyLoadingProxies();
@@ -35,10 +35,10 @@ namespace CinemaShare
             services.AddControllersWithViews();
             services.AddRazorPages();
             
-            //Configuration
+            // Configuration
             services.AddSingleton(this.Configuration);
 
-            //Add service providers from business layer
+            // Service providers from business layer
             services.AddTransient<IEmailSender>(x=>new EmailSender(Configuration.GetSection("EmailSender").Value));
             services.AddTransient<ICinemaBusiness, CinemaBusiness>();
             services.AddTransient<IFilmBusiness, FilmBusiness>();
@@ -52,7 +52,7 @@ namespace CinemaShare
             services.AddTransient<IMapper, Mapper>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // Configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // Seed data on application startup

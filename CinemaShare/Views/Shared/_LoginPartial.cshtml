@@ -45,7 +45,9 @@
             </li>
 
             <li class="nav-item">
-                <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                <form id="manage" class="form-inline" asp-area="Identity" asp-page="/Account/Manage/Index" method="get">
+                    <button id="manageBut" type="submit" class="nav-link btn btn-link text-dark" title="Manage">@UserManager.GetUserName(User)</button>
+                </form>
             </li>
             <li class="nav-item">
                 <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">

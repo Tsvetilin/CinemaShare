@@ -4,18 +4,21 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div style="display:inline-flex;" class="w-100">
+<div class="d-inline-flex w-100">
     <h1>Films</h1>
-    <form class="d-inline-flex col-md-4" style="margin: 0 auto;"
+    <form class="d-inline-flex col-md-4 m-auto"
           asp-controller="Films" asp-action="Index" method="get">
         <input class="form-control" name="Search" placeholder="Film title" />
         <input class="btn btn-primary" type="submit" value="Try Find Film" />
     </form>
 </div>
-<div asp-validation-summary="All" style="margin: 0 auto;width:40%; display: flex;" class="text-danger"></div>
+
+<div class="pb-4 col-md-4 mx-auto">
+    <div asp-validation-summary="All" class=" text-danger "></div>
+</div>
 
 
-<div class="orderOptions" style="position:absolute;">
+<div class="orderOptions position-absolute mt-5">
     <h3>Sort by:</h3>
     <h4 class="media-heading"><a asp-route="filmsList" asp-route-sort="Name" asp-route-id="1">Name</a></h4>
     <h4 class="media-heading"><a asp-route="filmsList" asp-route-sort="Year" asp-route-id="1">Year</a></h4>
@@ -26,18 +29,18 @@
 <ul class="list-inline text-dark">
     @foreach (var filmCard in Model?.Films)
     {
-        <li style="padding-bottom: 20px;">
+        <li class="pb-3">
             <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
-               class="content-heading clearfix media box-hover" style="text-decoration:none;">
-                <img class="rounded float-left h-25 w-25" style="margin-left:320px;" src="@filmCard.Poster" alt="Film poster">
-                <div style="margin-left:30px;">
+               class="content-heading clearfix media box-hover text-decoration-none">
+                <img class="rounded float-left h-25 w-25 ml-auto" src="@filmCard.Poster" alt="Film poster">
+                <div class="col-md-6 ml-4">
                     <h3 class="text-dark font-weight-bold">@filmCard.Title</h3>
                     <h5 class="text-dark ">Rating: @filmCard.Rating</h5>
                     <p class="text-dark ">Director: @filmCard.Director</p>
                     <p class="text-dark ">@filmCard.Runtime minutes</p>
                     <p class="text-dark ">Genres: @filmCard.Genres</p>
                     <p class="text-dark ">Release date: @filmCard.ReleaseDate.ToShortDateString()</p>
-                    <p class="font-weight-bold " style="color:black">@filmCard.Description</p>
+                    <p class="font-weight-bold" style="color:black">@filmCard.Description</p>
                 </div>
             </a>
         </li>

@@ -97,7 +97,7 @@ namespace CinemaShare.Controllers
 
             var projection = mapper.MapToFilmProjection(input, film, cinema);
             await filmProjectionBusiness.Add(projection);
-            return this.RedirectToAction("Detail", "Projections", new { Id = projection.Id });
+            return this.RedirectToAction("Detail", "Projections", new { projection.Id });
         }
 
         [Authorize(Roles = "Manager, Admin")]
@@ -144,7 +144,7 @@ namespace CinemaShare.Controllers
             var updatedProjection = mapper.MapToFilmProjection(input, film, cinema);
             updatedProjection.Id = id;
             await filmProjectionBusiness.Update(updatedProjection);
-            return this.RedirectToAction("Detail", "Projections", new { Id = projection.Id });
+            return this.RedirectToAction("Detail", "Projections", new { projection.Id });
         }
 
         [Authorize(Roles ="Manager, Admin")]
@@ -158,7 +158,7 @@ namespace CinemaShare.Controllers
             {
                 await filmProjectionBusiness.Delete(id);
             }
-            return this.RedirectToAction("Manage", "Cinemas",new { Id = cinema?.Id });
+            return this.RedirectToAction("Manage", "Cinemas",new { cinema?.Id });
         }
     }
 }

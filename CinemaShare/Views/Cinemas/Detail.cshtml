@@ -7,7 +7,7 @@
     ViewData["Title"] = "Detail";
 }
 
-<h1>Detail</h1>
+<h1 class="text-center">Detail</h1>
 @if (Model.Mananger == User.Identity.Name)
 {
     <form asp-controller="Cinemas" asp-action="Manage" asp-route-id="@Model.Id" method="get">
@@ -15,7 +15,7 @@
     </form>
 }
 <div class="content-heading clearfix media">
-    <div style="margin-left:30px;">
+    <div class="ml-4">
         <h3 class="text-dark font-weight-bold">Name: @Model.Name</h3>
         <h5 class="text-dark ">Country: @Model.Country</h5>
         <h5 class="text-dark ">City: @Model.City</h5>
@@ -31,11 +31,11 @@
 }
 else
 {
-    <ul>
+    <ul class="list-unstyled">
         @foreach (var projection in Model.FilmProjections)
         {
-            <li>
-                <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id" class="text-decoration-none">
+            <li class="col-md-4 box-hover list-unstyled">
+                <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id" class="text-decoration-none box-hover">
                     <h5>Cinema: @projection.CinemaName</h5>
                     <h5>City: @projection.CinemaCity</h5>
                     <h5>Projection type: @projection.ProjectionType.ToString().Substring(1)</h5>

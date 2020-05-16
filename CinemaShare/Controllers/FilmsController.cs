@@ -49,8 +49,8 @@ namespace CinemaShare.Controllers
         {
             int pageCount = 1;
             List<ExtendedFilmCardViewModel> films = new List<ExtendedFilmCardViewModel>();
-            FilmsIndexViewModel viewModel = new FilmsIndexViewModel();
-            if (!string.IsNullOrEmpty(search))
+
+            if (!string.IsNullOrWhiteSpace(search))
             {
                 films = filmDataBusiness.GetAllByName(search, mapper.MapToExtendedFilmCardViewModel).ToList();
                 if (films.Count != 0)
@@ -66,33 +66,14 @@ namespace CinemaShare.Controllers
             }
 
             pageCount = (int)Math.Ceiling((double)filmDataBusiness.CountAllFilms() / filmsOnPage);
+
             if (id > pageCount || id < 1)
             {
                 id = 1;
             }
-
-            if (sort == "Name")
-            {
-                films = filmDataBusiness.GetFilmsOnPageByName(id, filmsOnPage,
-                                                              mapper.MapToExtendedFilmCardViewModel).ToList();
-            }
-            else if (sort == "Year")
-            {
-                films = filmDataBusiness.GetFilmsOnPageByYear(id, filmsOnPage,
-                                                              mapper.MapToExtendedFilmCardViewModel).ToList();
-            }
-            else if (sort == "Rating")
-            {
-                films = filmDataBusiness.GetFilmsOnPageByRating(id, filmsOnPage,
+            films = filmDataBusiness.GetPageItems(id, filmsOnPage, sort,
                                                                 mapper.MapToExtendedFilmCardViewModel).ToList();
-            }
-            else
-            {
-                films = filmDataBusiness.GetPageItems(id, filmsOnPage,
-                                                                mapper.MapToExtendedFilmCardViewModel).ToList();
-            }
-
-            viewModel = new FilmsIndexViewModel
+            var viewModel = new FilmsIndexViewModel
             {
                 PagesCount = pageCount,
                 CurrentPage = id,
@@ -121,6 +102,7 @@ namespace CinemaShare.Controllers
         [Authorize]
         public IActionResult Add(string id = null)
         {
+            //Check if there is TempData record for previous fetching
             if (id == null ? false : TempData[id] != null)
             {
                 var serializedFilm = TempData[id];
@@ -160,27 +142,26 @@ namespace CinemaShare.Controllers
             await filmBusiness.AddAsync(film);
             await filmDataBusiness.AddAsync(input, film, mapper.MapToFilmData);
 
-            return this.RedirectToAction("Detail", "Films", new { Id = film.Id });
+            return this.RedirectToAction("Detail", "Films", new { film.Id });
         }
 
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddReview(FilmReviewInputModel input, string id)
         {
-            var user = await userManager.GetUserAsync(User);
-            if (ModelState.IsValid && id != null && user != null)
+            var userId = userManager.GetUserId(User);
+            if (ModelState.IsValid && id != null && userId != null)
             {
                 await reviewBusiness.Add(new FilmReview
                 {
                     Content = input.Content,
                     CreatedOn = DateTime.UtcNow,
                     FilmId = id,
-                    UserId = user.Id
+                    UserId = userId
                 });
             }
 
             return RedirectToAction("Detail", "Films", new { Id = id });
-            //return this.Redirect(Request.Headers["Referer"].ToString());
         }
 
         [Authorize]
@@ -192,28 +173,29 @@ namespace CinemaShare.Controllers
                 return RedirectToAction("Add", "Films");
             }
 
-            var id = Guid.NewGuid().ToString();
+            var tempDataId = Guid.NewGuid().ToString();
             if (filmDataBusiness.IsAlreadyAdded(title))
             {
-                var inputModel = new FilmInputModel();
-                inputModel.Error = "Film already added!";
-                TempData[id] = JsonConvert.SerializeObject(inputModel);
+                var inputModel = new FilmInputModel
+                {
+                    Error = "Film already added!"
+                };
+                TempData[tempDataId] = JsonConvert.SerializeObject(inputModel);
             }
             else
             {
                 string apiKey = configuration.GetSection("OMDb").Value;
-                TempData[id] = await filmFetchApi.FetchFilmAsync<FilmJsonModel, FilmInputModel>
+                TempData[tempDataId] = await filmFetchApi.FetchFilmAsync<FilmJsonModel, FilmInputModel>
                     (apiKey, title, mapper.MapToFilmInputModel);
             }
 
-            return this.RedirectToAction("Add", "Films", new { Id = id });
+            return this.RedirectToAction("Add", "Films", new { Id = tempDataId });
         }
 
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> RateFilm(string id, int rating)
         {
-            //TODO: improve conditions
             if (rating > 0 && rating < 6 && id != null)
             {
                 await filmBusiness.RateAsync(id, userManager.GetUserId(User), rating);
@@ -227,7 +209,9 @@ namespace CinemaShare.Controllers
         {
             var user = await userManager.GetUserAsync(User);
             var film = await filmBusiness.GetAsync(id);
-            if (user?.Id == film?.AddedByUserId)
+
+            //Check if user is signed in, film exists and the user is the one who added it
+            if (user?.Id == null ? false : user.Id == film?.AddedByUserId)
             {
                 var inputModel = mapper.MapToFilmUpdateInputModel(film.FilmData);
                 return this.View(inputModel);
@@ -243,9 +227,11 @@ namespace CinemaShare.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(FilmUpdateInputModel input, string id)
         {
-            var user = await userManager.GetUserAsync(User);
+            var userId = userManager.GetUserId(User);
             var film = await filmBusiness.GetAsync(id);
-            if (user?.Id == film?.AddedByUserId)
+
+            //Check if user is signed in, film exists and the user is the one who added it
+            if (userId == null ? false : userId == film?.AddedByUserId)
             {
                 if (!ModelState.IsValid)
                 {
@@ -280,9 +266,9 @@ namespace CinemaShare.Controllers
         public async Task<IActionResult> AddToWatchList(string id)
         {
             var film = await filmDataBusiness.GetAsync(id);
-            if (film != null)
+            var userId = userManager.GetUserId(User);
+            if (film != null && userId!=null)
             {
-                var userId = userManager.GetUserId(User);
                 await filmBusiness.AddToWatchListAsync(userId, film.Film);
                 return RedirectToAction("Detail", "Films", new { Id = id });
             }
@@ -295,9 +281,9 @@ namespace CinemaShare.Controllers
         public async Task<IActionResult> RemoveFromWatchList(string id)
         {
             var film = await filmDataBusiness.GetAsync(id);
-            if (film != null)
+            var userId = userManager.GetUserId(User);
+            if (film != null && userId!=null)
             {
-                var userId = userManager.GetUserId(User);
                 await filmBusiness.RemoveFromWatchListAsync(userId, film.Film);
                 return RedirectToAction("Detail", "Films", new { Id = id });
             }

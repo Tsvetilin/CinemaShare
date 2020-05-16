@@ -39,22 +39,27 @@ namespace Business
         public async Task RateAsync(string filmId, string userId, int rating)
         {
             var filmInContext = await context.Films.FindAsync(filmId);
-            if (filmInContext != null)
+            if (userId == null || filmInContext == null)
             {
-                if (filmInContext.Ratings.Any(x => x.UserId == userId))
-                {
-                    filmInContext.Ratings.First(x => x.UserId == userId).Rating = rating;
-                }
-                else
-                {
-                    filmInContext.Ratings = filmInContext.Ratings.Append(new FilmRating { Rating = rating,
-                                                                                          UserId = userId 
-                                                                                        }).ToList();
-                }
-                filmInContext.Rating = (double)filmInContext.Ratings.Select(x => x.Rating).Sum() /
-                                                                    filmInContext.Ratings.Count();
-                await context.SaveChangesAsync();
+                return;
             }
+
+            if (filmInContext.Ratings.Any(x => x.UserId == userId))
+            {
+                filmInContext.Ratings.First(x => x.UserId == userId).Rating = rating;
+            }
+            else
+            {
+                filmInContext.Ratings = filmInContext.Ratings.Append(new FilmRating
+                {
+                    Rating = rating,
+                    UserId = userId
+                }).ToList();
+            }
+            filmInContext.Rating = (double)filmInContext.Ratings.Select(x => x.Rating).Sum() /
+                                                                filmInContext.Ratings.Count();
+            await context.SaveChangesAsync();
+
         }
 
         public async Task AddToWatchListAsync(string userId, Film film)

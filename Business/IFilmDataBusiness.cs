@@ -19,23 +19,11 @@ namespace Business
 
         public IEnumerable<FilmData> GetAll();
 
-        public IEnumerable<TModel> GetFilmsOnPageByName<TModel>(int page, int filmsOnPage,
-                                                                Func<FilmData, TModel> mapToModelFunc);
+        public IEnumerable<TModel> GetPageItems<TModel>(int page, int filmsOnPage, string sortOption,
+                                                       Func<FilmData, TModel> mapToModelFunc);
+        public IEnumerable<TModel> GetTopFilms<TModel>(Func<FilmData, TModel> mapToModelFunc);
 
-        public IEnumerable<TModel> GetFilmsOnPageByYear<TModel>(int page, int filmsOnPage,
-                                                                Func<FilmData, TModel> mapToModelFunc);
-
-        public IEnumerable<TModel> GetFilmsOnPageByRating<TModel>(int page, int filmsOnPage,
-                                                                Func<FilmData, TModel> mapToModelFunc);
-
-        public IEnumerable<TModel> GetPageItems<TModel>(int page, int filmsOnPage,
-                                                        Func<FilmData, TModel> mapToModelFunc,
-                                                        IEnumerable<FilmData> orderedFilms = null);
-        public IEnumerable<TModel> GetTopFilms<TModel>(Func<IEnumerable<FilmData>,
-                                                               IEnumerable<TModel>> mapToModelFunc);
-
-        public IEnumerable<TModel> GetRecentFilms<TModel>(Func<IEnumerable<FilmData>,
-                                                               IEnumerable<TModel>> mapToModelFunc);
+        public IEnumerable<TModel> GetRecentFilms<TModel>(Func<FilmData, TModel> mapToModelFunc);
 
         public IEnumerable<TModel> GetAllByName<TModel>(string searchString, Func<FilmData, TModel> mapToModelFunc);
 

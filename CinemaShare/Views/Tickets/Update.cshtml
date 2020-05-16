@@ -4,7 +4,7 @@
     ViewData["Title"] = "Update";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<<h1 class="text-center">Update reserved ticket</h1>
+<h1 class="text-center">Update reserved ticket</h1>
 
 <div class="row1">
     <div class="col-md-4">
@@ -52,5 +52,8 @@
     </div>
 </div>
 
-@{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
 

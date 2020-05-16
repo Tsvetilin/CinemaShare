@@ -7,9 +7,9 @@
 <ul class="list-inline text-dark" style="text-align: center;">
     @foreach (var projectionCard in Model?.Projectitons)
     {
-        <li style="padding-bottom: 20px;width:100%;">
+        <li class="pb-3 w-100">
             <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projectionCard.Id"
-               class="content-heading clearfix media box-hover text-decoration-none m-auto w-100 justify-content-center">
+               class="content-heading clearfix media box-hover text-decoration-none mx-auto w-50 justify-content-center">
                 <div>
                     <h3 class="text-dark font-weight-bold">Film: @projectionCard.FilmTitle</h3>
                     <h5 class="text-dark ">Cinema: @projectionCard.CinemaName</h5>
@@ -20,9 +20,9 @@
         </li>
         }
 </ul>
-
+<br />
 <nav>
-    <ul class="pagination justify-content-center" style="padding-top: 30px; margin-bottom: 0px;">
+    <ul class="pagination justify-content-center mb-0 pt-3">
         @if (this.Model.CurrentPage == 1)
         {
             <li class="page-item disabled">

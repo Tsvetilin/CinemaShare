@@ -3,24 +3,23 @@
     ViewData["Title"] = "Index";
 }
 
-<div style="display:inline-flex;" class="w-100">
+<div class="d-inline-flex w-100">
     <h1 class="text-center">Cinemas</h1>
-    <form class="d-inline-flex" style="margin: 0 auto;width:40%;"
+    <form class="d-inline-flex col-md-4 m-auto"
           asp-controller="Cinemas" asp-action="Index" method="get">
             <input class="form-control" name="Search" placeholder="Cinema name or city" />
-            <input class="btn btn-primary" type="submit" value="Try Find Cinema" />
+            <input class="btn btn-primary h-75" type="submit" value="Try Find Cinema" />
     </form>
 </div>
-<div asp-validation-summary="All"  style="margin: 0 auto;width:30%; display: flex;" class="text-danger"></div>
+<div asp-validation-summary="All" class="d-flex m-auto text-danger col-md-4"></div>
 
-<ul class="list-unstyled d-inline-block m-auto w-100 text-dark">
+<ul class="list-unstyled d-inline-block w-100 text-dark">
     @foreach (var cinemaCard in Model?.Cinemas)
     {
-        <li style="padding-bottom: 20px;">
+        <li class="mx-auto pb-3">
             <a asp-controller="Cinemas" asp-action="Detail" asp-route-id="@cinemaCard.Id"
-               class="content-heading clearfix media box-hover text-decoration-none"
-               style="margin: 0 auto;width: 30%;">
-                <div style="margin-left: 30px;">
+               class="content-heading clearfix media box-hover text-decoration-none m-auto w-50">
+                <div class="m-auto">
                     <h3 class="text-dark font-weight-bold">@cinemaCard.Name</h3>
                     <h5 class="text-dark ">City: @cinemaCard.City</h5>
                     <h5 class="text-dark ">Country: @cinemaCard.Country</h5>
@@ -33,7 +32,7 @@
 
 
 <nav>
-    <ul class="pagination justify-content-center" style="padding-top:30px; margin-bottom:0px;">
+    <ul class="pagination justify-content-center pt-4 mb-0">
         @if (this.Model.CurrentPage == 1)
         {
             <li class="page-item disabled">

@@ -1,6 +1,4 @@
 ﻿using Data.Enums;
-using Data.Models;
-using System;
 
 namespace CinemaShare.Models.ViewModels
 {
@@ -13,6 +11,7 @@ namespace CinemaShare.Models.ViewModels
         public TargetAudience FilmTargetAudience { get; set; }
        
         public int TicketsSold { get; set; }
+
         public int AvailableTickets { get { return TotalTickets - TicketsSold; }  }
 
         public double ChildrenTicketPrice { get; set; }

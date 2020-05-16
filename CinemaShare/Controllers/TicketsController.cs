@@ -44,6 +44,7 @@ namespace CinemaShare.Controllers
             {
                 id = 1;
             }
+
             TicketsIndexViewModel viewModel = new TicketsIndexViewModel
             {
                 PagesCount = pageCount,
@@ -62,6 +63,7 @@ namespace CinemaShare.Controllers
             {
                 return RedirectToAction("Index", "Projections");
             }
+
             var soldSeats = projection.ProjectionTickets.Select(x => x.Seat).ToList();
             var availableSeats = Enumerable.Range(1, projection.TotalTickets).Where(x => !soldSeats.Contains(x));
             var orderedAvailableSeats = availableSeats.OrderBy(x => x).ToDictionary(x => x.ToString());
@@ -86,15 +88,23 @@ namespace CinemaShare.Controllers
                 return RedirectToAction("Index", "Projections");
             }
 
-            //If same seats add error
+            //If same seats are added add error
             if (ticketsInput.Any(ticket => ticketsInput.Count(others => others.Seat == ticket.Seat) != 1))
             {
                 ModelState.AddModelError("Duplicate", "Can't buy same seats more than once");
             }
+
+            //Check for concurrency reservation conflicts
+            var soldSeats = projection.ProjectionTickets.Select(x => x.Seat).ToList();
+            var availableSeats = Enumerable.Range(1, projection.TotalTickets).Where(x => !soldSeats.Contains(x));
+            if (ticketsInput.Any(ticket => !availableSeats.Contains(ticket.Seat)))
+            {
+                ModelState.AddModelError("Reserved", "Someone got ahead of you and reserved one of your tickets.");
+            }
+
             if (!ModelState.IsValid)
             {
-                var soldSeats = projection.ProjectionTickets.Select(x => x.Seat).ToList();
-                var availableSeats = Enumerable.Range(1, projection.TotalTickets).Where(x => !soldSeats.Contains(x));
+
                 var orderedAvailableSeats = availableSeats.OrderBy(x => x).ToDictionary(x => x.ToString());
                 input.AvailableSeats = new SelectList(orderedAvailableSeats, "Key", "Value");
                 return this.View(input);
@@ -144,14 +154,14 @@ namespace CinemaShare.Controllers
             {
                 return this.RedirectToAction("Index", "Tickets");
             }
-
             if (!ModelState.IsValid)
             {
                 return this.View(input);
             }
+
             var userId = userManager.GetUserId(User);
             DateTime timeStamp = DateTime.UtcNow;
-            var updatedTicket = mapper.MapToProjectionTicket(userId, input, projection, timeStamp);
+            var updatedTicket = mapper.MapToProjectionTicket(userId, input.Ticket, projection, timeStamp);
             updatedTicket.Id = id;
             await projectionTicketBusiness.UpdateAsync(updatedTicket);
             return this.RedirectToAction("Index", "Tickets", new { Id = id });

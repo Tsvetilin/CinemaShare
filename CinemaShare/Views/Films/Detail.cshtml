@@ -76,8 +76,8 @@ else
     <ul>
         @foreach (var projection in Model.FilmProjections)
         {
-            <li>
-                <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id">
+            <li class="col-md-4 box-hover list-unstyled">
+                <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id" class="text-decoration-none box-hover">
                     <h5>Cinema: @projection.CinemaName</h5>
                     <h5>City: @projection.CinemaCity</h5>
                     <h5>Projection type: @projection.ProjectionType.ToString()</h5>
@@ -89,7 +89,7 @@ else
 }
 
 <div class="row bootstrap snippets">
-    <div class="col-md-12 col-sm-12" style="margin:20px 0px 10px 0px">
+    <div class="col-md-12 col-sm-12 mt-3 mb-2">
         <div>
             <h1 class="text-center">Reviews</h1>
         </div>
@@ -117,12 +117,12 @@ else
     <h5>No reviews added yet.</h5>
 }
 else
-{<ul class="media-list" style="margin-bottom:20px">
+{<ul class="media-list mb-5">
         @foreach (var review in Model.FilmReviews)
         {
             <li class="media">
                 <div class="pull-left">
-                    @{var source = ((int)review.User.Gender).ToString() + ".jpg";}
+                    @{var source = ((int)review.UserGender).ToString() + ".jpg";}
                     <img src="https://bootdey.com/img/Content/user_@source"
                          alt="Avatar" class="img-circle">
                 </div>
@@ -130,7 +130,7 @@ else
                     <span class="text-muted pull-right">
                         <small class="text-muted">@review.CreatedOn.ToLocalTime().ToString("dd/MM/yyyyг. HH:mm:ss")</small>
                     </span>
-                    <strong class="text-success">@review.User.UserName</strong>
+                    <strong class="text-success">@review.Username</strong>
                     <p>
                         @review.Content
                     </p>
@@ -139,4 +139,8 @@ else
         }
     </ul>
 }
-<div style="margin-bottom:80px;"></div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -36,7 +36,6 @@ namespace CinemaShare.Controllers
             if (!String.IsNullOrEmpty(search))
             {
                 var searchResult = cinemaBusiness.GetSearchResults(search, mapper.MapToCinemaCardViewModel).ToList();
-                    
                 if (searchResult.Count != 0 )
                 {
                     return View(new CinemasIndexViewModel
@@ -83,9 +82,10 @@ namespace CinemaShare.Controllers
         }
 
         [Authorize(Roles = "Manager, Admin")]
-        public IActionResult Add(string id = null)
+        public async Task<IActionResult> Add()
         {
-            if (userManager.GetUserAsync(User).GetAwaiter().GetResult()?.Cinema != null)
+            var user = await userManager.GetUserAsync(User);
+            if (user?.Cinema != null)
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -114,7 +114,7 @@ namespace CinemaShare.Controllers
                 ManagerId = userManager.GetUserId(User)
             };
             await cinemaBusiness.AddAsync(cinema);
-            return this.RedirectToAction("Manage", "Cinemas", new { Id = cinema.Id });
+            return this.RedirectToAction("Manage", "Cinemas", new { cinema.Id });
         }
 
         [Authorize(Roles = "Manager, Admin")]
@@ -129,7 +129,7 @@ namespace CinemaShare.Controllers
             }
             else if (cinema != null)
             {
-                return RedirectToAction("Manage", "Cinemas", new { Id = id });
+                return RedirectToAction("Detail", "Cinemas", new { Id = id });
             }
             return RedirectToAction("Index", "Cinemas");
         }
@@ -173,7 +173,6 @@ namespace CinemaShare.Controllers
         [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Manage(string id)
         {
-            //TODO: remove all projections and tickets
             var user = await userManager.GetUserAsync(User);
             var cinema = await cinemaBusiness.GetAsync(id);
             if (user?.Id == cinema?.ManagerId)

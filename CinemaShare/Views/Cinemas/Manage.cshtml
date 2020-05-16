@@ -22,7 +22,7 @@
 </div>
 <br />
 <div class="content-heading clearfix media">
-    <div style="margin-left:30px;">
+    <div class="ml-4">
         <h3 class="text-dark font-weight-bold">Name: @Model.Name</h3>
         <h5 class="text-dark ">Country: @Model.Country</h5>
         <h5 class="text-dark ">City: @Model.City</h5>
@@ -42,7 +42,7 @@
         <ul>
             @foreach (var projection in Model.FilmProjections)
             {
-            <li class="list-unstyled">
+            <li class="list-unstyled box-hover col-md-4">
                 <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id" class="text-decoration-none box-hover">
                     <h5>Film: @projection.FilmTitle</h5>
                     <h5>Projection type: @projection.ProjectionType.ToString().Substring(1)</h5>

@@ -1,9 +1,6 @@
 ﻿using Data.Enums;
 using Data.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CinemaShare.Models.ViewModels
 {
@@ -11,7 +8,13 @@ namespace CinemaShare.Models.ViewModels
     {
         public string Id { get; set; }
 
-        public FilmProjection Projection { get; set; }
+        public string CinemaName { get; set; }
+
+        public string FilmTitle { get; set; }
+
+        public ProjectionType ProjectionType { get; set; }
+
+        public DateTime ProjectionDate { get; set; }
 
         public TicketType Type { get; set; }
 
