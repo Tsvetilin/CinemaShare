@@ -11,7 +11,9 @@
             <input class="btn btn-primary h-75" type="submit" value="Try Find Cinema" />
     </form>
 </div>
-<div asp-validation-summary="All" class="d-flex m-auto text-danger col-md-4"></div>
+<div class="pb-4 col-md-4 mx-auto">
+    <div asp-validation-summary="All" class=" text-danger "></div>
+</div>
 
 <ul class="list-unstyled d-inline-block w-100 text-dark">
     @foreach (var cinemaCard in Model?.Cinemas)
