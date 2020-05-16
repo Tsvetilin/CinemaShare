@@ -9,7 +9,7 @@ namespace Business
     {
         public async Task<string> FetchFilmAsync<TJsonModel, TInputModel>(string apiKey, string title, Func<TJsonModel, TInputModel> mapFunction)
         {
-            HttpClient client = new HttpClient();
+            using HttpClient client = new HttpClient();
             string url = $"https://www.omdbapi.com/?apikey={apiKey}&t={title}";
             var json = await client.GetStringAsync(url);
             var filmData = JsonConvert.DeserializeObject<TJsonModel>(json);

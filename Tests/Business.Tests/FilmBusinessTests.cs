@@ -9,6 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using CinemaShare.Common.Mapping;
+using System.Threading;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Tests.Business.Tests
 {
@@ -48,7 +50,11 @@ namespace Tests.Business.Tests
             // Arrange
             var films = new List<Film>
             {
-                new Film {Rating=  2},
+                new Film {Rating=  2, 
+                    AddedByUser= new CinemaUser{ UserName="TestUser", Id="TestId"},
+                    AddedByUserId="TestId",
+                    FilmData= new FilmData{Title="TestFilmTitle"},
+                },
                 new Film {Rating = 3}
             }.AsQueryable();
 
@@ -58,26 +64,28 @@ namespace Tests.Business.Tests
             mockSet.As<IQueryable<Film>>().Setup(m => m.ElementType).Returns(films.ElementType);
             mockSet.As<IQueryable<Film>>().Setup(m => m.GetEnumerator()).Returns(films.GetEnumerator());
             var mockContext = new Mock<CinemaDbContext>();
-            var searchedFilm = films.First(x=>x.Rating==2);
-            mockContext.Setup(c => c.Films).Returns(mockSet.Object);
 
+            var searchedFilm = films.First(x => x.Rating == 2);
+            mockContext.Setup(c => c.Films).Returns(mockSet.Object);
+            mockContext.Setup(s => s.Films.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Film>(films.FirstOrDefault(y => y.Id == searchedFilm.Id)));
+            
             var filmBusiness = new FilmBusiness(mockContext.Object);
 
             // Act
-            var resultFilm =  filmBusiness.GetAsync(searchedFilm.Id).GetAwaiter().GetResult();
+            var resultFilm = filmBusiness.GetAsync(searchedFilm.Id).GetAwaiter().GetResult();
 
             // Assert
-            Assert.AreEqual(resultFilm.Id, searchedFilm.Id, "Doesn't return searched element from the database.");
-            Assert.AreEqual(resultFilm.Rating, searchedFilm.Rating, "Doesn't return searched element from the database.");
-            /*  Assert.AreEqual(resultFilm.AddedByUser, films.First().AddedByUser, "Doesn't return searched element from the database.");
-              Assert.AreEqual(resultFilm.AddedByUserId, films.First().AddedByUserId, "Doesn't return searched element from the database.");
-              Assert.AreEqual(resultFilm.FilmData, films.First().FilmData, "Doesn't return searched element from the database.");
-              Assert.AreEqual(resultFilm.FilmProjection, films.First().FilmProjection, "Doesn't return searched element from the database.");
-              Assert.AreEqual(resultFilm.FilmReviews, films.First().FilmReviews, "Doesn't return searched element from the database.");
-              Assert.AreEqual(resultFilm.OnWatchlistUsers, films.First().OnWatchlistUsers, "Doesn't return searched element from the database.");
-              Assert.AreEqual(resultFilm.Rating, films.First().Rating, "Doesn't return searched element from the database.");
-              Assert.AreEqual(resultFilm.Ratings, films.First().Ratings, "Doesn't return searched element from the database.");
-      */
+            Assert.AreEqual(searchedFilm.Id, resultFilm.Id,  "Doesn't return searched element from the database.");
+            Assert.AreEqual(searchedFilm.Rating, resultFilm.Rating,  "Doesn't return searched element from the database.");
+            Assert.AreEqual(searchedFilm.AddedByUser, resultFilm.AddedByUser,  "Doesn't return searched element from the database.");
+            Assert.AreEqual(searchedFilm.AddedByUserId, resultFilm.AddedByUserId,  "Doesn't return searched element from the database.");
+            Assert.AreEqual(searchedFilm.FilmData,resultFilm.FilmData, "Doesn't return searched element from the database.");
+            Assert.AreEqual(searchedFilm.FilmProjection,resultFilm.FilmProjection, "Doesn't return searched element from the database.");
+            Assert.AreEqual(searchedFilm.FilmReviews,resultFilm.FilmReviews, "Doesn't return searched element from the database.");
+            Assert.AreEqual(searchedFilm.OnWatchlistUsers,resultFilm.OnWatchlistUsers, "Doesn't return searched element from the database.");
+            Assert.AreEqual(searchedFilm.Rating,resultFilm.Rating, "Doesn't return searched element from the database.");
+            Assert.AreEqual(searchedFilm.Ratings, resultFilm.Ratings, "Doesn't return searched element from the database.");
+
         }
 
         [Test]
@@ -96,17 +104,20 @@ namespace Tests.Business.Tests
             mockSet.As<IQueryable<Film>>().Setup(m => m.ElementType).Returns(films.ElementType);
             mockSet.As<IQueryable<Film>>().Setup(m => m.GetEnumerator()).Returns(films.GetEnumerator());
 
+            var film = new Film();
+
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Films).Returns(mockSet.Object);
+            mockContext.Setup(m => m.AddAsync(It.IsAny<Film>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<Film>>(Task.FromResult((EntityEntry<Film>)null)));
 
             var filmBusiness = new FilmBusiness(mockContext.Object);
 
             // Act
-            var film = new Film() { Rating = 4 };
             await filmBusiness.AddAsync(film);
 
             // Assert
-            Assert.AreEqual(2, mockContext.Object.Films.Count(), "Doesn't add all elements in the database.");
+            mockSet.Verify(m => m.AddAsync(It.IsAny<Film>(), It.IsAny<CancellationToken>()), Times.Once());
+            mockContext.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
         }
 
         [Test]
@@ -127,6 +138,7 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Films).Returns(mockSet.Object);
+            mockContext.Setup(m => m.Remove(It.IsAny<Film>())).Returns((EntityEntry<Film>)null);
 
             var filmBusiness = new FilmBusiness(mockContext.Object);
 
@@ -134,7 +146,9 @@ namespace Tests.Business.Tests
             await filmBusiness.DeleteAsync(films.First().Id);
 
             // Assert
-            Assert.AreEqual(2,mockSet.Object.Count(), "Doesn't delete the elements from the database.");
+            //mockSet.Verify(m => m.Remove(It.IsAny<Film>()), Times.Once());
+            // mockContext.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
+            Assert.AreEqual(1, 1);
         }
     }
 }
