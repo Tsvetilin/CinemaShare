@@ -13,16 +13,20 @@
     </form>
 </div>
 
-<div class="pb-4 col-md-4 mx-auto">
-    <div asp-validation-summary="All" class=" text-danger "></div>
+<div class="col-md-12">
+    <div asp-validation-summary="All" class="d-flex justify-content-center m-auto text-danger w-100"></div>
 </div>
+<br />
 
-
-<div class="orderOptions position-absolute mt-5">
-    <h3>Sort by:</h3>
-    <h4 class="media-heading"><a asp-route="filmsList" asp-route-sort="Name" asp-route-id="1">Name</a></h4>
-    <h4 class="media-heading"><a asp-route="filmsList" asp-route-sort="Year" asp-route-id="1">Year</a></h4>
-    <h4 class="media-heading"><a asp-route="filmsList" asp-route-sort="Rating" asp-route-id="1">Rating</a></h4>
+<div class="col-md-12">
+    <div class="d-flex justify-content-center">
+        <div class="col-md-5  d-flex justify-content-around">
+            <h3>Sort by:</h3>
+            <h4 class="media-heading"><a asp-route="filmsList" asp-route-sort="Name" asp-route-id="1">Name</a></h4>
+            <h4 class="media-heading"><a asp-route="filmsList" asp-route-sort="Year" asp-route-id="1">Year</a></h4>
+            <h4 class="media-heading"><a asp-route="filmsList" asp-route-sort="Rating" asp-route-id="1">Rating</a></h4>
+        </div>
+    </div>
 </div>
 
 

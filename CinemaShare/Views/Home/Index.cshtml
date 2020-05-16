@@ -56,27 +56,25 @@
 
 <h1 class="unselectable-text pt-5 pb-1">Newest Films</h1>
 
-<div class="pb-5">
-    <ul class="list-inline text-dark h-100 w-100">
-        @foreach (var filmCard in Model.RecentFilms)
-        {
-            <li class="column position-relative">
-                <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
-                   class="column box-hover text-decoration-none">
-                    <img src="@filmCard.Poster" style="height:300px;" alt="Film poster">
-                    <div class="down-container bg-light unselectable-text position-absolute" style="bottom:-25px; left:-15px;">
-                        <h5 class="text-dark font-weight-bold">@filmCard.Title</h5>
-                        <h5 class="text-dark ">Rating: @filmCard.Rating</h5>
-                        <p class="text-dark ">@filmCard.Genres</p>
-                    </div>
-                </a>
-            </li>
-        }
-    </ul>
-</div>
+<ul class="list-inline text-dark col-md-12 " style="height:325px;">
+    @foreach (var filmCard in Model.RecentFilms)
+    {
+        <li class="col-md-3">
+            <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
+               class="box-hover text-decoration-none">
+                <img src="@filmCard.Poster" style="max-height:300px;" alt="Film poster">
+                <div class="down-container bg-light unselectable-text position-absolute" style="bottom:-25px; left:-15px;">
+                    <h5 class="text-dark font-weight-bold">@filmCard.Title</h5>
+                    <h5 class="text-dark ">Rating: @filmCard.Rating</h5>
+                    <p class="text-dark ">@filmCard.Genres</p>
+                </div>
+            </a>
+        </li>
+    }
+</ul>
 
-<li>
+<div>
     <a asp-action="Index" asp-controller="Films" class="text-center">
         <h5 class="pt-5 mb-0">See all films</h5>
     </a>
-</li>
+</div>
