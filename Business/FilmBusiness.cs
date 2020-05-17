@@ -16,21 +16,18 @@ namespace Business
             this.context = context;
         }
 
-        //Done
         public async Task AddAsync(Film film)
         {
             await context.Films.AddAsync(film);
             await context.SaveChangesAsync();
         }
 
-        //Done
         public async Task<Film> GetAsync(string id)
         {
             var film = await context.Films.FindAsync(id);
             return film;
         }
 
-        //Done
         public IEnumerable<Film> GetAll()
         {
             return context.Films.ToList();
@@ -65,23 +62,23 @@ namespace Business
         public async Task AddToWatchListAsync(string userId, Film film)
         {
             var userInContext = await context.Users.FindAsync(userId);
-            if (userInContext != null)
+            if (userInContext?.WatchList.Any(x => x.Id == film.Id) ?? true)
             {
-                userInContext.WatchList = userInContext.WatchList.Append(film).ToList();
-                await context.SaveChangesAsync();
+                return;
             }
+
+            userInContext.WatchList = userInContext.WatchList.Append(film).ToList();
+            await context.SaveChangesAsync();
+
         }
 
         public async Task RemoveFromWatchListAsync(string userId, Film film)
         {
             var userInContext = await context.Users.FindAsync(userId);
-            if (userInContext != null)
+            if (userInContext?.WatchList.Any(x => x.Id == film.Id) ?? false)
             {
-                if (userInContext.WatchList.Any(x => x.Id == film.Id))
-                {
                     userInContext.WatchList = userInContext.WatchList.Where(x => x.Id != film.Id).ToList();
                     await context.SaveChangesAsync();
-                }
             }
         }
 
@@ -91,7 +88,6 @@ namespace Business
             return userInContext?.WatchList?.Select(x => mapToModelFunc(x.FilmData)).ToList();
         }
 
-        //Isn't used
         public async Task UpdateAsync(Film film)
         {
             var filmInContext = await context.Films.FindAsync(film.Id);
@@ -102,7 +98,6 @@ namespace Business
             }
         }
 
-        //Done
         public async Task DeleteAsync(string id)
         {
             var filmInContext = await context.Films.FindAsync(id);
