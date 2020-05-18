@@ -81,12 +81,12 @@ namespace Business
 
         public IEnumerable<TModel> GetTopFilms<TModel>(Func<FilmData,TModel> mapToModelFunc)
         {
-            return this.GetAll().OrderByDescending(x => x.Film.Rating)?.Take(10).Select(x => mapToModelFunc(x)).ToList();
+            return this.GetAll().OrderByDescending(x => x.Film.Rating).Take(10).Select(x => mapToModelFunc(x)).ToList();
         }
 
         public IEnumerable<TModel> GetRecentFilms<TModel>(Func<FilmData,TModel> mapToModelFunc)
         {
-            return this.GetAll().OrderByDescending(x => x.ReleaseDate)?.Take(4).Select(x=>mapToModelFunc(x)).ToList();
+            return this.GetAll().OrderByDescending(x => x.ReleaseDate).Take(4).Select(x=>mapToModelFunc(x)).ToList();
         }
 
         public int CountAllFilms()
@@ -104,7 +104,7 @@ namespace Business
             }
         }
 
-        public async Task Delete(string id)
+       public async Task Delete(string id)
         {
             var filmInContext = await context.FilmDatas.FindAsync(id);
             if (filmInContext != null)

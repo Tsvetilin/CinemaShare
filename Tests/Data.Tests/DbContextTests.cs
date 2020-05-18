@@ -13,7 +13,7 @@ namespace Tests.Data.Tests
 {
     class DbContextTests
     {
-        public DbSet<FilmInputModel> dbSet { get; set; }
+        public DbSet<FilmInputModel> dbSet { get;}
 
         [Test]
         public void FindDbSetReturnRightValue()

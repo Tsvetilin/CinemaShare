@@ -85,17 +85,7 @@ namespace Business
         public IEnumerable<TModel> GetWatchList<TModel>(string userId, Func<FilmData, TModel> mapToModelFunc)
         {
             var userInContext = context.Users.FirstOrDefault(x => x.Id == userId);
-            return userInContext?.WatchList?.Select(x => mapToModelFunc(x.FilmData)).ToList();
-        }
-
-        public async Task UpdateAsync(Film film)
-        {
-            var filmInContext = await context.Films.FindAsync(film.Id);
-            if (filmInContext != null)
-            {
-                context.Entry(filmInContext).CurrentValues.SetValues(film);
-                await context.SaveChangesAsync();
-            }
+            return userInContext?.WatchList.Select(x => mapToModelFunc(x.FilmData)).ToList();
         }
 
         public async Task DeleteAsync(string id)

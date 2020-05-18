@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using Data.Enums;
 using CinemaShare.Common.Mapping;
+using CinemaShare.Models.ViewModels;
 
 namespace Tests.Business.Tests
 {
@@ -111,7 +112,8 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Films).Returns(mockSet.Object);
-            mockContext.Setup(m => m.AddAsync(It.IsAny<Film>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<Film>>(Task.FromResult((EntityEntry<Film>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<Film>(), It.IsAny<CancellationToken>()))
+                .Returns(new ValueTask<EntityEntry<Film>>(Task.FromResult((EntityEntry<Film>)null)));
 
             var filmBusiness = new FilmBusiness(mockContext.Object);
 
@@ -302,6 +304,35 @@ namespace Tests.Business.Tests
 
             // Act
             await filmBusiness.RateAsync("UnexisingFilmId", "TestUserId", 4);
+
+            // Assert
+            mockContext.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never());
+        }
+
+        [Test]
+        public async Task RateAsyncDoesntRateNullUserId()
+        {
+            // Arrange
+            var films = new List<Film>
+            {
+                new Film {Rating = 2},
+                new Film {Rating = 3}
+            }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<Film>>();
+            mockSet.As<IQueryable<Film>>().Setup(m => m.Provider).Returns(films.Provider);
+            mockSet.As<IQueryable<Film>>().Setup(m => m.Expression).Returns(films.Expression);
+            mockSet.As<IQueryable<Film>>().Setup(m => m.ElementType).Returns(films.ElementType);
+            mockSet.As<IQueryable<Film>>().Setup(m => m.GetEnumerator()).Returns(films.GetEnumerator());
+
+            var mockContext = new Mock<CinemaDbContext>();
+            mockContext.Setup(c => c.Films).Returns(mockSet.Object);
+            mockContext.Setup(s => s.Films.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Film>((Film)null));
+
+            var filmBusiness = new FilmBusiness(mockContext.Object);
+
+            // Act
+            await filmBusiness.RateAsync(films.First().Id, null, 4);
 
             // Assert
             mockContext.Verify(m => m.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never());
@@ -561,6 +592,65 @@ namespace Tests.Business.Tests
             Assert.AreEqual(expectedWatchList[0].Title, resultWatchList[0].Title, "Incorect data returned");
             Assert.AreEqual(expectedWatchList[0].Genres, resultWatchList[0].Genres, "Incorect data returned");
             Assert.AreEqual(expectedWatchList[1].Id, resultWatchList[1].Id, "Incorect data returned");
+        }
+
+        [Test]
+        public void GetWatchListReturnsNoElementsForInvalidUser()
+        {
+            // Arrange
+            var filmData1 = new FilmData
+            {
+                Title = "Title1",
+                Genre = new List<GenreType> { new GenreType { Genre = Genre.Action } },
+                Poster = "Poster1",
+                FilmId = "Film1"
+            };
+            var filmData2 = new FilmData
+            {
+                Title = "Title2",
+                Genre = new List<GenreType> { new GenreType { Genre = Genre.Action } },
+                Poster = "Poster2",
+                FilmId = "Film2"
+            };
+            var film1 = new Film
+            {
+                Rating = 2,
+                Id = "Film1",
+                FilmData = filmData1
+            };
+            var film2 = new Film
+            {
+                Rating = 3,
+                Id = "Film2",
+                FilmData = filmData2
+            };
+            filmData1.Film = film1;
+            filmData2.Film = film2;
+            var user = new CinemaUser
+            {
+                WatchList = new List<Film> { film1, film2 }
+            };
+            var users = new List<CinemaUser> { user }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<CinemaUser>>();
+            mockSet.As<IQueryable<CinemaUser>>().Setup(m => m.Provider).Returns(users.Provider);
+            mockSet.As<IQueryable<CinemaUser>>().Setup(m => m.Expression).Returns(users.Expression);
+            mockSet.As<IQueryable<CinemaUser>>().Setup(m => m.ElementType).Returns(users.ElementType);
+            mockSet.As<IQueryable<CinemaUser>>().Setup(m => m.GetEnumerator()).Returns(users.GetEnumerator());
+
+            var mockContext = new Mock<CinemaDbContext>();
+            mockContext.Setup(c => c.Users).Returns(mockSet.Object);
+            mockContext.Setup(s => s.Users.FindAsync(It.IsAny<string>())).Returns(new ValueTask<CinemaUser>(Task.FromResult((CinemaUser)null)));
+
+            var filmBusiness = new FilmBusiness(mockContext.Object);
+            var mapper = new Mapper();
+            var expectedWatchList = new List<FilmCardViewModel>();
+
+            // Act
+            var resultWatchList = filmBusiness.GetWatchList("UnexistingUserId", mapper.MapToFilmCardViewModel);
+
+            // Assert
+            Assert.AreEqual(null, resultWatchList, "Incorrect watchlist returned");
         }
     }
 }
