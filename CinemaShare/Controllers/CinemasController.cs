@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CinemaShare.Controllers
 {
+    [AutoValidateAntiforgeryToken]
     public class CinemasController : Controller
     {
         private readonly ICinemaBusiness cinemaBusiness;
@@ -101,6 +102,12 @@ namespace CinemaShare.Controllers
                 ModelState.AddModelError("Added", "Cinema already added!");
             }
 
+            var user = await userManager.GetUserAsync(User);
+            if (user?.Cinema == null)
+            {
+                ModelState.AddModelError("Added", "You already manage your cinema.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return this.View();
@@ -150,7 +157,8 @@ namespace CinemaShare.Controllers
                 var data = mapper.MapToCinemaData(input);
                 data.Id = cinema.Id;
                 data.ManagerId = cinema.ManagerId;
-                await cinemaBusiness.UpdateAsync(data);
+                var ticketUrlPattern = Url.ActionLink("Index", "Tickets");
+                await cinemaBusiness.UpdateAsync(data,ticketUrlPattern);
                 return RedirectToAction("Manage", "Cinemas", new { Id = id });
             }
 
@@ -165,7 +173,8 @@ namespace CinemaShare.Controllers
             var cinema = await cinemaBusiness.GetAsync(id);
             if (user?.Id == cinema?.ManagerId)
             {
-                await cinemaBusiness.DeleteAsync(id);
+                var projectionUrlPattern = Url.ActionLink("Index", "Projections");
+                await cinemaBusiness.DeleteAsync(id,projectionUrlPattern);
             }
             return RedirectToAction("Index", "Cinemas");
         }

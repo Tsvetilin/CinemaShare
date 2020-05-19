@@ -19,5 +19,10 @@ namespace CinemaShare.Models.ViewModels
         public double StudentsTicketPrice { get; set; }
 
         public double AdultsTicketPrice { get; set; }
+
+        public string FilmId { get; set; }
+
+        public string CinemaId { get; set; }
+
     }
 }

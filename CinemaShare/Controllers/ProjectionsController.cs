@@ -10,6 +10,7 @@ using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CinemaShare.Controllers
 {
@@ -34,7 +35,6 @@ namespace CinemaShare.Controllers
 
        public IActionResult Index(int id=1)
         {
-            var allProjectionsList = filmProjectionBusiness.GetAll(mapper.MapToProjectionCardViewModel).ToList();
             var pageCount = (int)Math.Ceiling((double)filmProjectionBusiness.CountAllProjections() / projectionsOnPage);
             if (id > pageCount || id < 1)
             {
@@ -49,14 +49,18 @@ namespace CinemaShare.Controllers
             };
 
             return View(viewModel);
-        }
+       }
 
         public async Task<IActionResult> Detail(string id)
         {
+            if(id==null)
+            {
+                return this.RedirectToAction("Index", "Projections");
+            }
             var viewModel = await filmProjectionBusiness.GetAsync(id, mapper.MapToProjectionDataViewModel);
             if (viewModel == null)
             {
-                return this.RedirectToAction("Index", "Projections");
+                return NotFound();
             }
             return View(viewModel);
         }
@@ -68,7 +72,10 @@ namespace CinemaShare.Controllers
             var cinema = user?.Cinema;
             if (cinema != null)
             {
-                return this.View();
+                var model = new ProjectionInputModel();
+                var films = filmDataBusiness.GetAll().ToList().Select(x => x.Title).OrderBy(x=>x).ToDictionary(x => x);
+                model.AvailableFilms = new SelectList(films, "Key", "Value");
+                return this.View(model);
             }
             return this.RedirectToAction("Index", "Projections");
         }
@@ -111,8 +118,9 @@ namespace CinemaShare.Controllers
             {
                 return this.RedirectToAction("Index", "Projections");
             }
-
+            var films = filmDataBusiness.GetAll().ToList().Select(x => x.Title).OrderBy(x => x).ToDictionary(x => x);
             var inputModel = mapper.MapToProjectionInputModel(projection);
+            inputModel.AvailableFilms = new SelectList(films, "Key", "Value");
             return View(inputModel);
         }
 
@@ -140,10 +148,12 @@ namespace CinemaShare.Controllers
             {
                 return this.View();
             }
-
+            
+            var projectionUrlPattern = Url.ActionLink("Index", "Projections");
+            var ticketUrlPattern = Url.ActionLink("Index", "Tickets");
             var updatedProjection = mapper.MapToFilmProjection(input, film, cinema);
             updatedProjection.Id = id;
-            await filmProjectionBusiness.Update(updatedProjection);
+            await filmProjectionBusiness.Update(updatedProjection, projectionUrlPattern, ticketUrlPattern);
             return this.RedirectToAction("Detail", "Projections", new { projection.Id });
         }
 
@@ -156,7 +166,8 @@ namespace CinemaShare.Controllers
             var cinema = user?.Cinema;
             if (cinema != null)
             {
-                await filmProjectionBusiness.Delete(id);
+                var projectionUrlPattern = Url.ActionLink("Index", "Projections");
+                await filmProjectionBusiness.Delete(id, projectionUrlPattern);
             }
             return this.RedirectToAction("Manage", "Cinemas",new { cinema?.Id });
         }

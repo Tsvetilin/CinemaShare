@@ -11,10 +11,12 @@ namespace Business
     public class CinemaBusiness : ICinemaBusiness
     {
         private readonly CinemaDbContext context;
+        private readonly IEmailSender emailSender;
 
-        public CinemaBusiness(CinemaDbContext context)
+        public CinemaBusiness(CinemaDbContext context, IEmailSender emailSender)
         {
             this.context = context;
+            this.emailSender = emailSender;
         }
 
         public async Task AddAsync(Cinema cinema)
@@ -51,21 +53,39 @@ namespace Business
             return mapToModelFunc(cinema);
         }
 
-        public async Task UpdateAsync(Cinema cinema)
+        public async Task UpdateAsync(Cinema cinema, string ticketUrlPattern)
         {
             var cinemaInContext = await context.Cinemas.FindAsync(cinema.Id);
             if (cinemaInContext != null)
             {
+                var projections = context.FilmProjections.Where(x => x.CinemaId == cinemaInContext.Id).ToList();
+                foreach (var projection in projections)
+                {
+                    var projectionTickets = projection.ProjectionTickets.ToList();
+                    foreach (var ticket in projectionTickets)
+                    {
+                        await emailSender.SendTicketUpdateEmailAsync(ticket.Holder.Email, ticket.Projection, ticketUrlPattern);
+                    }
+                }
                 context.Entry(cinemaInContext).CurrentValues.SetValues(cinema);
                 await context.SaveChangesAsync();
             }
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(string id, string projectionsUrlPattern)
         {
             var cinemaInContext = await context.Cinemas.FindAsync(id);
             if (cinemaInContext != null)
             {
+                var projections = context.FilmProjections.Where(x => x.CinemaId == cinemaInContext.Id).ToList();
+                foreach (var projection in projections)
+                {
+                    var projectionTickets = projection.ProjectionTickets.ToList();
+                    foreach (var ticket in projectionTickets)
+                    {
+                        await emailSender.SendTicketCancelationEmailAsync(ticket.Holder.Email, ticket.Projection, projectionsUrlPattern);
+                    }
+                }
                 context.Cinemas.Remove(cinemaInContext);
                 await context.SaveChangesAsync();
             }

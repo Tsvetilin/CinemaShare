@@ -97,7 +97,7 @@ namespace CinemaShare.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
@@ -125,11 +125,10 @@ namespace CinemaShare.Areas.Identity.Pages.Account
                         var callbackUrl = Url.Page(
                             "/Account/ConfirmEmail",
                             pageHandler: null,
-                            values: new { area = "Identity", userId = user.Id, code = code },
+                            values: new { area = "Identity", userId = user.Id, code },
                             protocol: Request.Scheme);
-                        //Should be on new line
-                        await _emailSender.SendEmailAsync("cinemashare222@gmail.com", "CinemaShare Support", Input.Email, "Confirm your email",
-                            $"<p style=\"color: #000\">Please confirm your account by <a style=\"text-decoration: none !important\" href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.</p>");
+
+                        await _emailSender.SendEmailConfirmationEmailAsync(Input.Email, callbackUrl);
 
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
                         {

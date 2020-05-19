@@ -1,4 +1,5 @@
 ﻿using Data.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -37,5 +38,7 @@ namespace CinemaShare.Models.InputModels
         [Display(Name = "Adults ticket price")]
         [Range(1, 200, ErrorMessage = "{0} must be between {1} and {2}")]
         public double AdultsTicketPrice { get; set; }
+
+        public SelectList AvailableFilms { get; set; }
     }
 }

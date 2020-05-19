@@ -13,7 +13,7 @@ namespace Tests.Data.Tests
 {
     class DbContextTests
     {
-        public DbSet<FilmInputModel> dbSet { get;}
+        public DbSet<FilmInputModel> DbSet { get;}
 
         [Test]
         public void FindDbSetReturnRightValue()
@@ -21,14 +21,14 @@ namespace Tests.Data.Tests
             // Arange
             var mockContext = new Mock<CinemaDbContext>();
             
-            mockContext.Setup(x => x.Find(It.IsAny<Type>())).Returns(dbSet);
+            mockContext.Setup(x => x.Find(It.IsAny<Type>())).Returns(DbSet);
 
             // Act
             var resultSet = (DbSet<FilmInputModel>)mockContext.Object.Find(typeof(DbSet<FilmInputModel>));
 
             // Assert
             mockContext.Verify(x => x.Find(It.IsAny<Type>()), Times.Once);
-            Assert.AreEqual(dbSet, resultSet);
+            Assert.AreEqual(DbSet, resultSet);
         }
     }
 }

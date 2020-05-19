@@ -69,7 +69,7 @@ namespace CinemaShare.Areas.Identity.Pages.Account
             }
 
             returnUrl=returnUrl?.Replace("AddReview", "Detail");
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
 
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
@@ -83,7 +83,7 @@ namespace CinemaShare.Areas.Identity.Pages.Account
         {
             CinemaUser user = _userManager.FindByNameAsync(Input.UserName).GetAwaiter().GetResult();
             returnUrl = returnUrl?.Replace("AddReview", "Detail");
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
 
             if (ModelState.IsValid)
             {
@@ -97,7 +97,7 @@ namespace CinemaShare.Areas.Identity.Pages.Account
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl,  Input.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
@@ -143,15 +143,11 @@ namespace CinemaShare.Areas.Identity.Pages.Account
                 var callbackUrl = Url.Page(
                     "/Account/ConfirmEmail",
                     pageHandler: null,
-                    values: new { userId = userId, code = code },
+                    values: new {  userId,  code },
                     protocol: Request.Scheme);
-                await _emailSender.SendEmailAsync(
-                    "cinemashare222@gmail.com",
-                    "CinemaShare Support",
-                    user.Email,
-                    "Confirm your email",
-                    $"<h3>Please confirm your account by </h3><a href='{HtmlEncoder.Default.Encode(callbackUrl)}'><h3>clicking here</h3></a>.");
 
+                await _emailSender.SendEmailConfirmationEmailAsync(user.Email, callbackUrl);
+                
                 ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             }
             return Page();

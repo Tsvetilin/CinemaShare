@@ -254,7 +254,9 @@ namespace CinemaShare.Common.Mapping
                 TicketsSold = filmProjection.ProjectionTickets.Count(),
                 ChildrenTicketPrice = filmProjection.TicketPrices.ChildrenPrice,
                 AdultsTicketPrice = filmProjection.TicketPrices.AdultPrice,
-                StudentsTicketPrice = filmProjection.TicketPrices.StudentPrice
+                StudentsTicketPrice = filmProjection.TicketPrices.StudentPrice,
+                FilmId=filmProjection.FilmId,
+                CinemaId=filmProjection.CinemaId,
             };
         }
 

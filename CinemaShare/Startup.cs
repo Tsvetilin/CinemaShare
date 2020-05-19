@@ -39,7 +39,9 @@ namespace CinemaShare
             services.AddSingleton(this.Configuration);
 
             // Service providers from business layer
-            services.AddTransient<IEmailSender>(x=>new EmailSender(Configuration.GetSection("EmailSender").Value));
+            services.AddTransient<IEmailSender>(x=>new EmailSender(Configuration.GetSection("EmailSender")["APIKey"],
+                                                                   Configuration.GetSection("EmailSender")["Sender"],
+                                                                   Configuration.GetSection("EmailSender")["SenderName"]));
             services.AddTransient<ICinemaBusiness, CinemaBusiness>();
             services.AddTransient<IFilmBusiness, FilmBusiness>();
             services.AddTransient<IFilmDataBusiness, FilmDataBusiness>();

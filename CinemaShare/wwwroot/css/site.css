@@ -135,3 +135,13 @@ body {
     border-bottom: 1px dashed #efefef;
     margin-bottom: 25px;
 }
+
+.films-responsive {
+    height: 400px;
+}
+
+@media only screen and (max-width: 760px) {
+    .films-responsive {
+        height: 1600px!important;
+    }
+}

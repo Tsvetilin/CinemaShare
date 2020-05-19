@@ -17,9 +17,9 @@ namespace Business
 
         public IEnumerable<Cinema> GetAll();
 
-        public Task UpdateAsync(Cinema cinema);
-
-        public Task DeleteAsync(string id);
+        public Task UpdateAsync(Cinema cinema, string ticketUrlPattern);
+               
+        public Task DeleteAsync(string id, string projectionsUrlPattern);
 
         public int CountAllCinemas();
 

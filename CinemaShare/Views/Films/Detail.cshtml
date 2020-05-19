@@ -73,14 +73,14 @@
 }
 else
 {
-    <ul>
+    <ul class="col-md-12">
         @foreach (var projection in Model.FilmProjections)
         {
             <li class="col-md-4 box-hover list-unstyled">
                 <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id" class="text-decoration-none box-hover">
                     <h5>Cinema: @projection.CinemaName</h5>
                     <h5>City: @projection.CinemaCity</h5>
-                    <h5>Projection type: @projection.ProjectionType.ToString()</h5>
+                    <h5>Projection type: @projection.ProjectionType</h5>
                     <h5>Date: @projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
                 </a>
             </li>

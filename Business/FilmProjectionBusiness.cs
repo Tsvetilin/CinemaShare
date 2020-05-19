@@ -1,4 +1,5 @@
 ﻿using Data;
+using Data.Enums;
 using Data.Models;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,12 @@ namespace Business
     public class FilmProjectionBusiness : IFilmProjectionBusiness
     {
         private readonly CinemaDbContext context;
+        private readonly IEmailSender emailSender;
 
-        public FilmProjectionBusiness(CinemaDbContext context)
+        public FilmProjectionBusiness(CinemaDbContext context, IEmailSender emailSender)
         {
             this.context = context;
+            this.emailSender = emailSender;
         }
 
         public async Task Add(FilmProjection filmProjection)
@@ -53,7 +56,7 @@ namespace Business
 
         public IEnumerable<TModel> GetAllByCinemaId<TModel>(string cinemaId, Func<FilmProjection, TModel> mapToModelFunc)
         {
-            return context.FilmProjections.Where(x=>x.CinemaId==cinemaId).ToList().Select(x => mapToModelFunc(x)).ToList();
+            return context.FilmProjections.Where(x => x.CinemaId == cinemaId).ToList().Select(x => mapToModelFunc(x)).ToList();
         }
 
         public IEnumerable<TModel> GetAll<TModel>(Func<FilmProjection, TModel> mapToModelFunc)
@@ -61,25 +64,49 @@ namespace Business
             return GetAll().Select(x => mapToModelFunc(x)).ToList();
         }
 
-        public async Task Update(FilmProjection film)
+        public async Task Update(FilmProjection projection, string projectionsUrlPattern, string ticketsUrlPattern)
         {
-            var filmInContext = await context.FilmProjections.FindAsync(film.Id);
-            if (filmInContext != null)
+            var projectionInContext = await context.FilmProjections.FindAsync(projection.Id);
+            if (projectionInContext != null)
             {
-                context.Entry(filmInContext).CurrentValues.SetValues(film);
-                filmInContext.TicketPrices.AdultPrice = film.TicketPrices.AdultPrice;
-                filmInContext.TicketPrices.StudentPrice = film.TicketPrices.StudentPrice;
-                filmInContext.TicketPrices.ChildrenPrice = film.TicketPrices.ChildrenPrice;
-                await context.SaveChangesAsync(); 
+                foreach (var ticket in context.ProjectionTickets.Where(x => x.ProjectionId == projection.Id).ToList())
+                {
+                    if (ticket.Seat > projection.TotalTickets)
+                    {
+                        await emailSender.SendTicketCancelationEmailAsync(ticket.Holder.Email, projectionInContext, projectionsUrlPattern);
+                        context.ProjectionTickets.Remove(ticket);
+                    }
+                    else
+                    {
+                        switch (ticket.Type)
+                        {
+                            case TicketType.Adult: ticket.Price = projection.TicketPrices.AdultPrice; break;
+                            case TicketType.Children: ticket.Price = projection.TicketPrices.ChildrenPrice; break;
+                            case TicketType.Student: ticket.Price = projection.TicketPrices.StudentPrice; break;
+                        }
+
+                        await emailSender.SendTicketUpdateEmailAsync(ticket.Holder.Email, projectionInContext, ticketsUrlPattern);
+                    }
+                }
+                context.Entry(projectionInContext).CurrentValues.SetValues(projection);
+                projectionInContext.TicketPrices.AdultPrice = projection.TicketPrices.AdultPrice;
+                projectionInContext.TicketPrices.StudentPrice = projection.TicketPrices.StudentPrice;
+                projectionInContext.TicketPrices.ChildrenPrice = projection.TicketPrices.ChildrenPrice;
+                await context.SaveChangesAsync();
             }
         }
 
-        public async Task Delete(string id)
+        public async Task Delete(string id, string projectionsUrlPattern)
         {
-            var filmInContext = await context.FilmProjections.FindAsync(id);
-            if (filmInContext != null)
+            var projectionInContext = await context.FilmProjections.FindAsync(id);
+            if (projectionInContext != null)
             {
-                context.FilmProjections.Remove(filmInContext);
+                foreach (var ticket in context.ProjectionTickets.Where(x => x.ProjectionId == projectionInContext.Id).ToList())
+                {
+                    context.ProjectionTickets.Remove(ticket);
+                    await emailSender.SendTicketCancelationEmailAsync(ticket.Holder.Email, projectionInContext, projectionsUrlPattern);
+                }
+                context.FilmProjections.Remove(projectionInContext);
                 await context.SaveChangesAsync();
             }
         }

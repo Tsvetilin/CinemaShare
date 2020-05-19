@@ -23,8 +23,8 @@ namespace Business
 
         public IEnumerable<TModel> GetAllByCinemaId<TModel>(string cinemaId, Func<FilmProjection, TModel> mapToModelFunc);
 
-        public Task Update(FilmProjection film);
+        public Task Update(FilmProjection projection, string projectionsUrlPattern, string ticketsUrlPattern);
 
-        public Task Delete(string id);
+        public Task Delete(string id, string projectionsUrlPattern);
     }
 }

@@ -4,8 +4,26 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>StatusCode @Model</h1>
-
+<h1>Whoops, something went wrong! @Model</h1>
+<hr />
+@if(Model==404)
+{
+    <h3>It seems like we couldn't find what you searched for :(</h3>
+}
+<br />
 <h3>Helpful Links:</h3>
-
-<p>TODO: ADD HERE!!!!!</p>
+<br />
+<ul class="col-md-4">
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Films" asp-action="Index">Films</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Cinemas" asp-action="Index">Cinemas</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Projections" asp-action="Index">Projections</a>
+    </li>
+</ul>

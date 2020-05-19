@@ -56,10 +56,10 @@
 
 <h1 class="unselectable-text pt-5 pb-1">Newest Films</h1>
 
-<ul class="list-inline text-dark col-md-12 " style="height:325px;">
+<ul class="films-responsive list-inline text-dark col-md-12 pb-5 mb-5">
     @foreach (var filmCard in Model.RecentFilms)
     {
-        <li class="col-md-3">
+        <li class="col-md-3 pb-5 mb-5">
             <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
                class="box-hover text-decoration-none">
                 <img src="@filmCard.Poster" style="max-height:300px;" alt="Film poster">
