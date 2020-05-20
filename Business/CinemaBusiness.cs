@@ -19,17 +19,31 @@ namespace Business
             this.emailSender = emailSender;
         }
 
+        /// <summary>
+        /// Adds cinema to the database
+        /// </summary>
+        /// <param name="cinema">New cinema object</param>
+        /// <returns></returns>
         public async Task AddAsync(Cinema cinema)
         {
             await context.Cinemas.AddAsync(cinema);
             await context.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Gets the searched cinema by entered ID 
+        /// </summary>
+        /// <param name="id">The ID of the cinema to search</param>
+        /// <returns>Searched cinema, returns null if not found</returns>
         public async Task<Cinema> GetAsync(string id)
         {
             return await context.Cinemas.FindAsync(id);
         }
 
+        /// <summary>
+        /// Gets all the cinemas in the database
+        /// </summary>
+        /// <returns>Returns all the cinemas in the database</returns>
         public IEnumerable<Cinema> GetAll()
         {
             return context.Cinemas.ToList();
