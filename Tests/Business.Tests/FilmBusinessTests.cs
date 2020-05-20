@@ -244,7 +244,7 @@ namespace Tests.Business.Tests
             {
                 new Film
                 {
-                    Rating=  2,
+                    Rating =  2,
                     Ratings = new List<FilmRating>{
                         new FilmRating
                         {
