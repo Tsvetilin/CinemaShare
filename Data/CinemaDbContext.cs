@@ -59,6 +59,7 @@ namespace Data
             builder.Entity<FilmReview>().HasOne(x => x.User).WithMany(x => x.FilmReviews).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<FilmRating>().HasOne(x => x.User).WithMany().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<FilmProjection>().HasOne(x => x.Film).WithMany(x => x.FilmProjection).HasForeignKey(x => x.FilmId);
+            builder.Entity<ProjectionTicket>().HasOne(x => x.Holder).WithMany(x => x.ProjectionTickets).OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(builder);
         }

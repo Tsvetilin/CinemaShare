@@ -103,7 +103,7 @@ namespace CinemaShare.Controllers
             }
 
             var user = await userManager.GetUserAsync(User);
-            if (user?.Cinema == null)
+            if (user?.Cinema != null)
             {
                 ModelState.AddModelError("Added", "You already manage your cinema.");
             }

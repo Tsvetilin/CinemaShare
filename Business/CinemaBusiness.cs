@@ -38,7 +38,6 @@ namespace Business
         public int CountAllCinemas()
         {
             return context.Cinemas.Count();
-
         }
         public IEnumerable<TModel> GetPageItems<TModel>(int page, int cinemasOnPage, Func<Cinema, TModel> mapToModelFunc)
         {

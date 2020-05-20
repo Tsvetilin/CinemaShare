@@ -34,14 +34,15 @@ else
     <ul class="list-unstyled">
         @foreach (var projection in Model.FilmProjections)
         {
-            <li class="col-md-4 box-hover list-unstyled">
-                <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id" class="text-decoration-none box-hover">
-                    <h5>Cinema: @projection.CinemaName</h5>
-                    <h5>City: @projection.CinemaCity</h5>
-                    <h5>Projection type: @projection.ProjectionType.ToString().Substring(1)</h5>
-                    <h5>Date: @projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
-                </a>
-            </li>
+        <li class="col-md-4 box-hover list-unstyled">
+            <a asp-action="Method" asp-controller="Class" asp-route-id="" asp-route-nomer="adsdsaasd"></a>
+            <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id" class="text-decoration-none box-hover">
+                <h5>Cinema: @projection.CinemaName</h5>
+                <h5>City: @projection.CinemaCity</h5>
+                <h5>Projection type: @projection.ProjectionType.ToString().Substring(1)</h5>
+                <h5>Date: @projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
+            </a>
+        </li>
         }
     </ul>
 }

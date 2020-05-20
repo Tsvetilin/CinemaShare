@@ -15,8 +15,8 @@
                 {
                     <div class="carousel-item active cursor-pointer">
                         <a asp-controller="Films" asp-action="Detail" asp-route-id="@Model.TopFilms[0].Id"
-                           class="content-heading clearfix media text-decoration-none" style="max-height:100vh">
-                            <img class="d-flex h-25 mx-auto" src="@Model.TopFilms[0].Poster" alt="Film poster" style="max-height:80vh" />
+                           class="content-heading clearfix media text-decoration-none" style="min-height:80vh; max-height:100vh">
+                            <img class="d-flex h-25 mx-auto" src="@Model.TopFilms[0].Poster" alt="Film poster" style="min-height:80vh;max-height:80vh" />
                             <div class="carousel-caption d-none d-md-block bg-light unselectable-text" style="max-height:80vh;">
                                 <h5 class="text-dark font-weight-bold  bg-light ">@Model.TopFilms[0].Title</h5>
                                 <h5 class="text-dark  bg-light ">Rating: @Model.TopFilms[0].Rating</h5>
@@ -30,8 +30,8 @@
                 {
                     <div class="carousel-item cursor-pointer">
                         <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
-                           class="content-heading clearfix media text-decoration-none" style=" max-height:100vh;">
-                            <img class="d-block h-25 mx-auto" src="@filmCard.Poster" alt="Film poster" style="max-height:80vh">
+                           class="content-heading clearfix media text-decoration-none" style="min-height:80vh; max-height:100vh;">
+                            <img class="d-block h-25 mx-auto" src="@filmCard.Poster" alt="Film poster" style="min-height:80vh; max-height:80vh">
                             <div class="carousel-caption d-none d-md-block bg-light unselectable-text" style="max-height:80vh">
                                 <h5 class="text-dark font-weight-bold w-25 mx-auto">@filmCard.Title</h5>
                                 <h5 class="text-dark w-25 mx-auto">Rating: @filmCard.Rating</h5>
@@ -62,7 +62,7 @@
         <li class="col-md-3 pb-5 mb-5">
             <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
                class="box-hover text-decoration-none">
-                <img src="@filmCard.Poster" style="max-height:300px;" alt="Film poster">
+                <img src="@filmCard.Poster" style="min-height:300px;max-height:300px;" alt="Film poster">
                 <div class="down-container bg-light unselectable-text position-absolute" style="bottom:-25px; left:-15px;">
                     <h5 class="text-dark font-weight-bold">@filmCard.Title</h5>
                     <h5 class="text-dark ">Rating: @filmCard.Rating</h5>
