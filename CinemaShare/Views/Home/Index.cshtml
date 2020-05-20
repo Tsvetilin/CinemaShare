@@ -63,7 +63,7 @@
             <a asp-controller="Films" asp-action="Detail" asp-route-id="@filmCard.Id"
                class="box-hover text-decoration-none">
                 <img src="@filmCard.Poster" style="min-height:300px;max-height:300px;" alt="Film poster">
-                <div class="down-container bg-light unselectable-text position-absolute" style="bottom:-25px; left:-15px;">
+                <div class="down-container bg-light unselectable-text position-absolute" style="bottom:-25px; left:-15px; max-width:50%;">
                     <h5 class="text-dark font-weight-bold">@filmCard.Title</h5>
                     <h5 class="text-dark ">Rating: @filmCard.Rating</h5>
                     <p class="text-dark ">@filmCard.Genres</p>

@@ -36,7 +36,7 @@
 }
 
 <div class="content-heading clearfix media">
-    <img class="rounded float-left" style="max-height:600px; max-width:400px;/*height:600px; width:400px*/" src="@Model.Poster" alt="Film poster">
+    <img class="rounded float-left" style="max-height:600px; max-width:400px; max-width:50%;/*height:600px; width:400px*/" src="@Model.Poster" alt="Film poster">
     <div style="margin-left:30px;">
         <h3 class="text-dark font-weight-bold">@Model.Title</h3>
         <h5 class="text-dark ">Rating: @Model.Rating</h5>
@@ -46,9 +46,10 @@
         <p class="text-dark ">Target audience: @Model.TargetAudience</p>
         <p class="text-dark ">Release date: @Model.ReleaseDate.ToString("dd/MM/yyyyг.")</p>
         <p class="font-weight-bold " style="color:black">Description: @Model.Description</p>
+        <br />
         @if (User.Identity.IsAuthenticated)
         {
-            <p>Rate: </p>
+            <h3>Rate: </h3>
             <form asp-controller="Films" asp-action="RateFilm" asp-route-id="@Model.Id" method="post">
                 <input class="btn btn-danger" type="submit" name="rating" value="1" />
                 <input class="btn btn-warning" type="submit" name="rating" value="2" />
@@ -59,11 +60,13 @@
         }
         else
         {
-            <a id="login" asp-area="Identity" asp-page="/Account/Login">Log in to rate the film</a>
+            <h3>
+                <a id="login" asp-area="Identity" asp-page="/Account/Login">Log in </a> to rate the film
+            </h3>
         }
     </div>
 </div>
-
+</br>
 
 <h1 class="text-center">Projections</h1>
 <hr>
@@ -93,6 +96,7 @@ else
         <div>
             <h1 class="text-center">Reviews</h1>
         </div>
+        <hr />
         <div class="panel-body">
             @if (User.Identity.IsAuthenticated)
             {
@@ -138,6 +142,11 @@ else
             </li>
         }
     </ul>
+    <script>
+        $(window).on("load", function () {
+            $(window).trigger("resize");
+        });
+    </script>
 }
 
 @section Scripts

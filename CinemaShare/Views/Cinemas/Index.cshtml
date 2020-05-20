@@ -7,13 +7,16 @@
     <h1 class="text-center">Cinemas</h1>
     <form class="d-inline-flex col-md-4 m-auto"
           asp-controller="Cinemas" asp-action="Index" method="get">
-            <input class="form-control" name="Search" placeholder="Cinema name or city" />
-            <input class="btn btn-primary h-75" type="submit" value="Try Find Cinema" />
+        <input class="form-control" name="Search" placeholder="Cinema name or city" />
+        <input class="btn btn-primary h-75" type="submit" value="Try Find Cinema" />
     </form>
 </div>
-<div class="pb-4 col-md-4 mx-auto">
-    <div asp-validation-summary="All" class=" text-danger "></div>
+
+<div class="col-md-12">
+    <div asp-validation-summary="All" class="d-flex justify-content-center m-auto text-danger w-100"></div>
 </div>
+
+<br />
 
 <ul class="list-unstyled d-inline-block w-100 text-dark">
     @foreach (var cinemaCard in Model?.Cinemas)
@@ -68,7 +71,7 @@
         {
             <li class="page-item">
                 <a class="page-link"
-                    asp-route-id="@(this.Model.CurrentPage + 1)">Next</a>
+                   asp-route-id="@(this.Model.CurrentPage + 1)">Next</a>
             </li>
         }
     </ul>

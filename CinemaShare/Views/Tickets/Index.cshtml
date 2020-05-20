@@ -7,7 +7,8 @@
 <hr />
 @if (Model.Tickets?.Count == 0)
 {
-    <h5>No reservations made yet.</h5>
+    <h4>No reservations made yet.</h4>
+    <a asp-action="Index" asp-controller="Projections">Go reserve one!</a>
 }
 else
 {
@@ -39,7 +40,7 @@ else
                         </form>
                     </li>
                     <li>
-                        <form asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id" class="py-1" method="post">
+                        <form asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id" onclick="return confirm('Are you sure you want to cancel your reservation?');" class="py-1" method="post">
                             <input class=" btn btn-danger" type="submit" value="Deny ticket" />
                         </form>
                     </li>
