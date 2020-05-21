@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using CinemaShare.Models.ViewModels;
 using CinemaShare.Models.InputModels;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace CinemaShare.Controllers
 {
@@ -26,6 +28,7 @@ namespace CinemaShare.Controllers
         private readonly IMapper mapper;
         private readonly IConfiguration configuration;
         private readonly IFilmFetchAPI filmFetchApi;
+        private readonly IHostingEnvironment hostingEnvironment;
         private const int filmsOnPage = 3;
 
         public FilmsController(IFilmDataBusiness filmDataBusiness,
@@ -34,7 +37,8 @@ namespace CinemaShare.Controllers
                                UserManager<CinemaUser> userManager,
                                IMapper mapper,
                                IConfiguration configuration,
-                               IFilmFetchAPI filmFetchApi)
+                               IFilmFetchAPI filmFetchApi,
+                               IHostingEnvironment hostingEnvironment)
         {
             this.filmDataBusiness = filmDataBusiness;
             this.filmBusiness = filmBusiness;
@@ -43,6 +47,7 @@ namespace CinemaShare.Controllers
             this.mapper = mapper;
             this.configuration = configuration;
             this.filmFetchApi = filmFetchApi;
+            this.hostingEnvironment = hostingEnvironment;
         }
 
         public IActionResult Index(int id = 1, string sort = "", string search = "")
@@ -139,6 +144,15 @@ namespace CinemaShare.Controllers
                 Rating = input.Rating,
                 Ratings = new List<FilmRating> { new FilmRating { Rating = input.Rating, UserId = userId } }
             };
+
+            string uniqueFileName = null;
+            if (input.Poster!=null)
+            {
+               string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + input.Poster;
+               string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                input.Poster.CopyTo(new FileStream(filePath, FileMode.Create));
+            }
             await filmBusiness.AddAsync(film);
             await filmDataBusiness.AddAsync(input, film, mapper.MapToFilmData);
 
