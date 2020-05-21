@@ -5,6 +5,6 @@ namespace Business
 {
     public interface IFilmFetchAPI
     {
-        public Task<string> FetchFilmAsync<TJsonModel, TInputModel>(string apiKey, string title, Func<TJsonModel, TInputModel> mapFunction);
+        public Task<string> FetchFilmAsync<TJsonModel, TInputModel>(string title, Func<TJsonModel, TInputModel> mapFunction);
     }
 }

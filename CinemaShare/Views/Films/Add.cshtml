@@ -3,25 +3,33 @@
 @{
     ViewData["Title"] = "Add film";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var imgPosterSource = Model?.Poster ?? "";
 }
 
 <h1 class="text-center">Add film</h1>
 <hr />
 <div class="row1">
     <div class="col-md-4">
-        <form enctype="multipart/form-data" asp-controller="Films" asp-action="FetchFilm" class="d-inline-flex" method="post">
+        <form asp-controller="Films" asp-action="FetchFilm" class="d-inline-flex" method="post">
             <input class="form-control" name="Title" placeholder="Film title" />
-            <input class="btn btn-primary" type="submit" value="Try Fetch Film" />
+            <input id="submit-but" class="btn btn-primary" type="submit" value="Try Fetch Film" />
         </form>
-        <small class="text-dark">Note: Should enter exact IMDb title</small>
+        <small class="text-dark">Note: Should enter exact IMDb title, case-insensitive</small>
+        <div>
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
         <br />
-        <form asp-controller="Films" asp-action="Add" method="post">
+        <form enctype="multipart/form-data" asp-controller="Films" asp-action="Add" method="post">
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="@Model.Title"></label>
                 <input asp-for="@Model.Title" class="form-control" />
                 <span asp-validation-for="@Model.Title" class="text-danger"></span>
+                <small class="text-dark">Note: Title can't be edited</small>
             </div>
             <div class="form-group">
                 <label asp-for="@Model.Director"></label>
@@ -33,13 +41,18 @@
                 <input asp-for="@Model.Cast" class="form-control" />
                 <span asp-validation-for="@Model.Cast" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div id="poster-url" class="form-group">
                 <label asp-for="@Model.Poster"></label>
-                <div class="custom-file">
-                    <input asp-for="@Model.Poster" class="form-control custom-file-input" />
-                    <label class="custom-file-label">Choose File...</label>
-                </div>
-                <span asp-validation-for="@Model.Poster" class="text-danger"></span>
+                <input id="poster-url-field" asp-for="@Model.Poster" class="form-control" />
+                <div><small class="text-dark">Note: Should specify poster URL. If poster preview is not working, url is invalid</small></div>
+                <div><img id="url-preview" src="@imgPosterSource" style="height:200px;" alt="Poster preview" /></div>
+                <div><span asp-validation-for="@Model.Poster" class="text-danger"></span></div>
+                <button id="upload-img" type="button" class="btn btn-primary my-4">Upload image instead</button>
+            </div>
+            <div id="poster-img" class="form-group">
+                <label asp-for="@Model.PosterUpload"></label>
+                <input asp-for="@Model.PosterUpload" />
+                <button id="upload-url" type="button" class="btn btn-primary my-4">Specify poster URL instead </button>
             </div>
             <div class="form-group">
                 <label asp-for="@Model.Description"></label>
@@ -74,20 +87,54 @@
                 </select>
                 <span asp-validation-for="@Model.Genre" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary">Add Film</button>
+            <button id="submit-but" type="submit" class="btn btn-primary">Add Film</button>
+            <div>
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
         </form>
     </div>
 </div>
 
 @section Scripts
 {
-<script>
-    $(document).ready(function () {
-        $('.custom-file-input').on("change", function () {
-            var fileName = $(this).val().split("\\").pop();
-            $(this).next('.custom-file-label').html(fileName)
+    <script>
+        $(document).ready(function () {
+            const uploadImgBut = "#upload-img";
+            const uploadImgSection = "#poster-img";
+            const uploadUrlBut = "#upload-url";
+            const uploadUrlSection = "#poster-url";
+            const urlField = "#poster-url-field";
+            const urlImgPreview = "#url-preview";
+            const spinner = ".spinner-border";
+            const fetchBut = "#submit-but";
+            const posterFieldEmptyValue = "@Guid.NewGuid().ToString()";
+            const fetchUrlResult= "@imgPosterSource";
+
+            $(uploadImgSection).hide();
+            $(spinner).hide();
+
+            $(uploadImgBut).click(function () {
+                $(uploadUrlSection).hide();
+                $(uploadImgSection).show();
+                $(urlField).val(posterFieldEmptyValue);
+            });
+
+            $(uploadUrlBut).click(function () {
+                $(uploadUrlSection).show();
+                $(uploadImgSection).hide();
+                $(urlField).val(fetchUrlResult);
+            });
+
+            $(urlField).on("input",function () {
+                $(urlImgPreview).attr("src", $(urlField).val());
+            });
+
+            $(fetchBut).click(function () {
+                $(spinner).show();
+            });
         })
-    })
-</script>
+    </script>
     <partial name="_ValidationScriptsPartial" />
 }

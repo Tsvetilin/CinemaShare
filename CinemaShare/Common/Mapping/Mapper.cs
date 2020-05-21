@@ -111,8 +111,11 @@ namespace CinemaShare.Common.Mapping
             };
 
             var posterUrl = filmData.Poster;
-            posterUrl = posterUrl?.Substring(0, posterUrl.LastIndexOf('@') + 1) + "._V1_SY1000_SX675_AL_.jpg";
-            //filmInputModel.Poster = posterUrl;
+            if (!string.IsNullOrWhiteSpace(posterUrl))
+            {
+                posterUrl = posterUrl?.Substring(0, posterUrl.LastIndexOf('@') + 1) + "._V1_SY1000_SX675_AL_.jpg";
+            }
+            filmInputModel.Poster = posterUrl;
 
             var genres = new List<Genre>();
             foreach (var genre in filmData.Genre.Split(", "))

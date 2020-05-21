@@ -11,7 +11,7 @@ namespace CinemaShare.Models.InputModels
         [Required]
         [StringLength(300, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
                       MinimumLength = 20)]
-        public IFormFile Poster { get; set; }
+        public string Poster { get; set; }
 
         [Required]
         [StringLength(maximumLength: 300,
@@ -49,5 +49,8 @@ namespace CinemaShare.Models.InputModels
         [Required]
         [Display(Name = "Target audience")]
         public TargetAudience TargetAudience { get; set; }
+
+        [Display(Name ="Upload poster image")]
+        public IFormFile PosterUpload { get; set; }
     }
 }

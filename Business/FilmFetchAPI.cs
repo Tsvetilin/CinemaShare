@@ -7,7 +7,14 @@ namespace Business
 {
     public class FilmFetchAPI : IFilmFetchAPI
     {
-        public async Task<string> FetchFilmAsync<TJsonModel, TInputModel>(string apiKey, string title, Func<TJsonModel, TInputModel> mapFunction)
+        private readonly string apiKey;
+
+        public FilmFetchAPI(string apiKey)
+        {
+            this.apiKey = apiKey;
+        }
+
+        public async Task<string> FetchFilmAsync<TJsonModel, TInputModel>(string title, Func<TJsonModel, TInputModel> mapFunction)
         {
             using HttpClient client = new HttpClient();
             string url = $"https://www.omdbapi.com/?apikey={apiKey}&t={title}";

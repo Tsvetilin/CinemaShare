@@ -49,7 +49,8 @@ namespace CinemaShare
             services.AddTransient<IFilmReviewBusiness, FilmReviewBusiness>();
             services.AddTransient<IProjectionTicketBusiness, ProjectionTicketBusiness>();
 
-            services.AddTransient<IFilmFetchAPI, FilmFetchAPI>();
+            services.AddTransient<IFilmFetchAPI>(x=>new FilmFetchAPI(Configuration.GetSection("OMDb").Value));
+            services.AddTransient<ICloudinaryAPI>(x => new CloudinaryAPI("dje4dx1yt", "", ""));
 
             services.AddTransient<IMapper, Mapper>();
         }
@@ -61,7 +62,6 @@ namespace CinemaShare
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<CinemaDbContext>();
-                context.Database.EnsureCreated();
                 new CinemaDbContextSeeder(context).SeedAsync().GetAwaiter().GetResult();
             }
 

@@ -15,6 +15,7 @@ using CinemaShare.Models.ViewModels;
 using CinemaShare.Models.InputModels;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace CinemaShare.Controllers
 {
@@ -28,7 +29,7 @@ namespace CinemaShare.Controllers
         private readonly IMapper mapper;
         private readonly IConfiguration configuration;
         private readonly IFilmFetchAPI filmFetchApi;
-        private readonly IHostingEnvironment hostingEnvironment;
+        private readonly ICloudinaryAPI cloudinaryAPI;
         private const int filmsOnPage = 3;
 
         public FilmsController(IFilmDataBusiness filmDataBusiness,
@@ -38,7 +39,7 @@ namespace CinemaShare.Controllers
                                IMapper mapper,
                                IConfiguration configuration,
                                IFilmFetchAPI filmFetchApi,
-                               IHostingEnvironment hostingEnvironment)
+                               ICloudinaryAPI cloudinaryAPI)
         {
             this.filmDataBusiness = filmDataBusiness;
             this.filmBusiness = filmBusiness;
@@ -47,7 +48,7 @@ namespace CinemaShare.Controllers
             this.mapper = mapper;
             this.configuration = configuration;
             this.filmFetchApi = filmFetchApi;
-            this.hostingEnvironment = hostingEnvironment;
+            this.cloudinaryAPI = cloudinaryAPI;
         }
 
         public IActionResult Index(int id = 1, string sort = "", string search = "")
@@ -132,12 +133,34 @@ namespace CinemaShare.Controllers
                 ModelState.AddModelError("Added", "Film already added!");
             }
 
-            if (!ModelState.IsValid)
+            var userId = userManager.GetUserId(User);
+
+            if (Guid.TryParse(input.Poster, out _))
+            {
+                if (input.PosterUpload != null)
+                {
+                    var fileName = $"_{input.Title}_Poster";
+
+                    IFormFile file = input.PosterUpload;
+
+                    using (var stream = new MemoryStream())
+                    {
+                        await file.CopyToAsync(stream);
+                        var posterUrl = await cloudinaryAPI.UploadImage(stream, fileName);
+                        input.Poster = posterUrl;
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("Poster", "Poster is required! Either add image url or upload one.");
+                }
+            }
+
+            if (!ModelState.IsValid || userId == null)
             {
                 return this.View();
             }
 
-            var userId = userManager.GetUserId(User);
             var film = new Film
             {
                 AddedByUserId = userId,
@@ -145,14 +168,6 @@ namespace CinemaShare.Controllers
                 Ratings = new List<FilmRating> { new FilmRating { Rating = input.Rating, UserId = userId } }
             };
 
-            string uniqueFileName = null;
-            if (input.Poster!=null)
-            {
-               string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
-                uniqueFileName = Guid.NewGuid().ToString() + "_" + input.Poster;
-               string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                input.Poster.CopyTo(new FileStream(filePath, FileMode.Create));
-            }
             await filmBusiness.AddAsync(film);
             await filmDataBusiness.AddAsync(input, film, mapper.MapToFilmData);
 
@@ -198,9 +213,8 @@ namespace CinemaShare.Controllers
             }
             else
             {
-                string apiKey = configuration.GetSection("OMDb").Value;
                 TempData[tempDataId] = await filmFetchApi.FetchFilmAsync<FilmJsonModel, FilmInputModel>
-                    (apiKey, title, mapper.MapToFilmInputModel);
+                    (title, mapper.MapToFilmInputModel);
             }
 
             return this.RedirectToAction("Add", "Films", new { Id = tempDataId });
@@ -224,7 +238,7 @@ namespace CinemaShare.Controllers
             var user = await userManager.GetUserAsync(User);
             var film = await filmBusiness.GetAsync(id);
 
-            //Check if user is signed in, film exists and the user is the one who added it
+            // Check if user is signed in, film exists and the user is the one who added it
             if (user?.Id == null ? false : user.Id == film?.AddedByUserId)
             {
                 var inputModel = mapper.MapToFilmUpdateInputModel(film.FilmData);
@@ -281,7 +295,7 @@ namespace CinemaShare.Controllers
         {
             var film = await filmDataBusiness.GetAsync(id);
             var userId = userManager.GetUserId(User);
-            if (film != null && userId!=null)
+            if (film != null && userId != null)
             {
                 await filmBusiness.AddToWatchListAsync(userId, film.Film);
                 return RedirectToAction("Detail", "Films", new { Id = id });
@@ -296,7 +310,7 @@ namespace CinemaShare.Controllers
         {
             var film = await filmDataBusiness.GetAsync(id);
             var userId = userManager.GetUserId(User);
-            if (film != null && userId!=null)
+            if (film != null && userId != null)
             {
                 await filmBusiness.RemoveFromWatchListAsync(userId, film.Film);
                 return RedirectToAction("Detail", "Films", new { Id = id });
