@@ -64,7 +64,7 @@ namespace Business
 
         public IEnumerable<TModel> GetForUser<TModel>(string userId, Func<ProjectionTicket, TModel> mapToModelFunc)
         {
-            var allTickets = GetAll().ToList();
+            var allTickets = GetAll().OrderByDescending(x=>x.Projection.Date).ToList();
             return allTickets.Where(x => x.HolderId == userId).Select(x=> mapToModelFunc(x)).ToList();
         }
     }

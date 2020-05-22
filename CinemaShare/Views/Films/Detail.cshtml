@@ -27,9 +27,6 @@
 }
 @if (Model.CreatedByUserId == UserManager.GetUserId(User))
 {
-    // <form asp-controller="Films" asp-action="Delete" asp-route-id="@Model.Id" method="post">
-    //     <input class="bg-danger" type="submit" onclick="return confirm('Are you sure you want to delete this item?');" value="Delete" />
-    // </form>
     <form asp-controller="Films" asp-action="Update" asp-route-id="@Model.Id" method="get">
         <input class="btn btn-info" type="submit" value="Update" />
     </form>
@@ -60,14 +57,12 @@
         }
         else
         {
-            <h3>
-                <a id="login" asp-area="Identity" asp-page="/Account/Login">Log in </a> to rate the film
-            </h3>
+            <a id="login" asp-area="Identity" asp-page="/Account/Login">Log in to rate the film</a>
         }
     </div>
 </div>
-</br>
-
+<br />
+<br />
 <h1 class="text-center">Projections</h1>
 <hr>
 @if (Model.FilmProjections?.Count == 0)
@@ -79,12 +74,19 @@ else
     <ul class="col-md-12">
         @foreach (var projection in Model.FilmProjections)
         {
-            <li class="col-md-4 box-hover list-unstyled">
+            <li class="col-md-4 box-hover list-unstyled  my-4">
                 <a asp-controller="Projections" asp-action="Detail" asp-route-id="@projection.Id" class="text-decoration-none box-hover">
                     <h5>Cinema: @projection.CinemaName</h5>
                     <h5>City: @projection.CinemaCity</h5>
                     <h5>Projection type: @projection.ProjectionType.ToString().Substring(1)</h5>
-                    <h5>Date: @projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
+                    @if (projection.Date > DateTime.UtcNow)
+                    {
+                        <h5>Date: @projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
+                    }
+                    else
+                    {
+                        <h5>Took place on: @projection.Date.ToString("dd/MM/yyyy HH:mm")</h5>
+                    }
                 </a>
             </li>
         }
@@ -121,7 +123,8 @@ else
     <h5>No reviews added yet.</h5>
 }
 else
-{<ul class="media-list mb-5">
+{
+    <ul class="media-list mb-5">
         @foreach (var review in Model.FilmReviews)
         {
             <li class="media">
@@ -142,14 +145,14 @@ else
             </li>
         }
     </ul>
+}
+
+@section Scripts
+{
     <script>
         $(window).on("load", function () {
             $(window).trigger("resize");
         });
     </script>
-}
-
-@section Scripts
-{
     <partial name="_ValidationScriptsPartial" />
 }

@@ -66,8 +66,11 @@ namespace CinemaShare.Common.Mapping
                 viewModel.Genres = string.Join(", ", filmData.Genre.Select(a => a.Genre.ToString()));
                 viewModel.Rating = Math.Round(filmData.Film.Rating, 1).ToString();
                 viewModel.FilmProjections = filmData.Film.FilmProjection.Select(x => MapToProjectionCardViewModel(x))
+                                                                        .OrderByDescending(x=>x.Date)
                                                                         .ToList();
-                viewModel.FilmReviews = filmData.Film.FilmReviews.Select(x=>MapToFilmReviewViewMode(x)).ToList();
+                viewModel.FilmReviews = filmData.Film.FilmReviews.Select(x=>MapToFilmReviewViewMode(x))
+                                                                 .OrderByDescending(x => x.CreatedOn)
+                                                                 .ToList();
                 viewModel.CreatedByUserId = filmData.Film.AddedByUserId;
             }
             return viewModel;
@@ -113,7 +116,11 @@ namespace CinemaShare.Common.Mapping
             var posterUrl = filmData.Poster;
             if (!string.IsNullOrWhiteSpace(posterUrl))
             {
-                posterUrl = posterUrl?.Substring(0, posterUrl.LastIndexOf('@') + 1) + "._V1_SY1000_SX675_AL_.jpg";
+                var indexToCut = posterUrl.LastIndexOf('@');
+                if (indexToCut > 1)
+                {
+                    posterUrl = posterUrl?.Substring(0, posterUrl.LastIndexOf('@') + 1) + "._V1_SY1000_SX675_AL_.jpg";
+                }
             }
             filmInputModel.Poster = posterUrl;
 

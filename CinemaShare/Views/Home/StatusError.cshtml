@@ -4,26 +4,35 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Whoops, something went wrong! @Model</h1>
+<h1>Whoops, something went wrong!</h1>
+<h3>Error code: @Model</h3>
 <hr />
-@if(Model==404)
+@if (Model == 404)
 {
     <h3>It seems like we couldn't find what you searched for :(</h3>
 }
 <br />
 <h3>Helpful Links:</h3>
 <br />
-<ul class="col-md-4">
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+<ul class="col-md-4 list-unstyled text-center">
+    <li class=" box-hover">
+        <a class=" p-3 text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+            <h4>Home</h4>
+        </a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Films" asp-action="Index">Films</a>
+    <li class="box-hover">
+        <a class="p-3 text-dark" asp-area="" asp-controller="Films" asp-action="Index">
+            <h4>Films</h4>
+        </a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Cinemas" asp-action="Index">Cinemas</a>
+    <li class=" box-hover">
+        <a class="p-3 text-dark " asp-area="" asp-controller="Cinemas" asp-action="Index">
+            <h4>Cinemas</h4>
+        </a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Projections" asp-action="Index">Projections</a>
+    <li class=" box-hover">
+        <a class="p-3 text-dark " asp-area="" asp-controller="Projections" asp-action="Index">
+            <h4>Projections</h4>
+        </a>
     </li>
 </ul>

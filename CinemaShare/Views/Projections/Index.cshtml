@@ -13,7 +13,14 @@
                 <div>
                     <h3 class="text-dark font-weight-bold">@projectionCard.FilmTitle</h3>
                     <h5 class="text-dark ">Cinema: @projectionCard.CinemaName</h5>
-                    <h5 class="text-dark ">Date: @projectionCard.Date.ToString("dd/MM/yyyy HH:mm")</h5>
+                    @if (projectionCard.Date > DateTime.UtcNow)
+                    {
+                        <h5>Date: @projectionCard.Date.ToString("dd/MM/yyyy HH:mm")</h5>
+                    }
+                    else
+                    {
+                        <h5>Took place on: @projectionCard.Date.ToString("dd/MM/yyyy HH:mm")</h5>
+                    }
                     <h5 class="text-dark ">Projection type: @projectionCard.ProjectionType.ToString().Substring(1)</h5>
                 </div>
             </a>

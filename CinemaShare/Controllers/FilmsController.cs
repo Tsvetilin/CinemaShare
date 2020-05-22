@@ -27,7 +27,6 @@ namespace CinemaShare.Controllers
         private readonly IFilmReviewBusiness reviewBusiness;
         private readonly UserManager<CinemaUser> userManager;
         private readonly IMapper mapper;
-        private readonly IConfiguration configuration;
         private readonly IFilmFetchAPI filmFetchApi;
         private readonly ICloudinaryAPI cloudinaryAPI;
         private const int filmsOnPage = 3;
@@ -37,7 +36,6 @@ namespace CinemaShare.Controllers
                                IFilmReviewBusiness reviewBusiness,
                                UserManager<CinemaUser> userManager,
                                IMapper mapper,
-                               IConfiguration configuration,
                                IFilmFetchAPI filmFetchApi,
                                ICloudinaryAPI cloudinaryAPI)
         {
@@ -46,7 +44,6 @@ namespace CinemaShare.Controllers
             this.reviewBusiness = reviewBusiness;
             this.userManager = userManager;
             this.mapper = mapper;
-            this.configuration = configuration;
             this.filmFetchApi = filmFetchApi;
             this.cloudinaryAPI = cloudinaryAPI;
         }
@@ -143,12 +140,10 @@ namespace CinemaShare.Controllers
 
                     IFormFile file = input.PosterUpload;
 
-                    using (var stream = new MemoryStream())
-                    {
-                        await file.CopyToAsync(stream);
-                        var posterUrl = await cloudinaryAPI.UploadImage(stream, fileName);
-                        input.Poster = posterUrl;
-                    }
+                    using var stream = new MemoryStream();
+                    await file.CopyToAsync(stream);
+                    var posterUrl = await cloudinaryAPI.UploadImage(stream, fileName);
+                    input.Poster = posterUrl;
                 }
                 else
                 {
@@ -261,6 +256,26 @@ namespace CinemaShare.Controllers
             //Check if user is signed in, film exists and the user is the one who added it
             if (userId == null ? false : userId == film?.AddedByUserId)
             {
+                if (Guid.TryParse(input.Poster, out _))
+                {
+                    if (input.PosterUpload != null)
+                    {
+                        var fileName = $"_{film.FilmData.Title}_Poster";
+
+                        IFormFile file = input.PosterUpload;
+
+                        using var stream = new MemoryStream();
+                        await file.CopyToAsync(stream);
+                        var posterUrl = await cloudinaryAPI.UploadImage(stream, fileName);
+                        input.Poster = posterUrl;
+
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Poster", "Poster is required! Either add image url or upload one.");
+                    }
+                }
+
                 if (!ModelState.IsValid)
                 {
                     return this.View(input);

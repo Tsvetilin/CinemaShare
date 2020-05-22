@@ -77,7 +77,8 @@ namespace CinemaShare.Controllers
                 return this.NotFound();
             }
 
-            var projections = filmProjectionBusiness.GetAllByCinemaId(id, mapper.MapToProjectionCardViewModel);
+            var projections = filmProjectionBusiness.GetAllByCinemaId(id, mapper.MapToProjectionCardViewModel)
+                                                    .OrderByDescending(x=>x.Date);
             viewModel.FilmProjections = projections.ToList();
             return this.View(viewModel);
         }
@@ -186,7 +187,8 @@ namespace CinemaShare.Controllers
             var cinema = await cinemaBusiness.GetAsync(id);
             if (user?.Id == cinema?.ManagerId)
             {
-                var projections = filmProjectionBusiness.GetAllByCinemaId(id, mapper.MapToProjectionCardViewModel);
+                var projections = filmProjectionBusiness.GetAllByCinemaId(id, mapper.MapToProjectionCardViewModel)
+                                                        .OrderByDescending(x => x.Date);
                 var viewModel = mapper.MapToCinemaDataViewModel(cinema);
                 viewModel.FilmProjections = projections.ToList();
                 return this.View(viewModel);

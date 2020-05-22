@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Update film";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var imgPosterSource = Model?.Poster ?? "";
 }
 
 <h1 class="text-center">Update film</h1>
@@ -22,10 +24,18 @@
                 <input asp-for="@Model.Cast" class="form-control" />
                 <span asp-validation-for="@Model.Cast" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div id="poster-url" class="form-group">
                 <label asp-for="@Model.Poster"></label>
-                <input asp-for="@Model.Poster" class="form-control" />
-                <span asp-validation-for="@Model.Poster" class="text-danger"></span>
+                <input id="poster-url-field" asp-for="@Model.Poster" class="form-control" />
+                <div><small class="text-dark">Note: Should specify poster URL. If poster preview is not working, url is invalid</small></div>
+                <div><img id="url-preview" src="@imgPosterSource" style="height:200px;" alt="Poster preview" /></div>
+                <div><span asp-validation-for="@Model.Poster" class="text-danger"></span></div>
+                <button id="upload-img" type="button" class="btn btn-primary my-4">Upload image instead</button>
+            </div>
+            <div id="poster-img" class="form-group">
+                <label asp-for="@Model.PosterUpload"></label>
+                <input asp-for="@Model.PosterUpload" />
+                <button id="upload-url" type="button" class="btn btn-primary my-4">Specify poster URL instead </button>
             </div>
             <div class="form-group">
                 <label asp-for="@Model.Description"></label>
@@ -62,5 +72,36 @@
 
 @section Scripts
 {
+    <script>
+        $(document).ready(function () {
+            const uploadImgBut = "#upload-img";
+            const uploadImgSection = "#poster-img";
+            const uploadUrlBut = "#upload-url";
+            const uploadUrlSection = "#poster-url";
+            const urlField = "#poster-url-field";
+            const urlImgPreview = "#url-preview";
+            const posterFieldEmptyValue = "@Guid.NewGuid().ToString()";
+            const originalPoster= "@imgPosterSource";
+
+            $(uploadImgSection).hide();
+
+            $(uploadImgBut).click(function () {
+                $(uploadUrlSection).hide();
+                $(uploadImgSection).show();
+                $(urlField).val(posterFieldEmptyValue);
+            });
+
+            $(uploadUrlBut).click(function () {
+                $(uploadUrlSection).show();
+                $(uploadImgSection).hide();
+                $(urlField).val(originalPoster);
+            });
+
+            $(urlField).on("input",function () {
+                $(urlImgPreview).attr("src", $(urlField).val());
+            });
+
+        })
+    </script>
     <partial name="_ValidationScriptsPartial" />
 }

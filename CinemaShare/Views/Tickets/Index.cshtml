@@ -16,36 +16,62 @@ else
         @foreach (var ticket in Model.Tickets)
         {
             <li class="list-unstyled col-md-12 py-3 box-hover">
-                <div class="col-md-8 d-flex justify-content-around">
-                    <div>
-                        <h5>Cinema: @ticket.CinemaName</h5>
-                        <h5>Film: @ticket.FilmTitle</h5>
-                    </div>
-                    <div>
-                        <h5>Ticket type: @ticket.Type.ToString()</h5>
-                        <h5>Date: @ticket.ProjectionDate.ToString("dd/MM/yyyy HH:mm")</h5>
-                    </div>
-                    <div>
-                        <h5>Projection type: @ticket.ProjectionType.ToString().Substring(1)</h5>
-                        <div class="d-flex justify-content-around">
-                            <h5>Seat: @ticket.Seat</h5>
-                            <h5>Price: @ticket.Price</h5>
-                        </div>
-                    </div>
-                </div>
-                <ul class="col-md-4 list-unstyled">
+                <ul class="ticket-list col-md-8 d-flex justify-content-around list-unstyled ">
                     <li>
-                        <form asp-controller="Tickets" asp-action="Update" asp-route-id="@ticket.Id" class="py-1" method="get">
-                            <input class="btn btn-primary" type="submit" value="Change ticket" />
-                        </form>
+                        <div class="justify-content-center">
+                            <h5>Cinema: @ticket.CinemaName</h5>
+                            <h5>Ticket type: @ticket.Type.ToString()</h5>
+                            <h5>Projection type: @ticket.ProjectionType.ToString().Substring(1)</h5>
+                        </div>
                     </li>
                     <li>
-                        <form asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id" onclick="return confirm('Are you sure you want to cancel your reservation?');" class="py-1" method="post">
-                            <input class=" btn btn-danger" type="submit" value="Deny ticket" />
+                        <div class="justify-content-center">
+                            <h5>Film: @ticket.FilmTitle</h5>
+                            <h5>Date: @ticket.ProjectionDate.ToString("dd/MM/yyyy HH:mm")</h5>
+                            <div class="d-flex seat-price">
+                                <h5 class="ml-0 mr-3">Seat: @ticket.Seat</h5>
+                                <h5 class="mx-3">Price: @ticket.Price</h5>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="col-md-4 list-unstyled d-flex justify-content-center flex-column">
+                    @if (ticket.ProjectionDate > DateTime.UtcNow)
+                    {
+                        <li class="d-flex justify-content-center">
+                            <form asp-controller="Tickets" asp-action="Update" asp-route-id="@ticket.Id" class="py-1" method="get">
+                                    <input class="btn btn-primary" type="submit" value="Change ticket" />
+                            </form>
+                        </li>
+                    }
+                    <li class="d-flex justify-content-center">
+                        <form asp-controller="Tickets" asp-action="Delete" asp-route-id="@ticket.Id" onclick="return confirm('Are you sure you want to cancel your reservation?');" class="py-1 " method="post">
+                                <input class=" btn btn-danger " type="submit" value="Deny ticket" />
                         </form>
                     </li>
                 </ul>
             </li>
         }
     </ul>
+}
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            handleSize();
+
+            $(window).resize(function () {
+                handleSize();
+            });
+
+            function handleSize() {
+                $(".ticket-list").removeAttr('style');
+                $(".seat-price").removeAttr('style');
+                if ($(document).width() < 900) {
+                    $(".ticket-list").css("flex-direction", "column");
+                    $(".ticket-list").css("text-align", "center");
+                    $(".seat-price").css("justify-content", "center");
+                }
+            }
+        });
+    </script>
 }

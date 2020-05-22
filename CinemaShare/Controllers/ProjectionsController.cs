@@ -40,7 +40,8 @@ namespace CinemaShare.Controllers
             {
                 id = 1;
             }
-            var projections = filmProjectionBusiness.GetPageItems(id, projectionsOnPage, mapper.MapToProjectionCardViewModel).ToList();
+            var projections = filmProjectionBusiness.GetPageItems(id, projectionsOnPage, mapper.MapToProjectionCardViewModel)
+                                                    .ToList();
             ProjectionIndexViewModel viewModel = new ProjectionIndexViewModel
             {
                 PagesCount = pageCount,
@@ -65,7 +66,7 @@ namespace CinemaShare.Controllers
             return View(viewModel);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Add()
         {
             var user = await userManager.GetUserAsync(User);
@@ -75,6 +76,7 @@ namespace CinemaShare.Controllers
                 var model = new ProjectionInputModel();
                 var films = filmDataBusiness.GetAll().ToList().Select(x => x.Title).OrderBy(x=>x).ToDictionary(x => x);
                 model.AvailableFilms = new SelectList(films, "Key", "Value");
+                model.Date = DateTime.UtcNow.Date;
                 return this.View(model);
             }
             return this.RedirectToAction("Index", "Projections");
@@ -97,9 +99,16 @@ namespace CinemaShare.Controllers
                 ModelState.AddModelError("Found", "Film not found!");
             }
 
+            if(input.Date<DateTime.UtcNow)
+            {
+                ModelState.AddModelError("Date", "Projection can start at least one hour from now!");
+            }
+
             if (!ModelState.IsValid)
             {
-                return this.View();
+                var films = filmDataBusiness.GetAll().ToList().Select(x => x.Title).OrderBy(x => x).ToDictionary(x => x);
+                input.AvailableFilms = new SelectList(films, "Key", "Value");
+                return this.View(input);
             }
 
             var projection = mapper.MapToFilmProjection(input, film, cinema);
@@ -114,7 +123,7 @@ namespace CinemaShare.Controllers
             var cinema = user?.Cinema;
             var projection = await filmProjectionBusiness.Get(id);
 
-            if (cinema == null || projection == null || projection?.CinemaId!=cinema.Id)
+            if (cinema == null || projection == null || projection?.CinemaId!=cinema.Id || projection?.Date<DateTime.UtcNow)
             {
                 return this.RedirectToAction("Index", "Projections");
             }
@@ -133,7 +142,7 @@ namespace CinemaShare.Controllers
             var cinema = user?.Cinema;
             var projection = await filmProjectionBusiness.Get(id);
 
-            if (cinema == null || projection == null || projection?.CinemaId != cinema.Id)
+            if (cinema == null || projection == null || projection?.CinemaId != cinema.Id || projection?.Date < DateTime.UtcNow)
             {
                 return this.RedirectToAction("Index", "Projections");
             }
@@ -144,9 +153,14 @@ namespace CinemaShare.Controllers
                 ModelState.AddModelError("Found", "Film not found!");
             }
 
+            if (input.Date < DateTime.UtcNow)
+            {
+                ModelState.AddModelError("Date", "Projection can start at least one hour from now!");
+            }
+
             if (!ModelState.IsValid)
             {
-                return this.View();
+                return this.View(input);
             }
             
             var projectionUrlPattern = Url.ActionLink("Index", "Projections");

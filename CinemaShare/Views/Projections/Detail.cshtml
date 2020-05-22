@@ -8,7 +8,7 @@
 <hr />
 <div class="content-heading clearfix media text-decoration-none m-auto w-100 justify-content-center">
     <div class="ml-4">
-        <a asp-action="Detail" asp-controller="Films" asp-route-id="@Model.FilmId"><h3 class="text-dark font-weight-bold text-center" >@Model.FilmTitle</h3></a>
+        <a asp-action="Detail" asp-controller="Films" asp-route-id="@Model.FilmId"><h3 class="text-dark font-weight-bold text-center">@Model.FilmTitle</h3></a>
         <a asp-action="Detail" asp-controller="Cinemas" asp-route-id="@Model.CinemaId"><h5 class="text-dark ">Cinema: @Model.CinemaName</h5></a>
         <h5 class="text-dark ">@Model.CinemaCity, @Model.CinemaCountry</h5>
         <h5 class="text-dark ">Date: @Model.Date.ToString("dd/MM/yyyy HH:mm")</h5>
@@ -18,14 +18,16 @@
         <h5 class="text-dark ">Children ticket price: @Model.ChildrenTicketPrice</h5>
         <h5 class="text-dark ">Students ticket price: @Model.StudentsTicketPrice</h5>
         <h5 class="text-dark ">Adults ticket price: @Model.AdultsTicketPrice</h5>
-        @if (Model.AvailableTickets > 0)
+        @if (Model.AvailableTickets > 0 && Model.Date > DateTime.UtcNow)
         {
             <h5 class="text-dark ">Available tickets: @Model.AvailableTickets</h5>
-            <a asp-controller="Tickets" asp-action="Reserve" asp-route-id="@Model.Id">Reserve a ticket</a>
+            <br />
+            <h5 class="text-center"><a asp-controller="Tickets" asp-action="Reserve" asp-route-id="@Model.Id">Reserve a ticket</a></h5>
         }
         else
         {
-            <h5 class="text-danger ">No tickets available</h5>
+            <br />
+            <h5 class="text-danger text-center">No tickets available</h5>
         }
     </div>
 </div>

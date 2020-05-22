@@ -38,10 +38,7 @@ namespace CinemaShare
             // Configuration
             services.AddSingleton(this.Configuration);
 
-            // Service providers from business layer
-            services.AddTransient<IEmailSender>(x=>new EmailSender(Configuration.GetSection("EmailSender")["APIKey"],
-                                                                   Configuration.GetSection("EmailSender")["Sender"],
-                                                                   Configuration.GetSection("EmailSender")["SenderName"]));
+            // Service providers for business layer
             services.AddTransient<ICinemaBusiness, CinemaBusiness>();
             services.AddTransient<IFilmBusiness, FilmBusiness>();
             services.AddTransient<IFilmDataBusiness, FilmDataBusiness>();
@@ -49,8 +46,16 @@ namespace CinemaShare
             services.AddTransient<IFilmReviewBusiness, FilmReviewBusiness>();
             services.AddTransient<IProjectionTicketBusiness, ProjectionTicketBusiness>();
 
-            services.AddTransient<IFilmFetchAPI>(x=>new FilmFetchAPI(Configuration.GetSection("OMDb").Value));
-            services.AddTransient<ICloudinaryAPI>(x => new CloudinaryAPI("dje4dx1yt", "", ""));
+            services.AddTransient<IFilmFetchAPI>(x=>
+                new FilmFetchAPI(Configuration.GetSection("OMDb")["APIKey"]));
+            services.AddTransient<ICloudinaryAPI>(x =>
+                new CloudinaryAPI(Configuration.GetSection("Cloudinary")["CloudName"],
+                                  Configuration.GetSection("Cloudinary")["APIKey"],
+                                  Configuration.GetSection("Cloudinary")["APISecret"]));
+            services.AddTransient<IEmailSender>(x=>
+                new EmailSender(Configuration.GetSection("SendGridEmailSender")["APIKey"],
+                                Configuration.GetSection("SendGridEmailSender")["Sender"],
+                                Configuration.GetSection("SendGridEmailSender")["SenderName"]));
 
             services.AddTransient<IMapper, Mapper>();
         }

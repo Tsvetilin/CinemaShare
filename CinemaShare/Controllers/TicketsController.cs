@@ -123,7 +123,7 @@ namespace CinemaShare.Controllers
             var user = await userManager.GetUserAsync(User);
             var ticket = await projectionTicketBusiness.GetAsync(id);
 
-            if (ticket == null)
+            if (ticket == null || ticket.Projection.Date<DateTime.UtcNow)
             {
                 return this.RedirectToAction("Index", "Tickets");
             }
@@ -150,7 +150,7 @@ namespace CinemaShare.Controllers
             var ticket = await projectionTicketBusiness.GetAsync(id);
             var projection = ticket.Projection;
 
-            if (ticket == null)
+            if (ticket == null || ticket.Projection.Date < DateTime.UtcNow)
             {
                 return this.RedirectToAction("Index", "Tickets");
             }

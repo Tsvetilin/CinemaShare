@@ -23,6 +23,7 @@ namespace Business
 
         public async Task<string> UploadImage(MemoryStream imageMemoryStream, string fileName)
         {
+            imageMemoryStream.Position = 0;
             var cloudinaryAccount = new Account(cloudName, apiKey, apiSecret);
             Cloudinary cloudinary = new Cloudinary(cloudinaryAccount);
             string publicId = Guid.NewGuid().ToString() + fileName;

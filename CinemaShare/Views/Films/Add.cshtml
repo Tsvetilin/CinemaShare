@@ -13,7 +13,7 @@
     <div class="col-md-4">
         <form asp-controller="Films" asp-action="FetchFilm" class="d-inline-flex" method="post">
             <input class="form-control" name="Title" placeholder="Film title" />
-            <input id="submit-but" class="btn btn-primary" type="submit" value="Try Fetch Film" />
+            <input class="btn btn-primary submit-but" type="submit" value="Try Fetch Film" />
         </form>
         <small class="text-dark">Note: Should enter exact IMDb title, case-insensitive</small>
         <div>
@@ -87,7 +87,7 @@
                 </select>
                 <span asp-validation-for="@Model.Genre" class="text-danger"></span>
             </div>
-            <button id="submit-but" type="submit" class="btn btn-primary">Add Film</button>
+            <button type="submit" class="btn btn-primary submit-but">Add Film</button>
             <div>
                 <div class="spinner-border" role="status">
                     <span class="sr-only">Loading...</span>
@@ -108,7 +108,7 @@
             const urlField = "#poster-url-field";
             const urlImgPreview = "#url-preview";
             const spinner = ".spinner-border";
-            const fetchBut = "#submit-but";
+            const fetchBut = ".submit-but";
             const posterFieldEmptyValue = "@Guid.NewGuid().ToString()";
             const fetchUrlResult= "@imgPosterSource";
 

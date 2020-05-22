@@ -51,7 +51,13 @@
             <br /><hr />
             <button type="submit" id="submitBut" class="btn btn-success">Reserve all</button>
         </form>
-        <script>
+        
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
             $(document).ready(function () {
                 const maxTicketFields = 9;
                 const sumReducer = (accumulator, currentValue) => accumulator + currentValue;
@@ -159,7 +165,6 @@
                     priceField.text("Total price: " + totalPrice.toString());
                 }
             });
-        </script>
-    </div>
-</div>
-
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}
