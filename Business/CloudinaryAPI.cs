@@ -21,7 +21,7 @@ namespace Business
             this.apiSecret = apiSecret;
         }
         /// <summary>
-        /// Uploads new image with slected parameters
+        /// Uploads new image with selected parameters
         /// </summary>
         /// <returns>Image uri</returns>
         public async Task<string> UploadImage(MemoryStream imageMemoryStream, string fileName)
