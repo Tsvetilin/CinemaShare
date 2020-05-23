@@ -19,6 +19,10 @@ namespace Business
             this.senderName = senderName;
         }
 
+        /// <summary>
+        /// Sends email from a selected sender to a selected receiver with subject and message
+        /// </summary>
+        /// <returns></returns>
         public async Task SendEmailAsync(string sender,
                                          string senderName,
                                          string reciever,
@@ -31,6 +35,10 @@ namespace Business
             await client.SendEmailAsync(msg);
         }
 
+        /// <summary>
+        /// Sends email from a default sender to a selected receiver with subject and message
+        /// </summary>
+        /// <returns></returns>
         public async Task SendEmailAsync(string reciever,
                                          string subject,
                                          string htmlMessage)
@@ -41,6 +49,10 @@ namespace Business
             await client.SendEmailAsync(msg);
         }
 
+        /// <summary>
+        /// Sends email to cancel a ticket reservation for a selected projection
+        /// </summary>
+        /// <returns></returns>
         public async Task SendTicketCancelationEmailAsync(string reciever, 
                                                           FilmProjection projection,
                                                           string projectionsUrlPattern)
@@ -55,6 +67,10 @@ namespace Business
             await SendEmailAsync(reciever, subject, html);
         }
 
+        /// <summary>
+        /// Sends email to inform about ticket information update
+        /// </summary>
+        /// <returns></returns>
         public async Task SendTicketUpdateEmailAsync(string reciever,
                                                      FilmProjection projection, 
                                                      string ticketsUrlPattern)
@@ -69,6 +85,10 @@ namespace Business
             await SendEmailAsync(reciever, subject, html);
         }
 
+        /// <summary>
+        /// Sends a confirmation email to a receiver from a default sender
+        /// </summary>
+        /// <returns></returns>
         public async Task SendEmailConfirmationEmailAsync(string reciever, string callbackUrl)
         {
             var subject= "Confirm your email";

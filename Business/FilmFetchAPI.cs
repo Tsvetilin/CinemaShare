@@ -13,7 +13,11 @@ namespace Business
         {
             this.apiKey = apiKey;
         }
-
+        ///<summary>
+        /// Gets a information about selected film
+        ///</summary>
+        /// <param name="title">Film title</param>
+        ///<return>Information as Json</return>
         public async Task<string> FetchFilmAsync<TJsonModel, TInputModel>(string title, Func<TJsonModel, TInputModel> mapFunction)
         {
             using HttpClient client = new HttpClient();
