@@ -73,7 +73,7 @@ namespace Business
         /// <summary>
         /// Gets all films by a selected name
         /// </summary>    
-        /// <param name="searchString>Input string</param>
+        /// <param name="searchString">Input string</param>
         /// <returns>List of films</returns>
         public IEnumerable<TModel> GetAllByName<TModel>(string searchString, Func<FilmData, TModel> mapToModelFunc)
         {
@@ -84,7 +84,7 @@ namespace Business
         /// <summary>
         /// Gets a film by a selected name
         /// </summary>    
-        /// <param name="title>The film title</param>
+        /// <param name="title">The film title</param>
         /// <returns>Film</returns>
         public FilmData GetByName(string title)
         {
@@ -96,9 +96,9 @@ namespace Business
         /// Gets all films on the selected page
         /// and sorts them
         /// </summary>    
-        /// <param name="page>Number of the page</param>
-        /// <param name="filmsonPage>Number of the films on the page</param>
-        /// <param name="sortOption>Sorting criteria</param>
+        /// <param name="page">Number of the page</param>
+        /// <param name="filmsOnPage">Number of the films on the page</param>
+        /// <param name="sortOption">Sorting criteria</param>
         /// <returns>List of films</returns>
         public IEnumerable<TModel> GetPageItems<TModel>(int page, int filmsOnPage, string sortOption,
                                                         Func<FilmData, TModel> mapToModelFunc)
@@ -151,7 +151,7 @@ namespace Business
         /// <summary>
         /// Updates the data about a selected film
         /// </summary>    
-        /// <param name="filmData>The updated data of the film</param>
+        /// <param name="filmData">The updated data of the film</param>
         /// <returns></returns>
         public async Task Update(FilmData filmData)
         {
@@ -166,7 +166,7 @@ namespace Business
         /// <summary>
         /// Deletes film by ID
         /// </summary>    
-        /// <param name="id>The film ID</param>
+        /// <param name="id">The film ID</param>
         /// <returns></returns>
         public async Task Delete(string id)
         {
