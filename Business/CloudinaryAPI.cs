@@ -20,7 +20,10 @@ namespace Business
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
         }
-
+        /// <summary>
+        /// Uploads new image with slected parameters
+        /// </summary>
+        /// <returns>Image uri</returns>
         public async Task<string> UploadImage(MemoryStream imageMemoryStream, string fileName)
         {
             imageMemoryStream.Position = 0;
