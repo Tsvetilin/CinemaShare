@@ -15,24 +15,43 @@ namespace Business
         {
             this.context = context;
         }
-
+        
+        /// <summary>
+        /// Adds film to the database
+        /// </summary>
+        /// <param name="film">New film object</param>
+        /// <returns></returns>
         public async Task AddAsync(Film film)
         {
             await context.Films.AddAsync(film);
             await context.SaveChangesAsync();
         }
-
+        /// <summary>
+        /// Gets film by ID
+        /// </summary>
+        /// <param name="id">The film ID</param>
+        /// <returns>Selected film</returns>
         public async Task<Film> GetAsync(string id)
         {
             var film = await context.Films.FindAsync(id);
             return film;
         }
-
+        /// <summary>
+        /// Gets all films from the database
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Film> GetAll()
         {
             return context.Films.ToList();
         }
-
+        
+        /// <summary>
+        /// Adds the selected user's rating to a selected film
+        /// </summary>
+        /// <param name="filmId">The film ID</param>
+        /// <param name="userId">The user ID</param>
+        /// <param name="rating">New film rating</param>
+        /// <returns></returns>
         public async Task RateAsync(string filmId, string userId, int rating)
         {
             var filmInContext = await context.Films.FindAsync(filmId);
@@ -58,7 +77,13 @@ namespace Business
             await context.SaveChangesAsync();
 
         }
-
+        
+        /// <summary>
+        /// Adds film to the user's watchlist
+        /// </summary>
+        /// <param name="userId">The ID of the user</param>
+        /// <param name="film">New film object</param>
+        /// <returns></returns>
         public async Task AddToWatchListAsync(string userId, Film film)
         {
             var userInContext = await context.Users.FindAsync(userId);
@@ -71,7 +96,12 @@ namespace Business
             await context.SaveChangesAsync();
 
         }
-
+        /// <summary>
+        /// Removes film from the user's watchlist
+        /// </summary>
+        /// <param name="userId">The ID of the user</param>
+        /// <param name="film">New film object</param>
+        /// <returns></returns>
         public async Task RemoveFromWatchListAsync(string userId, Film film)
         {
             var userInContext = await context.Users.FindAsync(userId);
@@ -82,12 +112,21 @@ namespace Business
             }
         }
 
+        /// <summary>
+        /// Gets the selected user's watchlist 
+        /// </summary>
+        /// <returns>List of films</returns>
         public IEnumerable<TModel> GetWatchList<TModel>(string userId, Func<FilmData, TModel> mapToModelFunc)
         {
             var userInContext = context.Users.FirstOrDefault(x => x.Id == userId);
             return userInContext?.WatchList.Select(x => mapToModelFunc(x.FilmData)).ToList();
         }
 
+        /// <summary>
+        /// Deletes film from the database by ID
+        /// </summary>
+        /// <param name="id">The film ID</param>
+        /// <returns></returns>
         public async Task DeleteAsync(string id)
         {
             var filmInContext = await context.Films.FindAsync(id);
