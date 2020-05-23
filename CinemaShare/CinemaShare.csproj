@@ -54,16 +54,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Views\Projections\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="Areas\Admin\Views\Cinemas\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Cinemas\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Cinemas\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Films\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Films\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Films\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Projections\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Projections\Details.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Projections\Edit.cshtml" />
   </ItemGroup>
 
 </Project>
