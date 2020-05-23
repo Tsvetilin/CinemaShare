@@ -7,6 +7,14 @@
     <ul class="navbar-nav visible">
         @if (SignInManager.IsSignedIn(User))
         {
+            if (SignInManager.Context.User.IsInRole("Admin"))
+            {
+                <li class="nav-item">
+                    <form id="administrate" class="form-inline" asp-area="Admin" asp-action="Index" asp-controller="Home" method="get">
+                        <button id="administrateBut" type="submit" class="nav-link btn btn-link text-dark">Administrate</button>
+                    </form>
+                </li>
+            }
             <li class="nav-item">
                 <form id="watchList" class="form-inline" asp-controller="Films" asp-action="WatchList" method="get">
                     <button id="watchListBut" type="submit" class="nav-link btn btn-link text-dark">WatchList</button>

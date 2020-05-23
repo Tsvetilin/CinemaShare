@@ -5,10 +5,33 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Admin\**" />
     <Compile Remove="wwwroot\images\**" />
+    <Content Remove="Areas\Admin\**" />
     <Content Remove="wwwroot\images\**" />
+    <EmbeddedResource Remove="Areas\Admin\**" />
     <EmbeddedResource Remove="wwwroot\images\**" />
+    <None Remove="Areas\Admin\**" />
     <None Remove="wwwroot\images\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Areas\Admin\Controllers\CinemasController.cs" />
+    <Compile Include="Areas\Admin\Controllers\FilmsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ProjectionsController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\_ViewImports.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Areas\Admin\Views\_ViewStart.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +51,19 @@
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Views\Projections\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Areas\Admin\Views\Cinemas\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Cinemas\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Cinemas\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Films\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Films\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Films\Index.cshtml" />
   </ItemGroup>
 
 </Project>
