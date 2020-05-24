@@ -58,7 +58,7 @@ namespace Business
         /// <returns>List of Projections</returns>
         public IEnumerable<TModel> GetPageItems<TModel>(int page, int projectionsOnPage, Func<FilmProjection, TModel> mapToModelFunc)
         {
-            var projections = GetAll();
+            var projections = GetAll().OrderByDescending(x=>x.Date);
             var selectedCinemas = projections.Skip(projectionsOnPage * (page - 1)).Take(projectionsOnPage);
             return selectedCinemas.Select(x => mapToModelFunc(x)).ToList();
         }
