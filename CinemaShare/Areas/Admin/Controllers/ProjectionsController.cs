@@ -16,10 +16,13 @@ namespace CinemaShare.Areas.Admin.Controllers
     public class ProjectionsController : Controller
     {
         private readonly IFilmProjectionBusiness filmProjectionBusiness;
+        private readonly IFilmDataBusiness filmDataBusiness;
 
-        public ProjectionsController(IFilmProjectionBusiness filmProjectionBusiness)
+        public ProjectionsController(IFilmProjectionBusiness filmProjectionBusiness, 
+                                     IFilmDataBusiness filmDataBusiness)
         {
             this.filmProjectionBusiness = filmProjectionBusiness;
+            this.filmDataBusiness = filmDataBusiness;
         }
 
         public IActionResult Index()
@@ -57,15 +60,18 @@ namespace CinemaShare.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            var films = filmDataBusiness.GetAll().ToList().OrderBy(x => x.Title).
+                                                  ToDictionary(x => x.FilmId, x => x.Title);
+            ViewBag.SelectListOfFilms = new SelectList(films, "Key", "Value");
             return View(projection);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Date,ProjecitonType,TotalTickets,Film")] FilmProjection projection)
+        public async Task<IActionResult> Edit(string id, 
+                                  [Bind("Id,Date,ProjecitonType,TotalTickets,FilmId, TicketPrices")] FilmProjection projection)
         {
             var projectionInContext = await filmProjectionBusiness.Get(id);
-
             if (id != projection.Id || projectionInContext == null)
             {
                 return NotFound();
@@ -73,23 +79,25 @@ namespace CinemaShare.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                projection.Id = projectionInContext.Id;
                 var ticketUrlPattern = Url.ActionLink("Index", "Tickets");
                 var projecitonsUrlPattern = Url.ActionLink("Index", "Projections");
+                projection.CinemaId = projectionInContext.CinemaId;
                 await filmProjectionBusiness.Update(projection,projecitonsUrlPattern ,ticketUrlPattern);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id });
             }
-
+            var films = filmDataBusiness.GetAll().ToList().OrderBy(x => x.Title).
+                                                  ToDictionary(x => x.FilmId, x => x.Title);
+            ViewBag.SelectListOfFilms = new SelectList(films, "Key", "Value");
             return View(projection);
         }
 
-      /*  [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var projectionUrlPattern = Url.ActionLink("Index", "Projections");
-            await cinemaBusiness.DeleteAsync(id, projectionUrlPattern);
+            await filmProjectionBusiness.Delete(id, projectionUrlPattern);
             return RedirectToAction(nameof(Index));
-        }*/
+        }
     }
 }

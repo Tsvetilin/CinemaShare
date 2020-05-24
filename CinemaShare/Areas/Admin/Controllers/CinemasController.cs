@@ -75,7 +75,7 @@ namespace CinemaShare.Areas.Admin.Controllers
                 cinema.ManagerId = cinemaInContext.ManagerId;
                 var ticketUrlPattern = Url.ActionLink("Index", "Tickets");
                 await cinemaBusiness.UpdateAsync(cinema,ticketUrlPattern);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id });
             }
 
             return View(cinema);

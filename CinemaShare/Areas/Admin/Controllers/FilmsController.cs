@@ -16,10 +16,12 @@ namespace CinemaShare.Areas.Admin.Controllers
     public class FilmsController : Controller
     {
         private readonly IFilmDataBusiness filmDataBusiness;
+        private readonly IFilmReviewBusiness filmReviewBusiness;
 
-        public FilmsController(IFilmDataBusiness filmDataBusiness)
+        public FilmsController(IFilmDataBusiness filmDataBusiness, IFilmReviewBusiness filmReviewBusiness)
         {
             this.filmDataBusiness = filmDataBusiness;
+            this.filmReviewBusiness = filmReviewBusiness;
         }
 
         public IActionResult Index()
@@ -62,7 +64,7 @@ namespace CinemaShare.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Title,Poster,Description,Director,Cast,Runtime,ReleaseDate,TargetAudience")] FilmData filmData)
+        public async Task<IActionResult> Edit(string id, [Bind("FilmId,Title,Poster,Description,Director,Cast,Runtime,ReleaseDate,TargetAudience")] FilmData filmData)
         {
             var dataInContext = await filmDataBusiness.GetAsync(id);
             if (id != filmData.FilmId || dataInContext==null)
@@ -72,9 +74,8 @@ namespace CinemaShare.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                filmData.FilmId = dataInContext.FilmId;
                 await filmDataBusiness.Update(filmData);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new { id });
             }
 
             return View(filmData);
@@ -86,6 +87,14 @@ namespace CinemaShare.Areas.Admin.Controllers
         {
             await filmDataBusiness.Delete(id);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteReview(string id , string filmId)
+        {
+            await filmReviewBusiness.Delete(id);
+            return RedirectToAction(nameof(Details), new { id = filmId });
         }
     }
 }

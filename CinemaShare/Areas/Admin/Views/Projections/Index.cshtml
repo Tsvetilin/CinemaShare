@@ -8,6 +8,12 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.Cinema)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Film)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Date)
             </th>
             <th>
@@ -16,18 +22,18 @@
             <th>
                 @Html.DisplayNameFor(model => model.TotalTickets)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cinema)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Film)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cinema.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Film.FilmData.Title)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
@@ -36,12 +42,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TotalTickets)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cinema.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Film.FilmData.Title)
             </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.Id">Manage</a>

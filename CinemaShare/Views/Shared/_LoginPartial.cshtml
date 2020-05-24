@@ -16,12 +16,12 @@
                 </li>
             }
             <li class="nav-item">
-                <form id="watchList" class="form-inline" asp-controller="Films" asp-action="WatchList" method="get">
+                <form id="watchList" class="form-inline" asp-area="" asp-controller="Films" asp-action="WatchList" method="get">
                     <button id="watchListBut" type="submit" class="nav-link btn btn-link text-dark">WatchList</button>
                 </form>
             </li>
             <li class="nav-item">
-                <form id="myTickets" class="form-inline" asp-controller="Tickets" asp-action="Index" method="get">
+                <form id="myTickets" class="form-inline" asp-area="" asp-controller="Tickets" asp-action="Index" method="get">
                     <button id="ticketsBut" type="submit" class="nav-link btn btn-link text-dark">Tickets</button>
                 </form>
             </li>
@@ -32,7 +32,7 @@
                 if (user?.Cinema == null)
                 {
                     <li class="nav-item">
-                        <form id="addCinema" class="form-inline" asp-controller="Cinemas" asp-action="Add" method="get">
+                        <form id="addCinema" class="form-inline" asp-area="" asp-controller="Cinemas" asp-action="Add" method="get">
                             <button id="addCinemaBut" type="submit" class="nav-link btn btn-link text-dark">Add Cinema</button>
                         </form>
                     </li>
@@ -40,14 +40,14 @@
                 else
                 {
                     <li class="nav-item">
-                        <form id="manageCinema" class="form-inline" asp-controller="Cinemas" asp-action="Manage" asp-route-id="@user?.Cinema?.Id" method="get">
+                        <form id="manageCinema" class="form-inline" asp-area="" asp-controller="Cinemas" asp-action="Manage" asp-route-id="@user?.Cinema?.Id" method="get">
                             <button id="addProjBut" type="submit" class="nav-link btn btn-link text-dark">Manage Cinema</button>
                         </form>
                     </li>
                 }
             }
             <li class="nav-item">
-                <form id="addFilm" class="form-inline" asp-controller="Films" asp-action="Add" method="get">
+                <form id="addFilm" class="form-inline" asp-area="" asp-controller="Films" asp-action="Add" method="get">
                     <button id="addFilmBut" type="submit" class="nav-link btn btn-link text-dark">Add film</button>
                 </form>
             </li>

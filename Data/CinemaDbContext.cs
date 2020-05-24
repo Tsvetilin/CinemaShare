@@ -14,6 +14,7 @@ namespace Data
 
         public CinemaDbContext()
         {
+
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -52,6 +53,7 @@ namespace Data
             builder.Entity<Film>().HasOne(film => film.AddedByUser);
             builder.Entity<Film>().HasMany(film => film.FilmProjection).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Film>().HasMany(film => film.Ratings).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<FilmData>().HasMany(film => film.Genre).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Film>().HasOne(film => film.FilmData).WithOne(x => x.Film).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Film>().HasMany(film => film.FilmReviews).WithOne(x => x.Film).OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Cinema>().HasMany(x => x.FilmProjections).WithOne(x => x.Cinema).OnDelete(DeleteBehavior.Cascade);
