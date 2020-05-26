@@ -188,7 +188,8 @@ namespace CinemaShare.Common.Mapping
             filmInputModel.Runtime = runtime;
 
             return filmInputModel;
-        }
+        } 
+        
     ///<summary>
     /// Converts FilmInputModel data to FilmData
     ///</summary>
@@ -202,6 +203,7 @@ namespace CinemaShare.Common.Mapping
             model.Genre = input.Genre.Select(x => new GenreType() { Genre = x }).ToList();
             return model;
         }
+        
     ///<summary>
     /// Converts FilmUpdateInputModel data to FilmData
     ///</summary>
@@ -213,6 +215,7 @@ namespace CinemaShare.Common.Mapping
             model.Genre = input.Genre.Select(genre => new GenreType() { Genre = genre }).ToList();
             return model;
         }
+        
     ///<summary>
     /// Converts Cinema object to CinemaDataViewModel
     ///</summary>
@@ -227,6 +230,7 @@ namespace CinemaShare.Common.Mapping
             }
             return viewModel;
         }
+        
     ///<summary>
     /// Converts Cinema data to CinemaCardViewModel
     ///</summary>
@@ -238,6 +242,7 @@ namespace CinemaShare.Common.Mapping
             viewModel.Mananger = rawCinema.Manager.UserName;
             return viewModel;
         }
+        
     ///<summary>
     /// Converts Cinema object to CinemaInputModel
     ///</summary>
@@ -284,6 +289,7 @@ namespace CinemaShare.Common.Mapping
                 }
             };
         }
+        
     ///<summary>
     /// Converts filmProjection object to ProjectionCardViewModel
     ///</summary>
@@ -321,6 +327,7 @@ namespace CinemaShare.Common.Mapping
                 StudentsTicketPrice = filmProjection.TicketPrices.StudentPrice
             };
         }
+        
     ///<summary>
     /// Converts FilmProjection object to ProjectionDataViewModel
     ///</summary>
@@ -348,6 +355,7 @@ namespace CinemaShare.Common.Mapping
                 CinemaId=filmProjection.CinemaId,
             };
         }
+        
     ///<summary>
     /// Converts ProjectionTicket object to TicketCardViewModel
     ///</summary>
