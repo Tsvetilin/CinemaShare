@@ -21,12 +21,20 @@ namespace CinemaShare.Areas.Admin.Controllers
             this.cinemaBusiness = cinemaBusiness;
         }
 
+        ///<summary>
+        /// Universal method for redirection of pages
+        ///</summary>
+        ///<returns>Film data model</returns>
         public IActionResult Index()
         {
             var model = cinemaBusiness.GetAll();
             return View(model);
         }
 
+        ///<summary>
+        /// Shows details for cinema searched by ID
+        ///</summary>
+        ///<returns>Film data view</returns>
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -43,6 +51,10 @@ namespace CinemaShare.Areas.Admin.Controllers
             return View(cinema);
         }
 
+        ///<summary>
+        /// Edits cinema data by selected ID
+        ///</summary>
+        ///<returns>Cinema view</returns>
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -59,6 +71,10 @@ namespace CinemaShare.Areas.Admin.Controllers
             return View(cinema);
         }
 
+        ///<summary>
+        /// Edits only selected film data
+        ///</summary>
+        ///<returns>Cinema view</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,Name,City,Country")] Cinema cinema)
@@ -81,6 +97,10 @@ namespace CinemaShare.Areas.Admin.Controllers
             return View(cinema);
         }
 
+        ///<summary>
+        /// Deletes cinema by ID and
+        /// and makes a redirection to Projections
+        ///</summary>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
