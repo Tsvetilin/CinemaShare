@@ -75,7 +75,7 @@ namespace CinemaShare.Areas.Admin.Controllers
         }
 
         ///<summary>
-        /// Edits only slected film data
+        /// Edits only selected film data
         ///</summary>
         ///<returns>Film data view</returns>
         [HttpPost]
