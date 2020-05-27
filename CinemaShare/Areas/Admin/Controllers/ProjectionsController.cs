@@ -25,9 +25,9 @@ namespace CinemaShare.Areas.Admin.Controllers
             this.filmDataBusiness = filmDataBusiness;
         }
 
-        ///summary
+        /// <summary>
         /// The current page becomes projections page
-        ///</summary>
+        /// </summary>
         /// <return>Page view</returns>
         public IActionResult Index()
         {
@@ -35,9 +35,9 @@ namespace CinemaShare.Areas.Admin.Controllers
             return View(projecitons);
         }
 
-        ///summary
+        /// <summary>
         /// Show details about projection by ID
-        ///</summary>
+        /// </summary>
         /// <return>Projection View</returns>
         public async Task<IActionResult> Details(string id)
         {
@@ -55,9 +55,9 @@ namespace CinemaShare.Areas.Admin.Controllers
             return View(projeciton);
         }
 
-        ///summary
+        /// <summary>
         /// Edits films data by ID
-        ///</summary>
+        /// </summary>
         /// <return>Updated projection view</returns>
         public async Task<IActionResult> Edit(string id)
         {
@@ -78,9 +78,9 @@ namespace CinemaShare.Areas.Admin.Controllers
             return View(projection);
         }
 
-        ///summary
+        /// <summary>
         /// Updates only selected data for projection by ID
-        ///</summary>
+        /// </summary>
         /// <return>Projection page view</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -107,9 +107,9 @@ namespace CinemaShare.Areas.Admin.Controllers
             return View(projection);
         }
 
-        ///summary
+        /// <summary>
         /// Deletes projection by ID and redirects the page to projections
-        ///</summary>
+        /// </summary>
         /// <return>Projections page view</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
