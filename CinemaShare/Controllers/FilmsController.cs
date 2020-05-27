@@ -51,6 +51,7 @@ namespace CinemaShare.Controllers
         ///<summary>
         /// Searches a film
         ///</summary>
+        ///<param name="search"> Search string </param>
         ///<returns>New FilmsIndexViewModel</returns>
         public IActionResult Index(int id = 1, string sort = "", string search = "")
         {
