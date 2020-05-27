@@ -33,6 +33,10 @@ namespace CinemaShare.Controllers
             this.mapper = mapper;
         }
 
+       ///<summary>
+       /// Sets a default page
+       ///</summary>
+       ///<returns>ProjectionIndexViewModel view</returns>
        public IActionResult Index(int id=1)
         {
             var pageCount = (int)Math.Ceiling((double)filmProjectionBusiness.CountAllProjections() / projectionsOnPage);
@@ -51,7 +55,10 @@ namespace CinemaShare.Controllers
 
             return View(viewModel);
        }
-
+        ///<summary>
+        /// Searches Projection by ID and shows the projection data
+        ///</summary>
+        ///<returns>filmProjectionBusiness view</returns>
         public async Task<IActionResult> Detail(string id)
         {
             if(id==null)
@@ -65,7 +72,11 @@ namespace CinemaShare.Controllers
             }
             return View(viewModel);
         }
-
+ 
+        ///<summary>
+        /// Shows projection creation page
+        ///</summary>
+        ///<returns>ProjectionInputModel view</returns>
         [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Add()
         {
@@ -81,7 +92,11 @@ namespace CinemaShare.Controllers
             }
             return this.RedirectToAction("Index", "Projections");
         }
-
+        
+        ///<summary>
+        /// Updates projecton by selected ID for selected user(Admin or Manager)
+        ///</summary>
+        ///<returns>MapToProjectionInputModel view</returns>
         [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
         public async Task<IActionResult> Add(ProjectionInputModel input)
@@ -188,8 +203,7 @@ namespace CinemaShare.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
-            //TODO: see if all tickets are removed
-            var user = await userManager.GetUserAsync(User);
+                        var user = await userManager.GetUserAsync(User);
             var cinema = user?.Cinema;
             if (cinema != null)
             {
