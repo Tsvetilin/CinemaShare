@@ -33,7 +33,7 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Redirecect to new cinema view model if serached string is valid 
+        /// Redirect to a new cinema view model if serached string is valid 
         /// or shows an error
         ///</summary>
         public IActionResult Index(int id = 1, string search = "")
@@ -168,7 +168,7 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Udpates cinema data by ID
+        /// Updates cinema data by ID
         ///</summary>
         ///<returns>
         /// Updated model view if manager's ID equals user's ID or
