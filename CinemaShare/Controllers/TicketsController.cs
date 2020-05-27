@@ -63,7 +63,7 @@ namespace CinemaShare.Controllers
         /// gets the projection data and creates new ReservationTicketInputModel
         /// for reserving tickets where seats are empty
         ///</summary>
-        ///<returns>To Reserve/Projections page if selected ID does not exists or ReservationTicketInputModel view</returns>
+        ///<returns>ReservationTicketInputModel view</returns>
         [Authorize]
         public async Task<IActionResult> Reserve(string id)
         {
@@ -92,7 +92,7 @@ namespace CinemaShare.Controllers
         /// for reserving tickets where seats are empty, 
         /// checks for conflicts with taken seats and concurrency reservations
         ///</summary>
-        ///<returns>To Reserve/Projections page</returns>
+        ///<returns>To Projections reservations page</returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Reserve(string id, ReserveTicketInputModel input)
@@ -136,7 +136,7 @@ namespace CinemaShare.Controllers
         ///<summary>
         /// Updates data for a ticket by selected ID
         ///</summary>
-        /// <returns>Update/Tickets page or new UpdateTicketInputModel view</returns>
+        /// <returns>New UpdateTicketInputModel view</returns>
         [Authorize]
         public async Task<IActionResult> Update(string id)
         {
@@ -194,7 +194,6 @@ namespace CinemaShare.Controllers
         ///<summary>
         /// Deletes ticket by a Selected ID 
         ///</summary>
-        ///<returns>Delete/Tickets<returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
