@@ -33,7 +33,7 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Redirect to a new cinema view model if serached string is valid 
+        /// Redirect to a new cinema view model if seаrched string is valid 
         /// or shows an error
         ///</summary>
         public IActionResult Index(int id = 1, string search = "")
