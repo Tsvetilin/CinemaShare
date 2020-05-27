@@ -116,6 +116,11 @@ namespace CinemaShare.Controllers
             return this.RedirectToAction("Detail", "Projections", new { projection.Id });
         }
 
+
+        ///<summary>
+        /// Updates projecton by selected ID for selected user(Admin or Manager)
+        ///</summary>
+        ///<returns>MapToProjectionInputModel view</returns>
         [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Update(string id)
         {
@@ -133,11 +138,15 @@ namespace CinemaShare.Controllers
             return View(inputModel);
         }
 
+        ///<summary>
+        /// Updates projecton by selected ID for selected user(Admin or Manager) and checks for conflicts
+        ///</summary>
+        ///<returns>MapToProjectionInputModel view</returns>
         [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
         public async Task<IActionResult> Update(string id, ProjectionInputModel input)
         {
-            //TODO: remove tickets with seats > number of tickets && update ticket prices
+           
             var user = await userManager.GetUserAsync(User);
             var cinema = user?.Cinema;
             var projection = await filmProjectionBusiness.Get(id);
@@ -171,6 +180,10 @@ namespace CinemaShare.Controllers
             return this.RedirectToAction("Detail", "Projections", new { projection.Id });
         }
 
+        ///<summary>
+        /// Deletes projecton by selected ID for selecte user
+        ///</summary>
+        ///<returns>The datail page of the projection with the updated data</returns>
         [Authorize(Roles ="Manager, Admin")]
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
