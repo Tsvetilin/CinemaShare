@@ -18,7 +18,10 @@ namespace CinemaShare.Controllers
             this.filmDataBusiness = filmDataBusiness;
             this.mapper = mapper;
         }
-
+        
+        ///<summary>
+        /// Redirects to home page
+        ///</summary>
         public IActionResult Index()
         {
             HomePageViewModel viewModel = new HomePageViewModel
@@ -30,17 +33,25 @@ namespace CinemaShare.Controllers
             return View(viewModel);
         }
 
+        ///<returns>
+        /// View
+        ///</returns>
         public IActionResult Privacy()
         {
             return View();
         }
 
+        ///<returns>
+        /// Error view model
+        ///</returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
+        ///<returns>
+        /// Error Status
+        ///</returns>
         public IActionResult StatusError(int code = 404)
         {
             return this.View(code);
