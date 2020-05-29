@@ -36,16 +36,18 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
-            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Cinema>((cinemas.First())));
+            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
+                          Returns(new ValueTask<Cinema>((cinemas.First())));
 
-            var  cinemaBusiness = new CinemaBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var  cinemaBusiness = new CinemaBusiness(mockContext.Object,
+                                                     new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
             var searchedCinema = cinemas.First();
 
             // Act
             var resultCinema = await cinemaBusiness.GetAsync(searchedCinema.Id);
 
             // Assert
-            Assert.AreEqual(searchedCinema, resultCinema, "Doesn't return all elements in the database.");
+            Assert.AreEqual(searchedCinema, resultCinema, "Doesn't return the searched element from the cinema.");
         }
 
         [Test]
@@ -66,15 +68,17 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
-            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Cinema>((cinemas.First())));
+            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
+                          Returns(new ValueTask<Cinema>((cinemas.First())));
 
-            var cinemaBusiness = new CinemaBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var cinemaBusiness = new CinemaBusiness(mockContext.Object, 
+                                                    new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
 
             // Act
             var resultCinemas = cinemaBusiness.GetAll().ToList();
 
             // Assert
-            Assert.AreEqual(2, resultCinemas.Count(), "Doesn't return all elements in the database.");
+            Assert.AreEqual(2, resultCinemas.Count(), "Doesn't return all elements in the cinema.");
         }
 
         [Test]
@@ -95,15 +99,17 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
-            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Cinema>((cinemas.First())));
+            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
+                          Returns(new ValueTask<Cinema>((cinemas.First())));
 
-            var cinemaBusiness = new CinemaBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var cinemaBusiness = new CinemaBusiness(mockContext.Object, 
+                                                    new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
 
             // Act
             var resultCinemasCount = cinemaBusiness.CountAllCinemas();
 
             // Assert
-            Assert.AreEqual(2, resultCinemasCount, "Doesn't return all elements in the database.");
+            Assert.AreEqual(2, resultCinemasCount, "Doesn't return correct count of cinemas in the database.");
         }
 
         [Test]
@@ -124,11 +130,13 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
-            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Cinema>((cinemas.First())));
+            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>()))
+                       .Returns(new ValueTask<Cinema>((cinemas.First())));
             mockContext.Setup(m => m.AddAsync(It.IsAny<Cinema>(), It.IsAny<CancellationToken>()))
               .Returns(new ValueTask<EntityEntry<Cinema>>(Task.FromResult((EntityEntry<Cinema>)null)));
 
-            var cinemaBusiness = new CinemaBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var cinemaBusiness = new CinemaBusiness(mockContext.Object,
+                                                    new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
             var newCinema = new Cinema();
 
             // Act
@@ -145,7 +153,13 @@ namespace Tests.Business.Tests
             // Arrange
             var cinemas = new List<Cinema>
             {
-                new Cinema {Id="1", Manager= new CinemaUser(), City="Sliven", Country="Bulgaria", FilmProjections=new List<FilmProjection>(), Name="Pencho" },
+                new Cinema 
+                {
+                    Id="1", Manager= new CinemaUser(),
+                    City="Sliven", Country="Bulgaria", 
+                    FilmProjections=new List<FilmProjection>(),
+                    Name="Pencho"
+                },
                 new Cinema {}
             }.AsQueryable();
 
@@ -157,9 +171,11 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
-            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Cinema>((cinemas.First())));
+            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<Cinema>((cinemas.First())));
 
-            var cinemaBusiness = new CinemaBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var cinemaBusiness = new CinemaBusiness(mockContext.Object, 
+                                                    new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
             var searchedCinema = cinemas.First();
             var mapper = new Mapper();
             
@@ -167,10 +183,10 @@ namespace Tests.Business.Tests
             var resultCinema = await cinemaBusiness.GetAsync(searchedCinema.Id,mapper.MapToCinemaCardViewModel);
 
             // Assert
-            Assert.AreEqual(searchedCinema.Id, resultCinema.Id, "Doesn't return all elements in the database.");
-            Assert.AreEqual(searchedCinema.Name, resultCinema.Name, "Doesn't return all elements in the database.");
-            Assert.AreEqual(searchedCinema.Country, resultCinema.Country, "Doesn't return all elements in the database.");
-            Assert.AreEqual(searchedCinema.City, resultCinema.City, "Doesn't return all elements in the database.");
+            Assert.AreEqual(searchedCinema.Id, resultCinema.Id, "Doesn't return the correct id of the cinema.");
+            Assert.AreEqual(searchedCinema.Name, resultCinema.Name, "Doesn't return the correct name of the cinema.");
+            Assert.AreEqual(searchedCinema.Country, resultCinema.Country, "Doesn't return the correct country of the cinema.");
+            Assert.AreEqual(searchedCinema.City, resultCinema.City, "Doesn't return the correct iof the cinema.");
         }
 
         [Test]
@@ -179,8 +195,20 @@ namespace Tests.Business.Tests
             // Arrange
             var cinemas = new List<Cinema>
             {
-                new Cinema {Id="1", Manager= new CinemaUser(), City="Sliven", Country="Bulgaria", FilmProjections=new List<FilmProjection>(), Name="Pencho"},
-                new Cinema {Id="2", Manager= new CinemaUser(), City="Sliven", Country="Bulgaria", FilmProjections=new List<FilmProjection>(), Name="Pencho"}
+                new Cinema 
+                {
+                    Id="1", Manager= new CinemaUser(),
+                    City="Sliven", Country="Bulgaria",
+                    FilmProjections=new List<FilmProjection>(), 
+                    Name="Pencho"
+                },
+                new Cinema 
+                {
+                    Id="2", Manager= new CinemaUser(),
+                    City="Sliven", Country="Bulgaria", 
+                    FilmProjections=new List<FilmProjection>(),
+                    Name="Pencho"
+                }
             }.AsQueryable();
 
             var mockSet = new Mock<DbSet<Cinema>>();
@@ -191,9 +219,11 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
-            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Cinema>((cinemas.First())));
+            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
+                       Returns(new ValueTask<Cinema>((cinemas.First())));
 
-            var cinemaBusiness = new CinemaBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var cinemaBusiness = new CinemaBusiness(mockContext.Object,
+                                                    new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
             var mapper = new Mapper();
 
             // Act
@@ -209,7 +239,10 @@ namespace Tests.Business.Tests
             // Arrange
             var cinemas = new List<Cinema>
             {
-                new Cinema {Id="1", Name="Pencho"},
+                new Cinema 
+                {
+                    Id="1", Name="Pencho"
+                },
                 new Cinema {}
             }.AsQueryable();
 
@@ -221,14 +254,16 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
-            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Cinema>((cinemas.First())));
+            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<Cinema>((cinemas.First())));
 
-            var cinemaBusiness = new CinemaBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var cinemaBusiness = new CinemaBusiness(mockContext.Object,
+                                                    new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
             // Act
             var result = cinemaBusiness.IsAlreadyAdded(cinemas.First().Name);
             bool expectedResult = true;
             // Assert
-            Assert.AreEqual(expectedResult, result, "Doesn't return if the cinema is already added in the db.");
+            Assert.AreEqual(expectedResult, result, "Doesn't return correct if the cinema is already added in the db.");
         }
 
         [Test]
@@ -237,8 +272,20 @@ namespace Tests.Business.Tests
             // Arrange
             var cinemas = new List<Cinema>
             {
-                new Cinema {Id="1", Manager= new CinemaUser(), City="Sliven", Country="Bulgaria", FilmProjections=new List<FilmProjection>(), Name="Pencho"},
-                new Cinema {Id="2", Manager= new CinemaUser(), City="Sliven", Country="Bulgaria", FilmProjections=new List<FilmProjection>(), Name="Blagoi"}
+                new Cinema 
+                {
+                    Id="1", Manager= new CinemaUser(),
+                    City="Sliven", Country="Bulgaria",
+                    FilmProjections=new List<FilmProjection>(),
+                    Name="Pencho"
+                },
+                new Cinema
+                {
+                    Id="2", Manager= new CinemaUser(),
+                    City="Sliven", Country="Bulgaria", 
+                    FilmProjections=new List<FilmProjection>(),
+                    Name="Blagoi"
+                }
             }.AsQueryable();
 
             var mockSet = new Mock<DbSet<Cinema>>();
@@ -249,9 +296,11 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
-            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Cinema>((cinemas.First())));
+            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<Cinema>((cinemas.First())));
 
-            var cinemaBusiness = new CinemaBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var cinemaBusiness = new CinemaBusiness(mockContext.Object, 
+                                                    new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
             var mapper = new Mapper();
             // Act
             var resultCinemas = cinemaBusiness.GetAllByName(cinemas.First().Name,mapper.MapToCinemaCardViewModel).ToList();
@@ -265,8 +314,20 @@ namespace Tests.Business.Tests
             // Arrange
             var cinemas = new List<Cinema>
             {
-                new Cinema {Id="1", Manager= new CinemaUser(), City="Sliven", Country="Bulgaria", FilmProjections=new List<FilmProjection>(), Name="Pencho"},
-                new Cinema {Id="2", Manager= new CinemaUser(), City="Sliven", Country="Bulgaria", FilmProjections=new List<FilmProjection>(), Name="Blagoi"}
+                new Cinema 
+                {
+                    Id="1", Manager= new CinemaUser(),
+                    City="Sliven", Country="Bulgaria", 
+                    FilmProjections=new List<FilmProjection>(),
+                    Name="Pencho"
+                },
+                new Cinema 
+                {
+                    Id="2", Manager= new CinemaUser(),
+                    City="Sliven", Country="Bulgaria", 
+                    FilmProjections=new List<FilmProjection>(),
+                    Name="Blagoi"
+                }
             }.AsQueryable();
 
             var mockSet = new Mock<DbSet<Cinema>>();
@@ -277,9 +338,11 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
-            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Cinema>((cinemas.First())));
+            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
+                                             Returns(new ValueTask<Cinema>((cinemas.First())));
 
-            var cinemaBusiness = new CinemaBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var cinemaBusiness = new CinemaBusiness(mockContext.Object, 
+                                                    new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
             var mapper = new Mapper();
             // Act
             var resultCinemas = cinemaBusiness.GetAllByCity(cinemas.First().City, mapper.MapToCinemaCardViewModel).ToList();
@@ -293,8 +356,20 @@ namespace Tests.Business.Tests
             // Arrange
             var cinemas = new List<Cinema>
             {
-                new Cinema {Id="1", Manager= new CinemaUser(), City="Sliven", Country="Bulgaria", FilmProjections=new List<FilmProjection>(), Name="Pencho"},
-                new Cinema {Id="2", Manager= new CinemaUser(), City="Sliven", Country="Bulgaria", FilmProjections=new List<FilmProjection>(), Name="Blagoi"}
+                new Cinema 
+                {
+                    Id="1", Manager= new CinemaUser(), 
+                    City="Sliven", Country="Bulgaria",
+                    FilmProjections=new List<FilmProjection>(),
+                    Name="Pencho"
+                },
+                new Cinema 
+                {
+                    Id="2", Manager= new CinemaUser(),
+                    City="Sliven", Country="Bulgaria", 
+                    FilmProjections=new List<FilmProjection>(),
+                    Name="Blagoi"
+                }
             }.AsQueryable();
 
             var mockSet = new Mock<DbSet<Cinema>>();
@@ -305,14 +380,16 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
-            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Cinema>((cinemas.First())));
+            mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
+                                             Returns(new ValueTask<Cinema>((cinemas.First())));
 
-            var cinemaBusiness = new CinemaBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var cinemaBusiness = new CinemaBusiness(mockContext.Object,
+                                                    new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
             var mapper = new Mapper();
             // Act
             var resultCinemas = cinemaBusiness.GetSearchResults(cinemas.First().Id, mapper.MapToCinemaCardViewModel).ToList();
             // Assert
-            Assert.AreEqual(0, resultCinemas.Count, "Doesn't return if the cinema is already added in the db.");
+            Assert.AreEqual(0, resultCinemas.Count, "Doesn't return correct if the element is not found in the database.");
         }
 
         [Test]
@@ -353,7 +430,8 @@ namespace Tests.Business.Tests
             mockContext.Setup(m => m.Remove(It.IsAny<Cinema>())).Returns((EntityEntry<Cinema>)null);
 
 
-            var cinemaBusiness = new CinemaBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var cinemaBusiness = new CinemaBusiness(mockContext.Object, 
+                                                    new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
 
             // Act
             await cinemaBusiness.DeleteAsync(searchedCinema.Id, "ProjectionPattern");
@@ -387,7 +465,8 @@ namespace Tests.Business.Tests
             mockContext.Setup(s => s.Cinemas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Cinema>((Cinema)null));
             mockContext.Setup(m => m.Remove(It.IsAny<Cinema>())).Returns((EntityEntry<Cinema>)null);
 
-            var cinemaBusiness = new CinemaBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var cinemaBusiness = new CinemaBusiness(mockContext.Object,
+                                                    new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
 
             // Act
             await cinemaBusiness.DeleteAsync(searchedCinema.Id,"ProjectionPattern");
