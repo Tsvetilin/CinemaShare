@@ -89,7 +89,8 @@ namespace Tests.Data.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Roles).Returns(rolesMockSet.Object);
-            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaRole>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<CinemaRole>>(Task.FromResult((EntityEntry<CinemaRole>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaRole>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<CinemaRole>>(Task.FromResult((EntityEntry<CinemaRole>)null)));
 
             var seeder = new RolesSeeder();
 
@@ -115,7 +116,8 @@ namespace Tests.Data.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Roles).Returns(rolesMockSet.Object);
-            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaRole>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<CinemaRole>>(Task.FromResult((EntityEntry<CinemaRole>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaRole>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<CinemaRole>>(Task.FromResult((EntityEntry<CinemaRole>)null)));
 
             var seeder = new RolesSeeder();
 
@@ -158,9 +160,12 @@ namespace Tests.Data.Tests
             mockContext.Setup(c => c.Users).Returns(usersMockSet.Object);
             mockContext.Setup(c => c.UserRoles).Returns(usersRolesMockSet.Object);
 
-            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaUser>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<CinemaUser>>(Task.FromResult((EntityEntry<CinemaUser>)null)));
-            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaRole>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<CinemaRole>>(Task.FromResult((EntityEntry<CinemaRole>)null)));
-            mockContext.Setup(m => m.AddAsync(It.IsAny<IdentityUserRole<string>>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<IdentityUserRole<string>>>(Task.FromResult((EntityEntry<IdentityUserRole<string>>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaUser>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<CinemaUser>>(Task.FromResult((EntityEntry<CinemaUser>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaRole>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<CinemaRole>>(Task.FromResult((EntityEntry<CinemaRole>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<IdentityUserRole<string>>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<IdentityUserRole<string>>>(Task.FromResult((EntityEntry<IdentityUserRole<string>>)null)));
 
             var seeder = new UsersSeeder();
 
@@ -203,9 +208,12 @@ namespace Tests.Data.Tests
             mockContext.Setup(c => c.Users).Returns(usersMockSet.Object);
             mockContext.Setup(c => c.UserRoles).Returns(usersRolesMockSet.Object);
 
-            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaUser>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<CinemaUser>>(Task.FromResult((EntityEntry<CinemaUser>)null)));
-            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaRole>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<CinemaRole>>(Task.FromResult((EntityEntry<CinemaRole>)null)));
-            mockContext.Setup(m => m.AddAsync(It.IsAny<IdentityUserRole<string>>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<IdentityUserRole<string>>>(Task.FromResult((EntityEntry<IdentityUserRole<string>>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaUser>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<CinemaUser>>(Task.FromResult((EntityEntry<CinemaUser>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaRole>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<CinemaRole>>(Task.FromResult((EntityEntry<CinemaRole>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<IdentityUserRole<string>>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<IdentityUserRole<string>>>(Task.FromResult((EntityEntry<IdentityUserRole<string>>)null)));
 
             var seeder = new UsersSeeder();
 
@@ -249,9 +257,12 @@ namespace Tests.Data.Tests
             mockContext.Setup(c => c.FilmDatas).Returns(filmDatasMockSet.Object);
 
 
-            mockContext.Setup(m => m.AddAsync(It.IsAny<Film>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<Film>>(Task.FromResult((EntityEntry<Film>)null)));
-            mockContext.Setup(m => m.AddAsync(It.IsAny<FilmData>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<FilmData>>(Task.FromResult((EntityEntry<FilmData>)null)));
-            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaUser>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<CinemaUser>>(Task.FromResult((EntityEntry<CinemaUser>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<Film>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<Film>>(Task.FromResult((EntityEntry<Film>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<FilmData>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<FilmData>>(Task.FromResult((EntityEntry<FilmData>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaUser>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<CinemaUser>>(Task.FromResult((EntityEntry<CinemaUser>)null)));
           
             var seeder = new FilmsSeeder();
 
@@ -296,9 +307,12 @@ namespace Tests.Data.Tests
             mockContext.Setup(c => c.FilmDatas).Returns(filmDatasMockSet.Object);
 
 
-            mockContext.Setup(m => m.AddAsync(It.IsAny<Film>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<Film>>(Task.FromResult((EntityEntry<Film>)null)));
-            mockContext.Setup(m => m.AddAsync(It.IsAny<FilmData>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<FilmData>>(Task.FromResult((EntityEntry<FilmData>)null)));
-            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaUser>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<CinemaUser>>(Task.FromResult((EntityEntry<CinemaUser>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<Film>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<Film>>(Task.FromResult((EntityEntry<Film>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<FilmData>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<FilmData>>(Task.FromResult((EntityEntry<FilmData>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaUser>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<CinemaUser>>(Task.FromResult((EntityEntry<CinemaUser>)null)));
 
             var seeder = new FilmsSeeder();
 
@@ -343,7 +357,8 @@ namespace Tests.Data.Tests
             mockContext.Setup(c => c.Cinemas).Returns(cinemasMockSet.Object);
             mockContext.Setup(c => c.FilmProjections).Returns(projectionsMockSet.Object);
 
-            mockContext.Setup(m => m.AddAsync(It.IsAny<FilmProjection>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<FilmProjection>>(Task.FromResult((EntityEntry<FilmProjection>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<FilmProjection>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<FilmProjection>>(Task.FromResult((EntityEntry<FilmProjection>)null)));
    
             var seeder = new ProjectionsSeeder();
             // Act
@@ -369,7 +384,8 @@ namespace Tests.Data.Tests
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmProjections).Returns(projectionsMockSet.Object);
 
-            mockContext.Setup(m => m.AddAsync(It.IsAny<FilmProjection>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<FilmProjection>>(Task.FromResult((EntityEntry<FilmProjection>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<FilmProjection>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<FilmProjection>>(Task.FromResult((EntityEntry<FilmProjection>)null)));
 
             var seeder = new ProjectionsSeeder();
             // Act
@@ -403,7 +419,8 @@ namespace Tests.Data.Tests
             mockContext.Setup(c => c.Cinemas).Returns(cinemasMockSet.Object);
             mockContext.Setup(c => c.Users).Returns(usersMockSet.Object);
 
-            mockContext.Setup(m => m.AddAsync(It.IsAny<Cinema>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<Cinema>>(Task.FromResult((EntityEntry<Cinema>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<Cinema>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<Cinema>>(Task.FromResult((EntityEntry<Cinema>)null)));
 
             var seeder = new CinemasSeeder();
             // Act
@@ -438,7 +455,8 @@ namespace Tests.Data.Tests
             mockContext.Setup(c => c.Cinemas).Returns(cinemasMockSet.Object);
             mockContext.Setup(c => c.Users).Returns(usersMockSet.Object);
 
-            mockContext.Setup(m => m.AddAsync(It.IsAny<Cinema>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<Cinema>>(Task.FromResult((EntityEntry<Cinema>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<Cinema>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<Cinema>>(Task.FromResult((EntityEntry<Cinema>)null)));
 
             var seeder = new CinemasSeeder();
             // Act
@@ -481,9 +499,12 @@ namespace Tests.Data.Tests
             mockContext.Setup(c => c.FilmDatas).Returns(filmDatasMockSet.Object);
 
 
-            mockContext.Setup(m => m.AddAsync(It.IsAny<Film>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<Film>>(Task.FromResult((EntityEntry<Film>)null)));
-            mockContext.Setup(m => m.AddAsync(It.IsAny<FilmData>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<FilmData>>(Task.FromResult((EntityEntry<FilmData>)null)));
-            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaUser>(), It.IsAny<CancellationToken>())).Returns(new ValueTask<EntityEntry<CinemaUser>>(Task.FromResult((EntityEntry<CinemaUser>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<Film>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<Film>>(Task.FromResult((EntityEntry<Film>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<FilmData>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<FilmData>>(Task.FromResult((EntityEntry<FilmData>)null)));
+            mockContext.Setup(m => m.AddAsync(It.IsAny<CinemaUser>(), It.IsAny<CancellationToken>())).
+                        Returns(new ValueTask<EntityEntry<CinemaUser>>(Task.FromResult((EntityEntry<CinemaUser>)null)));
 
             var seeder = new FilmsSeeder();
 

@@ -78,7 +78,7 @@ namespace Tests.Business.Tests
             var filmReview = await filmReviewBusiness.Get(reviews.First().Id);
 
             // Assert
-            Assert.AreEqual(reviews.First().Id, filmReview.Id, "Doesn't return searched element from database");
+            Assert.AreEqual(reviews.First().Id, filmReview.Id, "Doesn't return the searched review from database");
         }
     }
 }

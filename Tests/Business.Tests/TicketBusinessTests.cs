@@ -75,7 +75,7 @@ namespace Tests.Business.Tests
             var resultTicketsCount = projectionTicketBusiness.GetAll().ToList().Count();
 
             // Assert
-            Assert.AreEqual(2, resultTicketsCount, "Doesn't return all elements in the database.");
+            Assert.AreEqual(2, resultTicketsCount, "Doesn't return all tickets from the database.");
         }
 
         [Test]
@@ -145,8 +145,47 @@ namespace Tests.Business.Tests
             // Arrange
             var tickets = new List<ProjectionTicket>
             {
-                new ProjectionTicket {Holder=new CinemaUser{ },Price=5, HolderId="User1", Projection=new FilmProjection{Cinema=new Cinema{Name="DEF" }, Film =new Film{ FilmData= new FilmData{ Title="XXX"} } },ReservedOn=DateTime.Now, Seat=1},
-                new ProjectionTicket{Holder=new CinemaUser{ },Price=8, HolderId="User1", Projection=new FilmProjection{Cinema=new Cinema{Name="ABC" }, Film =new Film{ FilmData= new FilmData{ Title="YYY"} } },ReservedOn=DateTime.Now, Seat=2},
+                new ProjectionTicket
+                {
+                    Holder=new CinemaUser(),
+                    Price=5,
+                    HolderId="User1",
+                    Projection=new FilmProjection
+                    {
+                        Cinema=new Cinema
+                        {
+                            Name="DEF"
+                        }, 
+                        Film =new Film
+                        {
+                            FilmData= new FilmData
+                            { 
+                                Title="XXX"
+                            } 
+                        }
+                    },
+                    ReservedOn=DateTime.Now, Seat=1
+                },
+                new ProjectionTicket
+                {
+                    Holder=new CinemaUser(),
+                    Price=8, 
+                    HolderId="User1",
+                    Projection=new FilmProjection
+                    {Cinema=new Cinema
+                    {
+                        Name="ABC"
+                    },
+                        Film =new Film
+                        {
+                            FilmData= new FilmData
+                            {
+                                Title="YYY"
+                            }
+                        }
+                    },
+                    ReservedOn=DateTime.Now, Seat=2
+                },
             }.AsQueryable();
 
             var mockSet = new Mock<DbSet<ProjectionTicket>>();
@@ -217,7 +256,8 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.ProjectionTickets).Returns(mockSet.Object);
-            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).Returns(new ValueTask<ProjectionTicket>((ProjectionTicket)null));
+            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<ProjectionTicket>((ProjectionTicket)null));
             mockContext.Setup(m => m.Remove(It.IsAny<ProjectionTicket>())).Returns((EntityEntry<ProjectionTicket>)null);
 
             var projectionTicketBusiness = new ProjectionTicketBusiness(mockContext.Object);
