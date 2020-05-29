@@ -34,6 +34,9 @@ namespace CinemaShare.Controllers
             this.userManager = userManager;
         }
 
+        ///<summary>
+        /// Redirects to a new TicketIndex view model 
+        ///</summary>
         [Authorize]
         public async Task<IActionResult> Index(int id = 1)
         {
@@ -55,6 +58,12 @@ namespace CinemaShare.Controllers
             return View(viewModel);
         }
 
+        ///<summary>
+        /// Searchs projection by a selected ID,
+        /// gets the projection data and creates new ReservationTicketInputModel
+        /// for reserving tickets where seats are empty
+        ///</summary>
+        ///<returns>ReservationTicketInputModel view</returns>
         [Authorize]
         public async Task<IActionResult> Reserve(string id)
         {
@@ -77,6 +86,13 @@ namespace CinemaShare.Controllers
             return View(inputModel);
         }
 
+        ///<summary>
+        /// Search projection by a selected ID,
+        /// gets the projection data and a ReserveTicketInputModel 
+        /// for reserving tickets where seats are empty, 
+        /// checks for conflicts with taken seats and concurrency reservations
+        ///</summary>
+        ///<returns>To Projections reservations page</returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Reserve(string id, ReserveTicketInputModel input)
@@ -117,6 +133,10 @@ namespace CinemaShare.Controllers
             return RedirectToAction("Index", "Tickets");
         }
 
+        ///<summary>
+        /// Updates data for a ticket by selected ID
+        ///</summary>
+        /// <returns>New UpdateTicketInputModel view</returns>
         [Authorize]
         public async Task<IActionResult> Update(string id)
         {
@@ -143,6 +163,10 @@ namespace CinemaShare.Controllers
             return View(inputModel);
         }
 
+        ///<summary>
+        /// Redirect to a new cinema view model if seаrched string is valid 
+        /// or shows an error
+        ///</summary>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Update(string id, UpdateTicketInputModel input)
@@ -167,6 +191,9 @@ namespace CinemaShare.Controllers
             return this.RedirectToAction("Index", "Tickets", new { Id = id });
         }
 
+        ///<summary>
+        /// Deletes ticket by a Selected ID 
+        ///</summary>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Delete(string id)

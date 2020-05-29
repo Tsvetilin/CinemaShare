@@ -32,6 +32,10 @@ namespace CinemaShare.Controllers
             this.userManager = userManager;
         }
 
+        ///<summary>
+        /// Redirect to a new cinema view model if seаrched string is valid 
+        /// or shows an error
+        ///</summary>
         public IActionResult Index(int id = 1, string search = "")
         {
             if (!String.IsNullOrEmpty(search))
@@ -64,6 +68,11 @@ namespace CinemaShare.Controllers
 
             return View(viewModel);
         }
+        
+        /// <summary>
+        /// Shows cinema data by selected index
+        /// </summary>
+        /// <returns>Projections data view</returns>
         public async Task<IActionResult> Detail(string id = null)
         {
             if (id == null)
@@ -83,6 +92,9 @@ namespace CinemaShare.Controllers
             return this.View(viewModel);
         }
 
+        ///<summary>
+        /// Shows cinema creation page
+        ///</summary>
         [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Add()
         {
@@ -94,6 +106,10 @@ namespace CinemaShare.Controllers
             return this.View();
         }
 
+        ///<summary>
+        /// Adds cinema to the Database
+        ///</summary>
+        /// <param>New CinemaInputModel object</param>
         [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
         public async Task<IActionResult> Add(CinemaInputModel input)
@@ -125,6 +141,13 @@ namespace CinemaShare.Controllers
             return this.RedirectToAction("Manage", "Cinemas", new { cinema.Id });
         }
 
+        ///<summary>
+        /// Udpates cinema data by ID
+        ///</summary>
+        ///<returns>
+        /// Updated model view if manager's ID equals user's ID or
+        /// Cinema details page 
+        ///</returns>
         [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Update(string id)
         {
@@ -142,6 +165,12 @@ namespace CinemaShare.Controllers
             return RedirectToAction("Index", "Cinemas");
         }
 
+        ///<summary>
+        /// Updates cinema data by ID
+        ///</summary>
+        ///<returns>
+        /// Updated model view if manager's ID equals user's ID 
+        ///</returns>
         [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
         public async Task<IActionResult> Update(CinemaInputModel input, string id)
@@ -166,6 +195,9 @@ namespace CinemaShare.Controllers
             return RedirectToAction("Index", "Cinemas");
         }
 
+        ///<summary>
+        /// Deletes cinema data by selected ID
+        ///</summary>
         [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
@@ -179,7 +211,13 @@ namespace CinemaShare.Controllers
             }
             return RedirectToAction("Index", "Cinemas");
         }
-
+        
+        ///<summary>
+        /// Manages cinema data by selected ID
+        ///</summary>
+        ///<returns>
+        /// Cinema data view if user's ID equals manager's ID
+        ///</returns>
         [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Manage(string id)
         {

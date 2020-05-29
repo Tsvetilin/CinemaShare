@@ -24,12 +24,20 @@ namespace CinemaShare.Areas.Admin.Controllers
             this.filmReviewBusiness = filmReviewBusiness;
         }
 
+        ///<summary>
+        /// Universal method for redirection of pages
+        ///</summary>
+        ///<returns>Film data model</returns>
         public IActionResult Index()
         {
             var model = filmDataBusiness.GetAll();
             return View(model);
         }
-
+        
+        ///<summary>
+        /// Shows details for film searched by ID
+        ///</summary>
+        ///<returns>Film data view</returns>
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -46,6 +54,10 @@ namespace CinemaShare.Areas.Admin.Controllers
             return View(cinema);
         }
 
+        ///<summary>
+        /// Edits film data by selected ID
+        ///</summary>
+        ///<returns>Film data view</returns>
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -62,6 +74,10 @@ namespace CinemaShare.Areas.Admin.Controllers
             return View(filmData);
         }
 
+        ///<summary>
+        /// Edits only selected film data
+        ///</summary>
+        ///<returns>Film data view</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("FilmId,Title,Poster,Description,Director,Cast,Runtime,ReleaseDate,TargetAudience")] FilmData filmData)
@@ -81,6 +97,10 @@ namespace CinemaShare.Areas.Admin.Controllers
             return View(filmData);
         }
 
+        ///<summary>
+        /// Deletes film data by selected ID
+        ///</summary>
+        ///<returns>Film data view</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -89,6 +109,10 @@ namespace CinemaShare.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        ///<summary>
+        /// Deletes film review and
+        /// sets new film ID
+        ///</summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteReview(string id , string filmId)

@@ -25,12 +25,20 @@ namespace CinemaShare.Areas.Admin.Controllers
             this.filmDataBusiness = filmDataBusiness;
         }
 
+        /// <summary>
+        /// The current page becomes projections page
+        /// </summary>
+        /// <return>Page view</returns>
         public IActionResult Index()
         {
             var projecitons = filmProjectionBusiness.GetAll().ToList();
             return View(projecitons);
         }
 
+        /// <summary>
+        /// Show details about projection by ID
+        /// </summary>
+        /// <return>Projection View</returns>
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -47,6 +55,10 @@ namespace CinemaShare.Areas.Admin.Controllers
             return View(projeciton);
         }
 
+        /// <summary>
+        /// Edits films data by ID
+        /// </summary>
+        /// <return>Updated projection view</returns>
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -66,6 +78,10 @@ namespace CinemaShare.Areas.Admin.Controllers
             return View(projection);
         }
 
+        /// <summary>
+        /// Updates only selected data for projection by ID
+        /// </summary>
+        /// <return>Projection page view</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, 
@@ -91,6 +107,10 @@ namespace CinemaShare.Areas.Admin.Controllers
             return View(projection);
         }
 
+        /// <summary>
+        /// Deletes projection by ID and redirects the page to projections
+        /// </summary>
+        /// <return>Projections page view</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
