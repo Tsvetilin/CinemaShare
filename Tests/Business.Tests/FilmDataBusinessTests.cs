@@ -1,7 +1,6 @@
 ﻿using Business;
 using CinemaShare.Common.Mapping;
 using CinemaShare.Models.InputModels;
-using CinemaShare.Models.ViewModels;
 using Data;
 using Data.Enums;
 using Data.Models;
@@ -12,8 +11,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -66,7 +63,7 @@ namespace Tests.Business.Tests
                     Film=new Film
                     {
                         FilmProjection = new List<FilmProjection>
-                        { 
+                        {
                             new FilmProjection
                             {
                                 Film=new Film{FilmData = new FilmData()},
@@ -80,12 +77,12 @@ namespace Tests.Business.Tests
                     },
                     Genre = new List<GenreType>
                     {
-                        new GenreType{Genre= Genre.Action } 
+                        new GenreType{Genre= Genre.Action }
                     },
                 },
-                new FilmData 
+                new FilmData
                 {
-                    Film=new Film{Rating=3 } 
+                    Film=new Film{Rating=3 }
                 },
             }.AsQueryable();
 
@@ -98,7 +95,7 @@ namespace Tests.Business.Tests
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmDatas).Returns(mockSet.Object);
             mockContext.Setup(c => c.FilmDatas.FindAsync(It.IsAny<string>())).
-                        Returns(new ValueTask<FilmData>((films.First())));
+                        Returns(new ValueTask<FilmData>(films.First()));
 
             var filmDataBusiness = new FilmDataBusiness(mockContext.Object);
             var searchedFilm = films.First();
@@ -144,65 +141,9 @@ namespace Tests.Business.Tests
             // Arrange
             var films = new List<FilmData>
             {
-                new FilmData 
+                new FilmData
                 {
-                    Title="XXX", FilmId="Film1",
-                    Film=new Film
-                    {
-                        FilmProjection = new List<FilmProjection>
-                        { new FilmProjection 
-                            {
-                                Film=new Film
-                                {
-                                    FilmData = new FilmData{Title="XXX" }
-                                },
-                                Cinema=new Cinema{Manager=new CinemaUser(),
-                                FilmProjections= new List<FilmProjection>{new FilmProjection()}
-                                } 
-                            } 
-                        } 
-                    } ,
-                    Genre = new List<GenreType>
-                    {
-                        new GenreType{Genre= Genre.Action }
-                    },
-                },
-                new FilmData 
-                {
-                    Title="NotThisOne", Film=new Film{Rating=3 } 
-                },
-            }.AsQueryable();
-
-            var mockSet = new Mock<DbSet<FilmData>>();
-            mockSet.As<IQueryable<FilmData>>().Setup(m => m.Provider).Returns(films.Provider);
-            mockSet.As<IQueryable<FilmData>>().Setup(m => m.Expression).Returns(films.Expression);
-            mockSet.As<IQueryable<FilmData>>().Setup(m => m.ElementType).Returns(films.ElementType);
-            mockSet.As<IQueryable<FilmData>>().Setup(m => m.GetEnumerator()).Returns(films.GetEnumerator());
-
-            var mockContext = new Mock<CinemaDbContext>();
-            mockContext.Setup(c => c.FilmDatas).Returns(mockSet.Object);
-            mockContext.Setup(c => c.FilmDatas.FindAsync(It.IsAny<string>())).
-                        Returns(new ValueTask<FilmData>((films.First())));
-
-            var filmDataBusiness = new FilmDataBusiness(mockContext.Object);
-            var mapper = new Mapper();
-            var searchedTitle = "XXX";
-            // Act
-            var allFilms = filmDataBusiness.GetAllByName(searchedTitle, mapper.MapToFilmDataViewModel).ToList();
-
-            // Assert
-            Assert.AreEqual(1, allFilms.Count, "Doesn't return all films with the searched name.");
-        }
-
-        [Test]
-        public void GetByNameReturnsAllElementsWithSearchedName()
-        {
-            // Arrange
-            var films = new List<FilmData>
-            {
-               new FilmData
-                {
-                    Title="XXX", FilmId="Film1",
+                    Title="Film1", FilmId="Film1Id",
                     Film=new Film
                     {
                         FilmProjection = new List<FilmProjection>
@@ -210,7 +151,7 @@ namespace Tests.Business.Tests
                             {
                                 Film=new Film
                                 {
-                                    FilmData = new FilmData{Title="XXX" }
+                                    FilmData = new FilmData{Title="Film1" }
                                 },
                                 Cinema=new Cinema{Manager=new CinemaUser(),
                                 FilmProjections= new List<FilmProjection>{new FilmProjection()}
@@ -238,10 +179,66 @@ namespace Tests.Business.Tests
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmDatas).Returns(mockSet.Object);
             mockContext.Setup(c => c.FilmDatas.FindAsync(It.IsAny<string>())).
-                        Returns(new ValueTask<FilmData>((films.First())));
+                        Returns(new ValueTask<FilmData>(films.First()));
 
             var filmDataBusiness = new FilmDataBusiness(mockContext.Object);
-            var searchedTitle = "XXX";
+            var mapper = new Mapper();
+            var searchedTitle = "Film1";
+            // Act
+            var allFilms = filmDataBusiness.GetAllByName(searchedTitle, mapper.MapToFilmDataViewModel).ToList();
+
+            // Assert
+            Assert.AreEqual(1, allFilms.Count, "Doesn't return all films with the searched name.");
+        }
+
+        [Test]
+        public void GetByNameReturnsAllElementsWithSearchedName()
+        {
+            // Arrange
+            var films = new List<FilmData>
+            {
+               new FilmData
+                {
+                    Title="Film1", FilmId="Film1Id",
+                    Film=new Film
+                    {
+                        FilmProjection = new List<FilmProjection>
+                        { new FilmProjection
+                            {
+                                Film=new Film
+                                {
+                                    FilmData = new FilmData{Title="Film1" }
+                                },
+                                Cinema=new Cinema{Manager=new CinemaUser(),
+                                FilmProjections= new List<FilmProjection>{new FilmProjection()}
+                                }
+                            }
+                        }
+                    } ,
+                    Genre = new List<GenreType>
+                    {
+                        new GenreType{Genre= Genre.Action }
+                    },
+                },
+                new FilmData
+                {
+                    Title="NotThisOne", Film=new Film{Rating=3 }
+                },
+            }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<FilmData>>();
+            mockSet.As<IQueryable<FilmData>>().Setup(m => m.Provider).Returns(films.Provider);
+            mockSet.As<IQueryable<FilmData>>().Setup(m => m.Expression).Returns(films.Expression);
+            mockSet.As<IQueryable<FilmData>>().Setup(m => m.ElementType).Returns(films.ElementType);
+            mockSet.As<IQueryable<FilmData>>().Setup(m => m.GetEnumerator()).Returns(films.GetEnumerator());
+
+            var mockContext = new Mock<CinemaDbContext>();
+            mockContext.Setup(c => c.FilmDatas).Returns(mockSet.Object);
+            mockContext.Setup(c => c.FilmDatas.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<FilmData>(films.First()));
+
+            var filmDataBusiness = new FilmDataBusiness(mockContext.Object);
+            var searchedTitle = "Film1";
             // Act
             var resultFilm = filmDataBusiness.GetByName(searchedTitle);
 
@@ -327,7 +324,7 @@ namespace Tests.Business.Tests
 
             var filmsData = new List<FilmData>
             {
-                new FilmData {FilmId="SearchedFilmId", Title="XXX", Film=films.First()  },
+                new FilmData {FilmId="SearchedFilmId", Title="Film1", Film=films.First()  },
                 new FilmData { }
             }.AsQueryable();
 
@@ -405,7 +402,7 @@ namespace Tests.Business.Tests
             {
                new FilmData
                 {
-                    Title="XXX", FilmId="Film1",
+                    Title="Film1", FilmId="Film1Id",
                     Film=new Film
                     {
                         FilmProjection = new List<FilmProjection>
@@ -413,7 +410,7 @@ namespace Tests.Business.Tests
                             {
                                 Film=new Film
                                 {
-                                    FilmData = new FilmData{Title="XXX" }
+                                    FilmData = new FilmData{Title="Film1" }
                                 },
                                 Cinema=new Cinema{Manager=new CinemaUser(),
                                 FilmProjections= new List<FilmProjection>{new FilmProjection()}
@@ -445,6 +442,7 @@ namespace Tests.Business.Tests
 
             var filmDataBusiness = new FilmDataBusiness(mockContext.Object);
             var mapper = new Mapper();
+
             // Act
             var resultFilms = filmDataBusiness.GetPageItems(1, 2, "Name", mapper.MapToExtendedFilmCardViewModel).ToList();
 
@@ -460,7 +458,7 @@ namespace Tests.Business.Tests
             {
                  new FilmData
                 {
-                    Title="XXX", FilmId="Film1",
+                    Title="Film1", FilmId="Film1Id",
                     Film=new Film
                     {
                         FilmProjection = new List<FilmProjection>
@@ -468,7 +466,7 @@ namespace Tests.Business.Tests
                             {
                                 Film=new Film
                                 {
-                                    FilmData = new FilmData{Title="XXX" }
+                                    FilmData = new FilmData{Title="Film1" }
                                 },
                                 Cinema=new Cinema{Manager=new CinemaUser(),
                                 FilmProjections= new List<FilmProjection>{new FilmProjection()}
@@ -513,14 +511,35 @@ namespace Tests.Business.Tests
             // Arrange
             var films = new List<FilmData>
             {
-                new FilmData {Title="XXX", FilmId="Film1",
-                    Film=new Film{FilmProjection = new List<FilmProjection>
-                    { new FilmProjection {Film=new Film{FilmData = new FilmData{Title="XXX" } },
-                                        Cinema=new Cinema{Manager=new CinemaUser(),
-                                        FilmProjections= new List<FilmProjection>{new FilmProjection()} } } } } ,
+                new FilmData
+                {
+                    Title="Film1",
+                    FilmId="Film1Id",
+                    Film=new Film
+                    {
+                        FilmProjection = new List<FilmProjection>
+                        {
+                            new FilmProjection
+                            {
+                                Film=new Film
+                                {
+                                    FilmData = new FilmData{Title="Film1" }
+                                },
+                                Cinema=new Cinema
+                                {
+                                    Manager=new CinemaUser(),
+                                    FilmProjections= new List<FilmProjection>{new FilmProjection()}
+                                }
+                            }
+                        }
+                    } ,
                     Genre = new List<GenreType>{new GenreType{Genre= Genre.Action } },
-            },
-                new FilmData {Title="NotThisOne", Film=new Film{Rating=3 } },
+                },
+                new FilmData
+                {
+                    Title="NotThisOne",
+                    Film=new Film{Rating=3 }
+                },
             }.AsQueryable();
 
             var mockSet = new Mock<DbSet<FilmData>>();
@@ -548,14 +567,35 @@ namespace Tests.Business.Tests
             // Arrange
             var films = new List<FilmData>
             {
-                new FilmData {Title="XXX", FilmId="Film1",
-                    Film=new Film{FilmProjection = new List<FilmProjection>
-                    { new FilmProjection {Film=new Film{FilmData = new FilmData{Title="XXX" } },
-                                        Cinema=new Cinema{Manager=new CinemaUser(),
-                                        FilmProjections= new List<FilmProjection>{new FilmProjection()} } } } } ,
+                new FilmData
+                {
+                    Title="Film1",
+                    FilmId="Film1Id",
+                    Film=new Film
+                    {
+                        FilmProjection = new List<FilmProjection>
+                        {
+                            new FilmProjection
+                            {
+                                Film=new Film
+                                {
+                                    FilmData = new FilmData{Title="Film1" }
+                                },
+                                Cinema=new Cinema
+                                {
+                                    Manager=new CinemaUser(),
+                                    FilmProjections= new List<FilmProjection>{new FilmProjection()}
+                                }
+                            }
+                        }
+                    } ,
                     Genre = new List<GenreType>{new GenreType{Genre= Genre.Action } },
-            },
-                new FilmData {Title="NotThisOne", Film=new Film{Rating=3 } },
+                },
+                new FilmData
+                {
+                    Title="NotThisOne",
+                    Film=new Film{Rating=3 }
+                },
             }.AsQueryable();
 
             var mockSet = new Mock<DbSet<FilmData>>();
@@ -566,7 +606,7 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmDatas).Returns(mockSet.Object);
-            mockContext.Setup(c => c.FilmDatas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmData>((films.First())));
+            mockContext.Setup(c => c.FilmDatas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmData>(films.First()));
 
             var filmDataBusiness = new FilmDataBusiness(mockContext.Object);
             var mapper = new Mapper();
@@ -583,10 +623,18 @@ namespace Tests.Business.Tests
             // Arrange
             var films = new List<FilmData>
             {
-                new FilmData {Title="XXX", FilmId="Film1",
+                new FilmData
+                {
+                    Title="Film1",
+                    FilmId="Film1Id",
                     Film=new Film{Rating = 5 },
-            },
-                new FilmData {Title="YYY",  FilmId="Film1", Film=new Film{Rating=3 } },
+                },
+                new FilmData
+                {
+                    Title="Film2", 
+                    FilmId="Film2Id", 
+                    Film=new Film{Rating=3 }
+                },
             }.AsQueryable();
 
             var mockSet = new Mock<DbSet<FilmData>>();
@@ -597,7 +645,7 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmDatas).Returns(mockSet.Object);
-            mockContext.Setup(c => c.FilmDatas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmData>((films.First())));
+            mockContext.Setup(c => c.FilmDatas.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmData>(films.First()));
 
             var filmDataBusiness = new FilmDataBusiness(mockContext.Object);
             var mapper = new Mapper();
@@ -614,11 +662,20 @@ namespace Tests.Business.Tests
             // Arrange
             var films = new List<FilmData>
             {
-                new FilmData {ReleaseDate=DateTime.Now, Title="XXX", FilmId="Film1",
+                new FilmData 
+                {
+                    ReleaseDate=DateTime.Now, 
+                    Title="Film1", 
+                    FilmId="Film1Id",
                     Film=new Film(),
-            },
-                new FilmData {ReleaseDate=DateTime.UtcNow, Title="YYY",  FilmId="Film1",
-                    Film=new Film() },
+                },
+                new FilmData 
+                {
+                    ReleaseDate=DateTime.UtcNow, 
+                    Title="Film2",
+                    FilmId="Film2Id",
+                    Film=new Film() 
+                },
             }.AsQueryable();
 
             var mockSet = new Mock<DbSet<FilmData>>();

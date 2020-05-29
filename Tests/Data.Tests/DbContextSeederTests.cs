@@ -131,7 +131,10 @@ namespace Tests.Data.Tests
         public async Task UsersSeederExecutes()
         {
             // Arrange
-            var roles = new List<CinemaRole> { new CinemaRole { Name = "Admin", NormalizedName = "ADMIN", Role = RoleType.Admin } }.AsQueryable();
+            var roles = new List<CinemaRole> 
+            { 
+                new CinemaRole { Name = "Admin", NormalizedName = "ADMIN", Role = RoleType.Admin }
+            }.AsQueryable();
             var users = new List<CinemaUser>().AsQueryable();
             var usersRoles = new List<IdentityUserRole<string>>().AsQueryable();
 
@@ -179,7 +182,10 @@ namespace Tests.Data.Tests
         public async Task UsersSeederDoesntAffectFilledDb()
         {
             // Arrange
-            var roles = new List<CinemaRole> { new CinemaRole { Name = "Admin", NormalizedName = "ADMIN", Role = RoleType.Admin } }.AsQueryable();
+            var roles = new List<CinemaRole> 
+            { 
+                new CinemaRole { Name = "Admin", NormalizedName = "ADMIN", Role = RoleType.Admin }
+            }.AsQueryable();
             var users = new List<CinemaUser> {new CinemaUser() }.AsQueryable();
             var usersRoles = new List<IdentityUserRole<string>>().AsQueryable();
 

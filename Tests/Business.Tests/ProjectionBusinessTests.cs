@@ -1,7 +1,5 @@
 ﻿using Business;
 using CinemaShare.Common.Mapping;
-using CinemaShare.Models.InputModels;
-using CinemaShare.Models.ViewModels;
 using Data;
 using Data.Enums;
 using Data.Models;
@@ -13,8 +11,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,14 +32,19 @@ namespace Tests.Business.Tests
             mockSet.As<IQueryable<FilmProjection>>().Setup(m => m.Provider).Returns(projections.Provider);
             mockSet.As<IQueryable<FilmProjection>>().Setup(m => m.Expression).Returns(projections.Expression);
             mockSet.As<IQueryable<FilmProjection>>().Setup(m => m.ElementType).Returns(projections.ElementType);
-            mockSet.As<IQueryable<FilmProjection>>().Setup(m => m.GetEnumerator()).Returns(projections.GetEnumerator());
+            mockSet.As<IQueryable<FilmProjection>>().Setup(m => m.GetEnumerator()).
+                                                     Returns(projections.GetEnumerator());
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmProjections).Returns(mockSet.Object);
             mockContext.Setup(m => m.AddAsync(It.IsAny<FilmProjection>(), It.IsAny<CancellationToken>()))
-                .Returns(new ValueTask<EntityEntry<FilmProjection>>(Task.FromResult((EntityEntry<FilmProjection>)null)));
+                .Returns(new ValueTask<EntityEntry<FilmProjection>>
+                (Task.FromResult((EntityEntry<FilmProjection>)null)));
 
-            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object,
+                                                                new EmailSender("TestAPIKey",
+                                                                                "TestSender",
+                                                                                "TestSenderName"));
             var projection = new FilmProjection();
             var mapper = new Mapper();
             // Act
@@ -75,7 +76,10 @@ namespace Tests.Business.Tests
             mockContext.Setup(c => c.FilmProjections.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmProjection>((projections.First())));
 
 
-            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, 
+                                                                new EmailSender("TestAPIKey", 
+                                                                                "TestSender",
+                                                                                "TestSenderName"));
             var searchedProj = projections.First();
 
             // Act
@@ -106,7 +110,10 @@ namespace Tests.Business.Tests
             mockContext.Setup(c => c.FilmProjections.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmProjection>((projections.First())));
 
 
-            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, 
+                                                                new EmailSender("TestAPIKey", 
+                                                                                "TestSender",
+                                                                                "TestSenderName"));
             var searchedProj = projections.First();
 
             // Act
@@ -122,16 +129,28 @@ namespace Tests.Business.Tests
             // Arrange
             var projections = new List<FilmProjection>
             {
-                new FilmProjection { Id = "1",
-                Cinema = new Cinema{Name = "Best", City="Sliven", Country="Bulgaria"},
-                ProjectionType = ProjectionType._4D,
-                Date = DateTime.Now,
-                Film = new Film{FilmData = new FilmData {Title="FilmTitle"}} },
-                new FilmProjection { Id = "2",
-                Cinema = new Cinema{Name = "Best", City="Sliven", Country="Bulgaria"},
-                ProjectionType = ProjectionType._4D,
-                Date = DateTime.Now,
-                Film = new Film{FilmData = new FilmData {Title="FilmNewTitle"}} }
+                new FilmProjection 
+                { 
+                    Id = "1",
+                    Cinema = new Cinema{Name = "Best1", City="Sliven", Country="Bulgaria"},
+                    ProjectionType = ProjectionType._4D,
+                    Date = DateTime.Now,
+                    Film = new Film
+                    {
+                        FilmData = new FilmData {Title="FilmTitle"}
+                    } 
+                },
+                new FilmProjection 
+                { 
+                    Id = "2",
+                    Cinema = new Cinema{Name = "Best2", City="Sliven", Country="Bulgaria"},
+                    ProjectionType = ProjectionType._4D,
+                    Date = DateTime.Now,
+                    Film = new Film
+                    {
+                        FilmData = new FilmData {Title="FilmNewTitle"}
+                    } 
+                }
             }.AsQueryable();
 
             var mockSet = new Mock<DbSet<FilmProjection>>();
@@ -142,10 +161,14 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmProjections).Returns(mockSet.Object);
-            mockContext.Setup(c => c.FilmProjections.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmProjection>((projections.First())));
+            mockContext.Setup(c => c.FilmProjections.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<FilmProjection>((projections.First())));
 
 
-            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, 
+                                                                new EmailSender("TestAPIKey",
+                                                                                "TestSender",
+                                                                                "TestSenderName"));
             var mapper = new Mapper();
             // Act
             var resultProjections = projectionBusiness.GetPageItems(1, 2, mapper.MapToProjectionCardViewModel);
@@ -190,10 +213,14 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmProjections).Returns(mockSet.Object);
-            mockContext.Setup(c => c.FilmProjections.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmProjection>((projections.First())));
+            mockContext.Setup(c => c.FilmProjections.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<FilmProjection>(projections.First()));
 
 
-            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, 
+                                                                new EmailSender("TestAPIKey", 
+                                                                                "TestSender",
+                                                                                "TestSenderName"));
             var searchedProj = projections.First();
             var mapper = new Mapper();
 
@@ -222,9 +249,13 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmProjections).Returns(mockSet.Object);
-            mockContext.Setup(c => c.FilmProjections.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmProjection>((projections.First())));
+            mockContext.Setup(c => c.FilmProjections.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<FilmProjection>(projections.First()));
 
-            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, 
+                                                                new EmailSender("TestAPIKey", 
+                                                                                "TestSender", 
+                                                                                "TestSenderName"));
 
             // Act
             var resultProjecitonsCount = projectionBusiness.GetAll().Count();
@@ -244,7 +275,7 @@ namespace Tests.Business.Tests
                     Id = "1",
                     Cinema = new Cinema
                     {
-                        Name = "Best", City="Sliven", Country="Bulgaria"
+                        Name = "Best1", City="Sliven", Country="Bulgaria"
                     },
                     ProjectionType = ProjectionType._4D,
                     Date = DateTime.Now,
@@ -258,7 +289,7 @@ namespace Tests.Business.Tests
                     Id = "2",
                     Cinema = new Cinema
                     {
-                        Name = "Best", City="Sliven", Country="Bulgaria"
+                        Name = "Best2", City="Sliven", Country="Bulgaria"
                     },
                     ProjectionType = ProjectionType._4D,
                     Date = DateTime.Now,
@@ -277,9 +308,13 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmProjections).Returns(mockSet.Object);
-            mockContext.Setup(c => c.FilmProjections.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmProjection>((projections.First())));
+            mockContext.Setup(c => c.FilmProjections.FindAsync(It.IsAny<string>())).
+                Returns(new ValueTask<FilmProjection>(projections.First()));
 
-            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object,
+                                                                new EmailSender("TestAPIKey",
+                                                                                "TestSender",
+                                                                                "TestSenderName")); 
             var mapper = new Mapper();
 
             // Act
@@ -320,12 +355,13 @@ namespace Tests.Business.Tests
                     TicketPrices=new TicketPrices()
                 },
                new FilmProjection
-                {    Id = "2",
+                {    
+                    Id = "2",
                     CinemaId = "1",
                     Cinema = new Cinema
                     {
                         Id="1",
-                        Name = "Best",
+                        Name = "Best1",
                         City="Sliven",
                         Country="Bulgaria"
                     },
@@ -361,11 +397,16 @@ namespace Tests.Business.Tests
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmProjections).Returns(mockSet.Object);
 
-            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object,
+                                                                new EmailSender("TestAPIKey",
+                                                                                "TestSender",
+                                                                                "TestSenderName")); 
             var mapper = new Mapper();
 
             // Act
-            var resultProjecitonsCount = projectionBusiness.GetAllByCinemaId("1", mapper.MapToProjectionDataViewModel).ToList().Count();
+            var resultProjecitonsCount = projectionBusiness.GetAllByCinemaId("1", mapper.MapToProjectionDataViewModel).
+                                                            ToList().
+                                                            Count();
 
             // Assert
             Assert.AreEqual(2, resultProjecitonsCount, "Doesn't return all projections with the searched cinema id.");
@@ -389,10 +430,14 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmProjections).Returns(mockSet.Object);
-            mockContext.Setup(s => s.FilmProjections.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmProjection>((FilmProjection)null));
+            mockContext.Setup(s => s.FilmProjections.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<FilmProjection>((FilmProjection)null));
             mockContext.Setup(m => m.Remove(It.IsAny<FilmProjection>())).Returns((EntityEntry<FilmProjection>)null);
 
-            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, 
+                                                                new EmailSender("TestAPIKey",
+                                                                                "TestSender", 
+                                                                                "TestSenderName"));
 
             // Act
              await projectionBusiness.DeleteAsync(projections.First().Id,"");
@@ -425,19 +470,26 @@ namespace Tests.Business.Tests
             mockSet.As<IQueryable<FilmProjection>>().Setup(m => m.GetEnumerator()).Returns(projections.GetEnumerator());
 
             var mockSetTicket = new Mock<DbSet<ProjectionTicket>>();
-            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.Provider).Returns(projectionTickets.Provider);
-            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.Expression).Returns(projectionTickets.Expression);
-            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.ElementType).Returns(projectionTickets.ElementType);
-            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.GetEnumerator()).Returns(projectionTickets.GetEnumerator());
+            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.Provider).
+                                                             Returns(projectionTickets.Provider);
+            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.Expression).
+                                                             Returns(projectionTickets.Expression);
+            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.ElementType).
+                                                             Returns(projectionTickets.ElementType);
+            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.GetEnumerator()).
+                                                             Returns(projectionTickets.GetEnumerator());
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmProjections).Returns(mockSet.Object);
             mockContext.Setup(c => c.ProjectionTickets).Returns(mockSetTicket.Object);
             mockContext.Setup(s => s.FilmProjections.FindAsync(It.IsAny<string>())).
-                        Returns(new ValueTask<FilmProjection>((FilmProjection)projections.First()));
+                        Returns(new ValueTask<FilmProjection>(projections.First()));
             mockContext.Setup(m => m.Remove(It.IsAny<FilmProjection>())).Returns((EntityEntry<FilmProjection>)null);
 
-            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
+            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, 
+                                                                new EmailSender("TestAPIKey",
+                                                                                "TestSender", 
+                                                                                "TestSenderName"));
 
             // Act
             await projectionBusiness.DeleteAsync(projections.First().Id,"DeletePattern");
@@ -455,8 +507,8 @@ namespace Tests.Business.Tests
             {
                 new FilmProjection
                 {
-                    Film = new Film{ FilmData = new FilmData{Title="XXX" } },
-                    Cinema = new Cinema{Name = "YYY" },
+                    Film = new Film{ FilmData = new FilmData{Title="Film1" } },
+                    Cinema = new Cinema{Name = "Cinema1" },
                     Date = DateTime.Now
                 },
                 new FilmProjection { },
@@ -486,20 +538,26 @@ namespace Tests.Business.Tests
             mockSet.As<IQueryable<FilmProjection>>().Setup(m => m.GetEnumerator()).Returns(projections.GetEnumerator());
 
             var mockSetTicket = new Mock<DbSet<ProjectionTicket>>();
-            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.Provider).Returns(projectionTickets.Provider);
-            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.Expression).Returns(projectionTickets.Expression);
-            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.ElementType).Returns(projectionTickets.ElementType);
-            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.GetEnumerator()).Returns(projectionTickets.GetEnumerator());
+            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.Provider).
+                                                             Returns(projectionTickets.Provider);
+            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.Expression).
+                                                             Returns(projectionTickets.Expression);
+            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.ElementType).
+                                                             Returns(projectionTickets.ElementType);
+            mockSetTicket.As<IQueryable<ProjectionTicket>>().Setup(m => m.GetEnumerator()).
+                                                             Returns(projectionTickets.GetEnumerator());
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmProjections).Returns(mockSet.Object);
             mockContext.Setup(c => c.ProjectionTickets).Returns(mockSetTicket.Object);
             mockContext.Setup(s => s.FilmProjections.FindAsync(It.IsAny<string>())).
-                        Returns(new ValueTask<FilmProjection>((FilmProjection)projections.First()));
+                        Returns(new ValueTask<FilmProjection>(projections.First()));
             mockContext.Setup(m => m.Remove(It.IsAny<FilmProjection>())).Returns((EntityEntry<FilmProjection>)null);
 
-            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
-
+            var projectionBusiness = new FilmProjectionBusiness(mockContext.Object,
+                                                                new EmailSender("TestAPIKey",
+                                                                                "TestSender",
+                                                                                "TestSenderName"));
             // Act
             await projectionBusiness.DeleteAsync(projections.First().Id, "DeletePattern");
 

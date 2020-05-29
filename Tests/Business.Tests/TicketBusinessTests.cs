@@ -10,9 +10,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
-using Data.Enums;
 using CinemaShare.Common.Mapping;
-using CinemaShare.Models.ViewModels;
 
 namespace Tests.Business.Tests
 {
@@ -36,7 +34,8 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.ProjectionTickets).Returns(mockSet.Object);
-            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).Returns(new ValueTask<ProjectionTicket>((tickets.First())));
+            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<ProjectionTicket>(tickets.First()));
 
             var projectionTicketBusiness = new ProjectionTicketBusiness(mockContext.Object);
             var searchedTicket = tickets.First();
@@ -66,7 +65,8 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.ProjectionTickets).Returns(mockSet.Object);
-            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).Returns(new ValueTask<ProjectionTicket>((tickets.First())));
+            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<ProjectionTicket>(tickets.First()));
 
             var projectionTicketBusiness = new ProjectionTicketBusiness(mockContext.Object);
             var searchedTicket = tickets.First();
@@ -97,11 +97,14 @@ namespace Tests.Business.Tests
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.ProjectionTickets).Returns(mockSet.Object);
             mockContext.Setup(m => m.AddAsync(It.IsAny<ProjectionTicket>(), It.IsAny<CancellationToken>()))
-               .Returns(new ValueTask<EntityEntry<ProjectionTicket>>(Task.FromResult((EntityEntry<ProjectionTicket>)null)));
-            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).Returns(new ValueTask<ProjectionTicket>((tickets.First())));
+                       .Returns(new ValueTask<EntityEntry<ProjectionTicket>>
+                       (Task.FromResult((EntityEntry<ProjectionTicket>)null)));
+            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<ProjectionTicket>(tickets.First()));
 
             var projectionTicketBusiness = new ProjectionTicketBusiness(mockContext.Object);
             var projectionTickets = new List<ProjectionTicket> { new ProjectionTicket { }, new ProjectionTicket { } };
+
             // Act
             await projectionTicketBusiness.AddMultipleAsync(projectionTickets);
 
@@ -128,12 +131,14 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.ProjectionTickets).Returns(mockSet.Object);
-            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).Returns(new ValueTask<ProjectionTicket>((tickets.First())));
+            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<ProjectionTicket>((tickets.First())));
 
             var projectionTicketBusiness = new ProjectionTicketBusiness(mockContext.Object);
 
             // Act
-            var resultTickets = projectionTicketBusiness.GetForProjectionAndUser(tickets.First().Projection.Id, tickets.First().HolderId);
+            var resultTickets = projectionTicketBusiness.GetForProjectionAndUser(tickets.First().Projection.Id,
+                                                                                 tickets.First().HolderId);
 
             // Assert 
             Assert.AreEqual(2, resultTickets.Count(), "Does't return all tickets with entered holder ID");
@@ -154,14 +159,14 @@ namespace Tests.Business.Tests
                     {
                         Cinema=new Cinema
                         {
-                            Name="DEF"
-                        }, 
+                            Name="Cinema1"
+                        },
                         Film =new Film
                         {
                             FilmData= new FilmData
-                            { 
-                                Title="XXX"
-                            } 
+                            {
+                                Title="Film1"
+                            }
                         }
                     },
                     ReservedOn=DateTime.Now, Seat=1
@@ -169,18 +174,19 @@ namespace Tests.Business.Tests
                 new ProjectionTicket
                 {
                     Holder=new CinemaUser(),
-                    Price=8, 
+                    Price=8,
                     HolderId="User1",
                     Projection=new FilmProjection
-                    {Cinema=new Cinema
                     {
-                        Name="ABC"
-                    },
+                        Cinema=new Cinema
+                        {
+                            Name="Cinema2"
+                        },
                         Film =new Film
                         {
                             FilmData= new FilmData
                             {
-                                Title="YYY"
+                                Title="Film2"
                             }
                         }
                     },
@@ -196,12 +202,14 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.ProjectionTickets).Returns(mockSet.Object);
-            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).Returns(new ValueTask<ProjectionTicket>((tickets.First())));
+            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<ProjectionTicket>((tickets.First())));
 
             var projectionTicketBusiness = new ProjectionTicketBusiness(mockContext.Object);
             var mapper = new Mapper();
             // Act
-            var resultTickets = projectionTicketBusiness.GetForUser(tickets.First().HolderId, mapper.MapToTicketCardViewModel);
+            var resultTickets = projectionTicketBusiness.GetForUser(tickets.First().HolderId,
+                                                                    mapper.MapToTicketCardViewModel);
 
             // Assert 
             Assert.AreEqual(tickets.First().Price, resultTickets.First().Price, "Does't return all tickets with entered holder ID");
@@ -225,11 +233,13 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.ProjectionTickets).Returns(mockSet.Object);
-            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).Returns(new ValueTask<ProjectionTicket>((tickets.First())));
-            mockContext.Setup(m => m.Remove(It.IsAny<ProjectionTicket>())).Returns((EntityEntry<ProjectionTicket>)null);
+            mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<ProjectionTicket>((tickets.First())));
+            mockContext.Setup(m => m.Remove(It.IsAny<ProjectionTicket>())).
+                        Returns((EntityEntry<ProjectionTicket>)null);
 
             var projectionTicketBusiness = new ProjectionTicketBusiness(mockContext.Object);
-            
+
             // Act
             await projectionTicketBusiness.DeleteAsync(tickets.First().Id);
 
@@ -258,7 +268,8 @@ namespace Tests.Business.Tests
             mockContext.Setup(c => c.ProjectionTickets).Returns(mockSet.Object);
             mockContext.Setup(c => c.ProjectionTickets.FindAsync(It.IsAny<string>())).
                         Returns(new ValueTask<ProjectionTicket>((ProjectionTicket)null));
-            mockContext.Setup(m => m.Remove(It.IsAny<ProjectionTicket>())).Returns((EntityEntry<ProjectionTicket>)null);
+            mockContext.Setup(m => m.Remove(It.IsAny<ProjectionTicket>())).
+                        Returns((EntityEntry<ProjectionTicket>)null);
 
             var projectionTicketBusiness = new ProjectionTicketBusiness(mockContext.Object);
 

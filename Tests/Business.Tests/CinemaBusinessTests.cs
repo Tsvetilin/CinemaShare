@@ -9,10 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using Data.Enums;
 using CinemaShare.Common.Mapping;
-using CinemaShare.Models.ViewModels;
 
 namespace Tests.Business.Tests
 {
@@ -37,7 +34,7 @@ namespace Tests.Business.Tests
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
             mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
-                          Returns(new ValueTask<Cinema>((cinemas.First())));
+                          Returns(new ValueTask<Cinema>(cinemas.First()));
 
             var  cinemaBusiness = new CinemaBusiness(mockContext.Object,
                                                      new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
@@ -69,7 +66,7 @@ namespace Tests.Business.Tests
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
             mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
-                          Returns(new ValueTask<Cinema>((cinemas.First())));
+                          Returns(new ValueTask<Cinema>(cinemas.First()));
 
             var cinemaBusiness = new CinemaBusiness(mockContext.Object, 
                                                     new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
@@ -100,7 +97,7 @@ namespace Tests.Business.Tests
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
             mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
-                          Returns(new ValueTask<Cinema>((cinemas.First())));
+                          Returns(new ValueTask<Cinema>(cinemas.First()));
 
             var cinemaBusiness = new CinemaBusiness(mockContext.Object, 
                                                     new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
@@ -158,7 +155,7 @@ namespace Tests.Business.Tests
                     Id="1", Manager= new CinemaUser(),
                     City="Sliven", Country="Bulgaria", 
                     FilmProjections=new List<FilmProjection>(),
-                    Name="Pencho"
+                    Name="Cinema1"
                 },
                 new Cinema {}
             }.AsQueryable();
@@ -200,14 +197,14 @@ namespace Tests.Business.Tests
                     Id="1", Manager= new CinemaUser(),
                     City="Sliven", Country="Bulgaria",
                     FilmProjections=new List<FilmProjection>(), 
-                    Name="Pencho"
+                    Name="Cinema1"
                 },
                 new Cinema 
                 {
                     Id="2", Manager= new CinemaUser(),
                     City="Sliven", Country="Bulgaria", 
                     FilmProjections=new List<FilmProjection>(),
-                    Name="Pencho"
+                    Name="Cinema2"
                 }
             }.AsQueryable();
 
@@ -220,7 +217,7 @@ namespace Tests.Business.Tests
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
             mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
-                       Returns(new ValueTask<Cinema>((cinemas.First())));
+                       Returns(new ValueTask<Cinema>(cinemas.First()));
 
             var cinemaBusiness = new CinemaBusiness(mockContext.Object,
                                                     new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
@@ -241,7 +238,7 @@ namespace Tests.Business.Tests
             {
                 new Cinema 
                 {
-                    Id="1", Name="Pencho"
+                    Id="1", Name="Cinema1"
                 },
                 new Cinema {}
             }.AsQueryable();
@@ -277,14 +274,14 @@ namespace Tests.Business.Tests
                     Id="1", Manager= new CinemaUser(),
                     City="Sliven", Country="Bulgaria",
                     FilmProjections=new List<FilmProjection>(),
-                    Name="Pencho"
+                    Name="Cinema1"
                 },
                 new Cinema
                 {
                     Id="2", Manager= new CinemaUser(),
                     City="Sliven", Country="Bulgaria", 
                     FilmProjections=new List<FilmProjection>(),
-                    Name="Blagoi"
+                    Name="Cinema2"
                 }
             }.AsQueryable();
 
@@ -319,14 +316,14 @@ namespace Tests.Business.Tests
                     Id="1", Manager= new CinemaUser(),
                     City="Sliven", Country="Bulgaria", 
                     FilmProjections=new List<FilmProjection>(),
-                    Name="Pencho"
+                    Name="Cinema1"
                 },
                 new Cinema 
                 {
                     Id="2", Manager= new CinemaUser(),
                     City="Sliven", Country="Bulgaria", 
                     FilmProjections=new List<FilmProjection>(),
-                    Name="Blagoi"
+                    Name="Cinema2"
                 }
             }.AsQueryable();
 
@@ -361,14 +358,14 @@ namespace Tests.Business.Tests
                     Id="1", Manager= new CinemaUser(), 
                     City="Sliven", Country="Bulgaria",
                     FilmProjections=new List<FilmProjection>(),
-                    Name="Pencho"
+                    Name="Cinema1"
                 },
                 new Cinema 
                 {
                     Id="2", Manager= new CinemaUser(),
                     City="Sliven", Country="Bulgaria", 
                     FilmProjections=new List<FilmProjection>(),
-                    Name="Blagoi"
+                    Name="Cinema2"
                 }
             }.AsQueryable();
 
@@ -381,13 +378,15 @@ namespace Tests.Business.Tests
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Cinemas).Returns(mockSet.Object);
             mockContext.Setup(c => c.Cinemas.FindAsync(It.IsAny<string>())).
-                                             Returns(new ValueTask<Cinema>((cinemas.First())));
+                                             Returns(new ValueTask<Cinema>(cinemas.First()));
 
             var cinemaBusiness = new CinemaBusiness(mockContext.Object,
                                                     new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
             var mapper = new Mapper();
+
             // Act
-            var resultCinemas = cinemaBusiness.GetSearchResults(cinemas.First().Id, mapper.MapToCinemaCardViewModel).ToList();
+            var resultCinemas = cinemaBusiness.GetSearchResults("UnexistingCinema", mapper.MapToCinemaCardViewModel).ToList();
+
             // Assert
             Assert.AreEqual(0, resultCinemas.Count, "Doesn't return correct if the element is not found in the database.");
         }

@@ -9,10 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using Data.Enums;
 using CinemaShare.Common.Mapping;
-using CinemaShare.Models.ViewModels;
 
 namespace Tests.Business.Tests
 {
@@ -69,7 +66,8 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmReviews).Returns(mockSet.Object);
-            mockContext.Setup(c => c.FilmReviews.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmReview>((reviews.First())));
+            mockContext.Setup(c => c.FilmReviews.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<FilmReview>(reviews.First()));
 
 
             var filmReviewBusiness = new FilmReviewBusiness(mockContext.Object);
