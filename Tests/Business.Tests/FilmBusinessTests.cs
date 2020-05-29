@@ -43,7 +43,7 @@ namespace Tests.Business.Tests
             var allFilms = filmBusiness.GetAll().ToList();
 
             // Assert
-            Assert.AreEqual(2, allFilms.Count, "Doesn't return all elements in the database.");
+            Assert.AreEqual(2, allFilms.Count, "Doesn't return all elements of the film.");
         }
 
         [Test]
@@ -72,7 +72,8 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Films).Returns(mockSet.Object);
-            mockContext.Setup(s => s.Films.FindAsync(It.IsAny<string>())).Returns(new ValueTask<Film>(films.FirstOrDefault(y => y.Id == searchedFilm.Id)));
+            mockContext.Setup(s => s.Films.FindAsync(It.IsAny<string>())).
+                       Returns(new ValueTask<Film>(films.FirstOrDefault(y => y.Id == searchedFilm.Id)));
 
             var filmBusiness = new FilmBusiness(mockContext.Object);
 
@@ -80,16 +81,16 @@ namespace Tests.Business.Tests
             var resultFilm = await filmBusiness.GetAsync(searchedFilm.Id);
 
             // Assert
-            Assert.AreEqual(searchedFilm.Id, resultFilm.Id, "Doesn't return searched element from the database.");
-            Assert.AreEqual(searchedFilm.Rating, resultFilm.Rating, "Doesn't return searched element from the database.");
-            Assert.AreEqual(searchedFilm.AddedByUser, resultFilm.AddedByUser, "Doesn't return searched element from the database.");
-            Assert.AreEqual(searchedFilm.AddedByUserId, resultFilm.AddedByUserId, "Doesn't return searched element from the database.");
-            Assert.AreEqual(searchedFilm.FilmData, resultFilm.FilmData, "Doesn't return searched element from the database.");
-            Assert.AreEqual(searchedFilm.FilmProjection, resultFilm.FilmProjection, "Doesn't return searched element from the database.");
-            Assert.AreEqual(searchedFilm.FilmReviews, resultFilm.FilmReviews, "Doesn't return searched element from the database.");
-            Assert.AreEqual(searchedFilm.OnWatchlistUsers, resultFilm.OnWatchlistUsers, "Doesn't return searched element from the database.");
-            Assert.AreEqual(searchedFilm.Rating, resultFilm.Rating, "Doesn't return searched element from the database.");
-            Assert.AreEqual(searchedFilm.Ratings, resultFilm.Ratings, "Doesn't return searched element from the database.");
+            Assert.AreEqual(searchedFilm.Id, resultFilm.Id, "Doesn't return searched element from the film.");
+            Assert.AreEqual(searchedFilm.Rating, resultFilm.Rating, "Doesn't return searched element from the film.");
+            Assert.AreEqual(searchedFilm.AddedByUser, resultFilm.AddedByUser, "Doesn't return searched element from the film.");
+            Assert.AreEqual(searchedFilm.AddedByUserId, resultFilm.AddedByUserId, "Doesn't return searched element from the film.");
+            Assert.AreEqual(searchedFilm.FilmData, resultFilm.FilmData, "Doesn't return searched element from the film.");
+            Assert.AreEqual(searchedFilm.FilmProjection, resultFilm.FilmProjection, "Doesn't return searched element from the film.");
+            Assert.AreEqual(searchedFilm.FilmReviews, resultFilm.FilmReviews, "Doesn't return searched element from the film.");
+            Assert.AreEqual(searchedFilm.OnWatchlistUsers, resultFilm.OnWatchlistUsers, "Doesn't return searched element from the film.");
+            Assert.AreEqual(searchedFilm.Rating, resultFilm.Rating, "Doesn't return searched element from the film.");
+            Assert.AreEqual(searchedFilm.Ratings, resultFilm.Ratings, "Doesn't return searched element from the film.");
         }
 
         [Test]
@@ -429,7 +430,8 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Users).Returns(mockSet.Object);
-            mockContext.Setup(s => s.Users.FindAsync(It.IsAny<string>())).Returns(new ValueTask<CinemaUser>((CinemaUser)null));
+            mockContext.Setup(s => s.Users.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<CinemaUser>((CinemaUser)null));
 
             var filmBusiness = new FilmBusiness(mockContext.Object);
 
@@ -518,7 +520,8 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Users).Returns(mockSet.Object);
-            mockContext.Setup(s => s.Users.FindAsync(It.IsAny<string>())).Returns(new ValueTask<CinemaUser>((CinemaUser)null));
+            mockContext.Setup(s => s.Users.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<CinemaUser>((CinemaUser)null));
 
             var filmBusiness = new FilmBusiness(mockContext.Object);
 
@@ -640,7 +643,8 @@ namespace Tests.Business.Tests
 
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.Users).Returns(mockSet.Object);
-            mockContext.Setup(s => s.Users.FindAsync(It.IsAny<string>())).Returns(new ValueTask<CinemaUser>(Task.FromResult((CinemaUser)null)));
+            mockContext.Setup(s => s.Users.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<CinemaUser>(Task.FromResult((CinemaUser)null)));
 
             var filmBusiness = new FilmBusiness(mockContext.Object);
             var mapper = new Mapper();

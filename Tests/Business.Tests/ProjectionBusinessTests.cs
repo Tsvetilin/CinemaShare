@@ -151,7 +151,7 @@ namespace Tests.Business.Tests
             var resultProjections = projectionBusiness.GetPageItems(1, 2, mapper.MapToProjectionCardViewModel);
 
             // Assert
-            Assert.AreEqual(projections.Count(), resultProjections.Count(), "Doesn't return the searched element from the database.");
+            Assert.AreEqual(projections.Count(), resultProjections.Count(), "Doesn't return all projections on the page.");
         }
 
         [Test]
@@ -160,13 +160,25 @@ namespace Tests.Business.Tests
             // Arrange
             var projections = new List<FilmProjection>
             {
-                 new FilmProjection { Id = "1",
-                Cinema = new Cinema{Name = "Best", City="Sliven", Country="Bulgaria"},
-                ProjectionType = ProjectionType._4D,
-                Date = DateTime.Now,
-                Film = new Film{FilmData = new FilmData {Title="FilmTitle",TargetAudience=TargetAudience.Adults,Runtime=50}},
-                TotalTickets = 100,
-                TicketPrices=new TicketPrices()},
+                 new FilmProjection 
+                 {
+                     Id = "1",
+                    Cinema = new Cinema
+                    {
+                        Name = "Best", City="Sliven", Country="Bulgaria"
+                    },
+                    ProjectionType = ProjectionType._4D,
+                    Date = DateTime.Now,
+                    Film = new Film
+                    {
+                        FilmData = new FilmData 
+                        {
+                            Title="FilmTitle",TargetAudience=TargetAudience.Adults,Runtime=50
+                        }
+                    },
+                    TotalTickets = 100,
+                    TicketPrices=new TicketPrices()
+                 },
                 new FilmProjection {Id = "2"},
             }.AsQueryable();
 
@@ -189,7 +201,7 @@ namespace Tests.Business.Tests
             var resultProj = await projectionBusiness.GetAsync(searchedProj.Id, mapper.MapToProjectionDataViewModel);
 
             // Assert
-            Assert.AreEqual(searchedProj.Id, resultProj.Id, "Doesn't return the searched element from the database.");
+            Assert.AreEqual(searchedProj.Id, resultProj.Id, "Doesn't return the searched projection data mapped.");
         }
 
         [Test]
@@ -218,7 +230,7 @@ namespace Tests.Business.Tests
             var resultProjecitonsCount = projectionBusiness.GetAll().Count();
 
             // Assert
-            Assert.AreEqual(projections.Count(), resultProjecitonsCount, "Doesn't return the searched element from the database.");
+            Assert.AreEqual(projections.Count(), resultProjecitonsCount, "Doesn't return all projections from the database.");
         }
 
         [Test]
@@ -227,16 +239,34 @@ namespace Tests.Business.Tests
             // Arrange
             var projections = new List<FilmProjection>
             {
-                new FilmProjection { Id = "1",
-                Cinema = new Cinema{Name = "Best", City="Sliven", Country="Bulgaria"},
-                ProjectionType = ProjectionType._4D,
-                Date = DateTime.Now,
-                Film = new Film{FilmData = new FilmData {Title="FilmTitle"}} },
-                new FilmProjection { Id = "2",
-                Cinema = new Cinema{Name = "Best", City="Sliven", Country="Bulgaria"},
-                ProjectionType = ProjectionType._4D,
-                Date = DateTime.Now,
-                Film = new Film{FilmData = new FilmData {Title="FilmNewTitle"}} }
+                new FilmProjection 
+                {
+                    Id = "1",
+                    Cinema = new Cinema
+                    {
+                        Name = "Best", City="Sliven", Country="Bulgaria"
+                    },
+                    ProjectionType = ProjectionType._4D,
+                    Date = DateTime.Now,
+                    Film = new Film
+                    {
+                        FilmData = new FilmData {Title="FilmTitle"}
+                    } 
+                },
+                new FilmProjection 
+                { 
+                    Id = "2",
+                    Cinema = new Cinema
+                    {
+                        Name = "Best", City="Sliven", Country="Bulgaria"
+                    },
+                    ProjectionType = ProjectionType._4D,
+                    Date = DateTime.Now,
+                    Film = new Film
+                    {
+                        FilmData = new FilmData {Title="FilmNewTitle"}
+                    } 
+                }
             }.AsQueryable();
 
             var mockSet = new Mock<DbSet<FilmProjection>>();
@@ -256,7 +286,7 @@ namespace Tests.Business.Tests
             var resultProjecitonsCount = projectionBusiness.GetAll(mapper.MapToProjectionCardViewModel).Count();
 
             // Assert
-            Assert.AreEqual(projections.Count(), resultProjecitonsCount, "Doesn't return the searched element from the database.");
+            Assert.AreEqual(projections.Count(), resultProjecitonsCount, "Doesn't return all projections data mapped.");
         }
 
         [Test]
@@ -265,23 +295,61 @@ namespace Tests.Business.Tests
             // Arrange
             var projections = new List<FilmProjection>
             {
-                new FilmProjection { Id = "1",
-                CinemaId = "1",
-                Cinema = new Cinema{Id="1",Name = "Best", City="Sliven", Country="Bulgaria"},
-                ProjectionType = ProjectionType._4D,
-                Date = DateTime.Now,
-                Film = new Film{FilmData = new FilmData {Title="FilmTitle",TargetAudience=TargetAudience.Adults,Runtime=50}},
-                TotalTickets = 100,
-                TicketPrices=new TicketPrices()},
-               new FilmProjection { Id = "2",
-                CinemaId = "1",
-                Cinema = new Cinema{Id="1",Name = "Best", City="Sliven", Country="Bulgaria"},
-                ProjectionType = ProjectionType._4D,
-                Date = DateTime.Now,
-                Film = new Film{FilmData = new FilmData {Title="FilmTitle",TargetAudience=TargetAudience.Adults,Runtime=50}},
-                TotalTickets = 100,
-                TicketPrices=new TicketPrices()},
-                new FilmProjection {Id = "3", Cinema = new Cinema{Id="2"} },
+                new FilmProjection 
+                {
+                    Id = "1",
+                    CinemaId = "1",
+                    Cinema = new Cinema
+                    {   Id="1",
+                        Name = "Best", 
+                        City="Sliven",
+                        Country="Bulgaria"
+                    },
+                    ProjectionType = ProjectionType._4D,
+                    Date = DateTime.Now,
+                    Film = new Film
+                    {
+                        FilmData = new FilmData
+                        {
+                            Title="FilmTitle",
+                            TargetAudience=TargetAudience.Adults,
+                            Runtime=50
+                        }
+                    },
+                    TotalTickets = 100,
+                    TicketPrices=new TicketPrices()
+                },
+               new FilmProjection
+                {    Id = "2",
+                    CinemaId = "1",
+                    Cinema = new Cinema
+                    {
+                        Id="1",
+                        Name = "Best",
+                        City="Sliven",
+                        Country="Bulgaria"
+                    },
+                    ProjectionType = ProjectionType._4D,
+                    Date = DateTime.Now,
+                    Film = new Film
+                    {
+                        FilmData = new FilmData
+                        {
+                            Title="FilmTitle",
+                            TargetAudience=TargetAudience.Adults,
+                            Runtime=50
+                        }
+                    },
+                    TotalTickets = 100,
+                    TicketPrices=new TicketPrices()},
+                new FilmProjection 
+                {
+                    Id = "3", 
+                    Cinema = new Cinema
+                    {
+                        Id="2"
+                    } 
+                },
             }.AsQueryable();
 
             var mockSet = new Mock<DbSet<FilmProjection>>();
@@ -300,7 +368,7 @@ namespace Tests.Business.Tests
             var resultProjecitonsCount = projectionBusiness.GetAllByCinemaId("1", mapper.MapToProjectionDataViewModel).ToList().Count();
 
             // Assert
-            Assert.AreEqual(2, resultProjecitonsCount, "Doesn't return the searched element from the database.");
+            Assert.AreEqual(2, resultProjecitonsCount, "Doesn't return all projections with the searched cinema id.");
         }
 
         [Test]
@@ -365,7 +433,8 @@ namespace Tests.Business.Tests
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmProjections).Returns(mockSet.Object);
             mockContext.Setup(c => c.ProjectionTickets).Returns(mockSetTicket.Object);
-            mockContext.Setup(s => s.FilmProjections.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmProjection>((FilmProjection)projections.First()));
+            mockContext.Setup(s => s.FilmProjections.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<FilmProjection>((FilmProjection)projections.First()));
             mockContext.Setup(m => m.Remove(It.IsAny<FilmProjection>())).Returns((EntityEntry<FilmProjection>)null);
 
             var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
@@ -395,8 +464,19 @@ namespace Tests.Business.Tests
 
             var projectionTickets = new List<ProjectionTicket>
             {
-                new ProjectionTicket {Projection = projections.First(), ProjectionId = projections.First().Id, Holder = new CinemaUser{Email="HodlerEmail" } },
-                new ProjectionTicket { },
+                new ProjectionTicket 
+                {
+                    Projection = projections.First(),
+                    ProjectionId = projections.First().Id,
+                    Holder = new CinemaUser
+                    {
+                        Email="HodlerEmail"
+                    } 
+                },
+                new ProjectionTicket 
+                {
+
+                },
             }.AsQueryable();
 
             var mockSet = new Mock<DbSet<FilmProjection>>();
@@ -414,7 +494,8 @@ namespace Tests.Business.Tests
             var mockContext = new Mock<CinemaDbContext>();
             mockContext.Setup(c => c.FilmProjections).Returns(mockSet.Object);
             mockContext.Setup(c => c.ProjectionTickets).Returns(mockSetTicket.Object);
-            mockContext.Setup(s => s.FilmProjections.FindAsync(It.IsAny<string>())).Returns(new ValueTask<FilmProjection>((FilmProjection)projections.First()));
+            mockContext.Setup(s => s.FilmProjections.FindAsync(It.IsAny<string>())).
+                        Returns(new ValueTask<FilmProjection>((FilmProjection)projections.First()));
             mockContext.Setup(m => m.Remove(It.IsAny<FilmProjection>())).Returns((EntityEntry<FilmProjection>)null);
 
             var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
