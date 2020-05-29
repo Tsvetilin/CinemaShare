@@ -115,7 +115,7 @@ namespace CinemaShare.Common.Mapping
     ///</summary>
     ///<param name="filmData"> New FilmData object </param>
     ///<returns>FilmUpdateInputModel object</returns>
-        public MapToFilmUpdateInputModel(FilmData filmData)
+        public FilmUpdateInputModel MapToFilmUpdateInputModel(FilmData filmData)
         {
             var viewModel = MapSimilarProperties<FilmData, FilmUpdateInputModel>(filmData);
             if (filmData != null)
