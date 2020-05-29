@@ -5,6 +5,6 @@ namespace Business
 {
     public interface ICloudinaryAPI
     {
-        public Task<string> UploadImage(MemoryStream imageMemoryStream, string fileName);
+        public Task<string> UploadImageAsync(MemoryStream imageMemoryStream, string fileName);
     }
 }

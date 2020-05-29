@@ -18,40 +18,41 @@ namespace CinemaShare.Controllers
             this.filmDataBusiness = filmDataBusiness;
             this.mapper = mapper;
         }
-        
+
         ///<summary>
-        /// Redirects to home page
+        /// Default website page
         ///</summary>
         public IActionResult Index()
         {
             HomePageViewModel viewModel = new HomePageViewModel
             {
-                TopFilms= filmDataBusiness.GetTopFilms(mapper.MapToFilmCardViewModel).ToList(),
+                TopFilms = filmDataBusiness.GetTopFilms(mapper.MapToFilmCardViewModel).ToList(),
                 RecentFilms = filmDataBusiness.GetRecentFilms(mapper.MapToFilmCardViewModel).ToList(),
             };
-            
+
             return View(viewModel);
         }
 
-        ///<returns>
-        /// View
-        ///</returns>
+        /// <summary>
+        /// Website's privacy policy page
+        /// </summary>
         public IActionResult Privacy()
         {
             return View();
         }
 
-        ///<returns>
-        /// Error view model
-        ///</returns>
+        /// <summary>
+        /// Website's default error page
+        /// </summary>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        ///<returns>
-        /// Error Status
-        ///</returns>
+
+        ///<summary>
+        /// Website's default status code error handler page
+        ///</summary>
         public IActionResult StatusError(int code = 404)
         {
             return this.View(code);

@@ -2,7 +2,6 @@
 using Data.Models;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,9 +17,8 @@ namespace Business
         }
 
         /// <summary>
-        /// Adds tickets
+        /// Adds multiple ticket's reservation
         /// </summary>
-        /// <returns></returns>
         public async Task AddMultipleAsync(IEnumerable<ProjectionTicket> tickets)
         {
             foreach (var ticket in tickets)
@@ -34,7 +32,7 @@ namespace Business
         /// Gets a ticket by ID
         /// </summary>
         /// <param>Ticket ID</param>
-        /// <returns>Selected ticket</returns>
+        /// <returns>Selected ticket, returns null if not found</returns>
         public async Task<ProjectionTicket> GetAsync(string id)
         {
             return await context.ProjectionTickets.FindAsync(id);
@@ -43,7 +41,7 @@ namespace Business
         /// <summary>
         /// Gets all tickets
         /// </summary>
-        /// <returns>List of tickets</returns>
+        /// <returns>List of all tickets</returns>
         public IEnumerable<ProjectionTicket> GetAll()
         {
             return context.ProjectionTickets.ToList();
@@ -54,7 +52,7 @@ namespace Business
         /// </summary>
         /// <param name="projectionId">The projection ID</param>
         /// <param name="userId">The user ID</param>
-        /// <returns>List of tickets</returns>
+        /// <returns>List of tickets for the particular user and projection</returns>
         public IEnumerable<ProjectionTicket> GetForProjectionAndUser(string projectionId, string userId)
         {
             var allTickets = GetAll().ToList();
@@ -64,8 +62,7 @@ namespace Business
         /// <summary>
         /// Updates information about a ticket
         /// </summary>
-        /// <param name="ticket">New ticket object</param>
-        /// <returns></returns>
+        /// <param name="ticket">Updated ticket object</param>
         public async Task UpdateAsync(ProjectionTicket ticket)
         {
             var ticketDataInContext = await context.ProjectionTickets.FindAsync(ticket.Id);
@@ -80,7 +77,6 @@ namespace Business
         /// Deletes ticket by ID
         /// </summary>
         /// <param name="id">The ticket ID</param>
-        /// <returns></returns>
         public async Task DeleteAsync(string id)
         {
             var ticketInContext = await context.ProjectionTickets.FindAsync(id);
@@ -90,11 +86,14 @@ namespace Business
                 await context.SaveChangesAsync();
             }
         }
+
         /// <summary>
         /// Gets selected user's tickets
         /// </summary>
         /// <param name="userId">The user ID</param>
-        /// <returns>List of tickets</returns>
+        /// <param name="mapToModelFunc">Method that maps the Ticket to <typeparamref name="TModel"/></param>
+        /// <typeparam name="TModel">Model, the Projection Ticket model to be mapped to</typeparam>
+        /// <returns>List of tickets for the particular user</returns>
         public IEnumerable<TModel> GetForUser<TModel>(string userId, Func<ProjectionTicket, TModel> mapToModelFunc)
         {
             var allTickets = GetAll().OrderByDescending(x=>x.Projection.Date).ToList();

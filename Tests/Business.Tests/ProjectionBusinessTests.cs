@@ -47,7 +47,7 @@ namespace Tests.Business.Tests
             var projection = new FilmProjection();
             var mapper = new Mapper();
             // Act
-            await projectionBusiness.Add(projection);
+            await projectionBusiness.AddAsync(projection);
 
             // Assert
             mockSet.Verify(m => m.AddAsync(It.IsAny<FilmProjection>(), It.IsAny<CancellationToken>()), Times.Once());
@@ -79,7 +79,7 @@ namespace Tests.Business.Tests
             var searchedProj = projections.First();
 
             // Act
-            var resultProj = await projectionBusiness.Get(searchedProj.Id);
+            var resultProj = await projectionBusiness.GetAsync(searchedProj.Id);
 
             // Assert
             Assert.AreEqual(searchedProj.Id, resultProj.Id, "Doesn't return the searched element from the database.");
@@ -327,7 +327,7 @@ namespace Tests.Business.Tests
             var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
 
             // Act
-             await projectionBusiness.Delete(projections.First().Id,"");
+             await projectionBusiness.DeleteAsync(projections.First().Id,"");
 
             // Assert
             mockSet.Verify(m => m.Remove(It.IsAny<FilmProjection>()), Times.Never());
@@ -371,7 +371,7 @@ namespace Tests.Business.Tests
             var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
 
             // Act
-            await projectionBusiness.Delete(projections.First().Id,"DeletePattern");
+            await projectionBusiness.DeleteAsync(projections.First().Id,"DeletePattern");
 
             // Assert
             mockSet.Verify(m => m.Remove(It.IsAny<FilmProjection>()), Times.Once());
@@ -420,7 +420,7 @@ namespace Tests.Business.Tests
             var projectionBusiness = new FilmProjectionBusiness(mockContext.Object, new EmailSender("TestAPIKey", "TestSender", "TestSenderName"));
 
             // Act
-            await projectionBusiness.Delete(projections.First().Id, "DeletePattern");
+            await projectionBusiness.DeleteAsync(projections.First().Id, "DeletePattern");
 
             // Assert
             mockSet.Verify(m => m.Remove(It.IsAny<FilmProjection>()), Times.Once());

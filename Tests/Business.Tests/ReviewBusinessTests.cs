@@ -44,7 +44,7 @@ namespace Tests.Business.Tests
             var filmReview = new FilmReview { };
 
             // Act
-            await filmReviewBusiness.Add(filmReview);
+            await filmReviewBusiness.AddAsync(filmReview);
 
             // Assert
             mockSet.Verify(m => m.AddAsync(It.IsAny<FilmReview>(), It.IsAny<CancellationToken>()), Times.Once());
@@ -75,7 +75,7 @@ namespace Tests.Business.Tests
             var filmReviewBusiness = new FilmReviewBusiness(mockContext.Object);
 
             // Act
-            var filmReview = await filmReviewBusiness.Get(reviews.First().Id);
+            var filmReview = await filmReviewBusiness.GetAsync(reviews.First().Id);
 
             // Assert
             Assert.AreEqual(reviews.First().Id, filmReview.Id, "Doesn't return searched element from database");

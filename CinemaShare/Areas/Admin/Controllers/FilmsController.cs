@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Business;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CinemaShare.Areas.Admin.Controllers
 {
@@ -25,9 +21,8 @@ namespace CinemaShare.Areas.Admin.Controllers
         }
 
         ///<summary>
-        /// Universal method for redirection of pages
+        /// Films default page for listing
         ///</summary>
-        ///<returns>Film data model</returns>
         public IActionResult Index()
         {
             var model = filmDataBusiness.GetAll();
@@ -37,7 +32,6 @@ namespace CinemaShare.Areas.Admin.Controllers
         ///<summary>
         /// Shows details for film searched by ID
         ///</summary>
-        ///<returns>Film data view</returns>
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -55,9 +49,8 @@ namespace CinemaShare.Areas.Admin.Controllers
         }
 
         ///<summary>
-        /// Edits film data by selected ID
+        /// Shows edit page for the film
         ///</summary>
-        ///<returns>Film data view</returns>
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -75,9 +68,8 @@ namespace CinemaShare.Areas.Admin.Controllers
         }
 
         ///<summary>
-        /// Edits only selected film data
+        /// Edits selected film's data
         ///</summary>
-        ///<returns>Film data view</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("FilmId,Title,Poster,Description,Director,Cast,Runtime,ReleaseDate,TargetAudience")] FilmData filmData)
@@ -90,7 +82,7 @@ namespace CinemaShare.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                await filmDataBusiness.Update(filmData);
+                await filmDataBusiness.UpdateAsync(filmData);
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -105,7 +97,7 @@ namespace CinemaShare.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            await filmDataBusiness.Delete(id);
+            await filmDataBusiness.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -117,7 +109,7 @@ namespace CinemaShare.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteReview(string id , string filmId)
         {
-            await filmReviewBusiness.Delete(id);
+            await filmReviewBusiness.DeleteAsync(id);
             return RedirectToAction(nameof(Details), new { id = filmId });
         }
     }

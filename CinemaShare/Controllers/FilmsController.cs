@@ -2,20 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
 using Business;
 using CinemaShare.Common.Mapping;
 using CinemaShare.Models.JsonModels;
+using CinemaShare.Models.ViewModels;
+using CinemaShare.Models.InputModels;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using CinemaShare.Models.ViewModels;
-using CinemaShare.Models.InputModels;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace CinemaShare.Controllers
 {
@@ -49,10 +47,8 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Searches a film
+        /// Default films page for listing and searching, with sorting options
         ///</summary>
-        ///<param name="search"> Search string </param>
-        ///<returns>New FilmsIndexViewModel</returns>
         public IActionResult Index(int id = 1, string sort = "", string search = "")
         {
             int pageCount = 1;
@@ -92,9 +88,8 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Shows details about a film by selected ID
+        /// Shows details page about a film by selected ID
         ///</summary>
-        ///<returns>Film data view</returns>
         public async Task<IActionResult> Detail(string id = null)
         {
             if (id == null)
@@ -110,11 +105,10 @@ namespace CinemaShare.Controllers
 
             return this.View(viewModel);
         }
-        
+
         ///<summary>
         /// Gets film data as Json
         ///</summary>
-        ///<returns>Film data view</returns>
         [Authorize]
         public IActionResult Add(string id = null)
         {
@@ -137,8 +131,6 @@ namespace CinemaShare.Controllers
         ///<summary>
         /// Adds a new film to the database
         ///</summary>
-        ///<param name="input">New FilmInputModel object</param>
-        ///<returns>MapToFilmUpdateInputModel view</returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Add(FilmInputModel input)
@@ -160,7 +152,7 @@ namespace CinemaShare.Controllers
 
                     using var stream = new MemoryStream();
                     await file.CopyToAsync(stream);
-                    var posterUrl = await cloudinaryAPI.UploadImage(stream, fileName);
+                    var posterUrl = await cloudinaryAPI.UploadImageAsync(stream, fileName);
                     input.Poster = posterUrl;
                 }
                 else
@@ -186,11 +178,10 @@ namespace CinemaShare.Controllers
 
             return this.RedirectToAction("Detail", "Films", new { film.Id });
         }
-        
+
         ///<summary>
-        /// Adds review to a selected film by default user
+        /// Adds review to a selected film by user
         ///</summary>
-        ///<returns>Film detail page </returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddReview(FilmReviewInputModel input, string id)
@@ -198,7 +189,7 @@ namespace CinemaShare.Controllers
             var userId = userManager.GetUserId(User);
             if (ModelState.IsValid && id != null && userId != null)
             {
-                await reviewBusiness.Add(new FilmReview
+                await reviewBusiness.AddAsync(new FilmReview
                 {
                     Content = input.Content,
                     CreatedOn = DateTime.UtcNow,
@@ -209,11 +200,10 @@ namespace CinemaShare.Controllers
 
             return RedirectToAction("Detail", "Films", new { Id = id });
         }
-        
+
         ///<summary>
         /// Fetches a film by title
         ///</summary>
-        ///<returns>Films page view</returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> FetchFilm(string title = null)
@@ -240,11 +230,10 @@ namespace CinemaShare.Controllers
 
             return this.RedirectToAction("Add", "Films", new { Id = tempDataId });
         }
-        
+
         ///<summary>
-        /// Rates a film (1-5)
+        /// Rates a selected film by user
         ///</summary>
-        ///<returns>Selected film details page</returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> RateFilm(string id, int rating)
@@ -257,9 +246,8 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Selects a film by ID
+        /// Shows edit page for selected film
         ///</summary>
-        ///<returns>MapToFilmUpdateInputModel view</returns>
         [Authorize]
         public async Task<IActionResult> Update(string id)
         {
@@ -278,11 +266,10 @@ namespace CinemaShare.Controllers
             }
             return RedirectToAction("Index", "Films");
         }
-        
+
         ///<summary>
         /// Updates film data by selected ID 
         ///</summary>
-        ///<returns>Film details page</returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Update(FilmUpdateInputModel input, string id)
@@ -293,6 +280,7 @@ namespace CinemaShare.Controllers
             //Check if user is signed in, film exists and the user is the one who added it
             if (userId == null ? false : userId == film?.AddedByUserId)
             {
+                //Check if the poster url is guid, which means that there should be uploaded poster 
                 if (Guid.TryParse(input.Poster, out _))
                 {
                     if (input.PosterUpload != null)
@@ -303,7 +291,7 @@ namespace CinemaShare.Controllers
 
                         using var stream = new MemoryStream();
                         await file.CopyToAsync(stream);
-                        var posterUrl = await cloudinaryAPI.UploadImage(stream, fileName);
+                        var posterUrl = await cloudinaryAPI.UploadImageAsync(stream, fileName);
                         input.Poster = posterUrl;
 
                     }
@@ -321,7 +309,7 @@ namespace CinemaShare.Controllers
                 var data = mapper.MapToFilmData(input);
                 data.FilmId = film.Id;
                 data.Title = film.FilmData.Title;
-                await filmDataBusiness.Update(data);
+                await filmDataBusiness.UpdateAsync(data);
                 return RedirectToAction("Detail", "Films", new { Id = id });
             }
 
@@ -331,7 +319,6 @@ namespace CinemaShare.Controllers
         ///<summary>
         /// Selects a film by ID and adds it to user's watchlist
         ///</summary>
-        ///<returns>FilmsIndexViewModel view</returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddToWatchList(string id)
@@ -350,7 +337,6 @@ namespace CinemaShare.Controllers
         ///<summary>
         /// Removes film from user's watchlist by selected ID
         ///</summary>
-        ///<returns>Films detail page</returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> RemoveFromWatchList(string id)
@@ -366,9 +352,8 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Shows films watchlist
+        /// Shows user's films watchlist
         ///</summary>
-        ///<returns>FilmsIndexViewModel view</returns>
         [Authorize]
         public IActionResult WatchList()
         {

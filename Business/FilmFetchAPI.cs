@@ -13,12 +13,19 @@ namespace Business
         {
             this.apiKey = apiKey;
         }
-        ///<summary>
-        /// Gets a information about selected film
-        ///</summary>
+
+        /// <summary>
+        /// Gets a information about selected film from the Web API
+        /// </summary>
         /// <param name="title">Film title</param>
-        ///<return>Information as Json</return>
-        public async Task<string> FetchFilmAsync<TJsonModel, TInputModel>(string title, Func<TJsonModel, TInputModel> mapFunction)
+        /// <param name="mapFunction">
+        /// Method that maps the <typeparamref name="TJsonModel"/> to <typeparamref name="TInputModel"/>
+        /// </param>
+        /// <typeparam name="TInputModel"></typeparam>
+        /// <typeparam name="TJsonModel">Model that represents the Json result of the fetching</typeparam>
+        /// <return>Information as Json parsed from <typeparamref name="TInputModel"/></return>
+        public async Task<string> FetchFilmAsync<TJsonModel, TInputModel>(string title, 
+                                                                          Func<TJsonModel, TInputModel> mapFunction)
         {
             using HttpClient client = new HttpClient();
             string url = $"https://www.omdbapi.com/?apikey={apiKey}&t={title}";

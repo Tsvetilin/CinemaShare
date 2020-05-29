@@ -293,7 +293,7 @@ namespace Tests.Business.Tests
             var filmDataBusiness = new FilmDataBusiness(mockContext.Object);
 
             // Act
-            await filmDataBusiness.Delete(searchedFilm.FilmId);
+            await filmDataBusiness.DeleteAsync(searchedFilm.FilmId);
 
             // Assert
             mockSetData.Verify(m => m.Remove(It.IsAny<FilmData>()), Times.Once());
@@ -327,7 +327,7 @@ namespace Tests.Business.Tests
             var filmDataBusiness = new FilmDataBusiness(mockContext.Object);
 
             // Act
-            await filmDataBusiness.Delete(searchedFilm.FilmId);
+            await filmDataBusiness.DeleteAsync(searchedFilm.FilmId);
 
             // Assert
             mockSet.Verify(m => m.Remove(It.IsAny<FilmData>()), Times.Never());

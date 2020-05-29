@@ -19,8 +19,11 @@ namespace Business
 
         public IEnumerable<FilmData> GetAll();
 
+        public IDictionary<string, string> GetAllFilmsTitles();
+
         public IEnumerable<TModel> GetPageItems<TModel>(int page, int filmsOnPage, string sortOption,
                                                        Func<FilmData, TModel> mapToModelFunc);
+
         public IEnumerable<TModel> GetTopFilms<TModel>(Func<FilmData, TModel> mapToModelFunc);
 
         public IEnumerable<TModel> GetRecentFilms<TModel>(Func<FilmData, TModel> mapToModelFunc);
@@ -29,8 +32,8 @@ namespace Business
 
         public int CountAllFilms();
 
-        public Task Update(FilmData filmData);
+        public Task UpdateAsync(FilmData filmData);
 
-        public Task Delete(string id);
+        public Task DeleteAsync(string id);
     }
 }

@@ -1,19 +1,16 @@
 ﻿using Data.Models;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Business
 {
     public interface IFilmReviewBusiness
     {
-        public Task Add(FilmReview filmReview);
+        public Task AddAsync(FilmReview filmReview);
 
-        public Task<FilmReview> Get(string id);
+        public Task<FilmReview> GetAsync(string id);
 
-        public Task<IEnumerable<FilmReview>> GetAll();
+        public Task UpdateAsync(FilmReview filmReview);
 
-        public Task Update(FilmReview filmReview);
-
-        public Task Delete(string id);
+        public Task DeleteAsync(string id);
     }
 }

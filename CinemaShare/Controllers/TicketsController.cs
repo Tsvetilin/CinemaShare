@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Business;
 using CinemaShare.Common.Mapping;
@@ -23,6 +21,7 @@ namespace CinemaShare.Controllers
         private readonly IMapper mapper;
         private readonly UserManager<CinemaUser> userManager;
         private const int ticketsOnPage = 3;
+
         public TicketsController(IFilmProjectionBusiness filmProjectionBusiness,
                                  IProjectionTicketBusiness projectionTicketBusiness,
                                  IMapper mapper,
@@ -35,7 +34,7 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Redirects to a new TicketIndex view model 
+        /// Default user's tickets page for listing
         ///</summary>
         [Authorize]
         public async Task<IActionResult> Index(int id = 1)
@@ -59,15 +58,12 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Searchs projection by a selected ID,
-        /// gets the projection data and creates new ReservationTicketInputModel
-        /// for reserving tickets where seats are empty
+        /// Shows ticket reservation page for particular projection
         ///</summary>
-        ///<returns>ReservationTicketInputModel view</returns>
         [Authorize]
         public async Task<IActionResult> Reserve(string id)
         {
-            var projection = await filmProjectionBusiness.Get(id);
+            var projection = await filmProjectionBusiness.GetAsync(id);
             if (projection == null)
             {
                 return RedirectToAction("Index", "Projections");
@@ -87,18 +83,14 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Search projection by a selected ID,
-        /// gets the projection data and a ReserveTicketInputModel 
-        /// for reserving tickets where seats are empty, 
-        /// checks for conflicts with taken seats and concurrency reservations
+        /// Reserves all desired tickets for the projection by user
         ///</summary>
-        ///<returns>To Projections reservations page</returns>
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Reserve(string id, ReserveTicketInputModel input)
         {
             var ticketsInput = input.TicketInputModels.Select(x => x.Value);
-            var projection = await filmProjectionBusiness.Get(id);
+            var projection = await filmProjectionBusiness.GetAsync(id);
             if (projection == null)
             {
                 return RedirectToAction("Index", "Projections");
@@ -128,15 +120,17 @@ namespace CinemaShare.Controllers
 
             var userId = userManager.GetUserId(User);
             DateTime timeStamp = DateTime.UtcNow;
-            var tickets = ticketsInput.Select(ticket => mapper.MapToProjectionTicket(userId, ticket, projection, timeStamp));
+            var tickets = ticketsInput.Select(ticket => mapper.MapToProjectionTicket(userId, 
+                                                                                     ticket, 
+                                                                                     projection, 
+                                                                                     timeStamp));
             await projectionTicketBusiness.AddMultipleAsync(tickets);
             return RedirectToAction("Index", "Tickets");
         }
 
         ///<summary>
-        /// Updates data for a ticket by selected ID
+        /// Shows ticket change page
         ///</summary>
-        /// <returns>New UpdateTicketInputModel view</returns>
         [Authorize]
         public async Task<IActionResult> Update(string id)
         {
@@ -164,8 +158,7 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Redirect to a new cinema view model if seаrched string is valid 
-        /// or shows an error
+        /// Updates data for a ticket by selected ID
         ///</summary>
         [Authorize]
         [HttpPost]
@@ -192,7 +185,7 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Deletes ticket by a Selected ID 
+        /// Denies ticket by a selected ID 
         ///</summary>
         [Authorize]
         [HttpPost]

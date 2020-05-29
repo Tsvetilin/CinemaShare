@@ -12,12 +12,15 @@ namespace CinemaShare.Common.Mapping
 {
     public class Mapper : IMapper
     {
-    ///<summary>
-    /// Makes a conversion of two models
-    ///</summary>
-    ///<param name="fromObject"> New object to convert </param>
-    ///<returns>Converted model</returns>
-    
+        ///<summary>
+        /// Makes an instance of <typeparamref name="TToModel"/>
+        /// and maps all the data from <paramref name="fromObject"/>
+        /// to the new instance where the propery name and type are the same
+        ///</summary>
+        ///<param name="fromObject"> Object to map from</param>
+        ///<typeparam name="TFromModel">Model to map from</typeparam>
+        ///<typeparam name="TToModel">Model to map to</typeparam>
+        ///<returns>Mapped object of type <typeparamref name="TToModel"/></returns>
         private TToModel MapSimilarProperties<TFromModel, TToModel>(TFromModel fromObject)
              where TFromModel : class
              where TToModel : class, new()
@@ -39,10 +42,11 @@ namespace CinemaShare.Common.Mapping
             return viewModel;
         }
 
-    ///<summary>
-    /// Converts FilmData object to FilmCardViewModel
-    ///</summary>
-    ///<param name="filmData"> New FilmData object </param>
+        ///<summary>
+        /// Converts FilmData object to FilmCardViewModel
+        ///</summary>
+        ///<param name="filmData">FilmData object to map from </param>
+        /// <returns>Mapped instance of type <see cref="FilmCardViewModel"/></returns>
         public FilmCardViewModel MapToFilmCardViewModel(FilmData filmData)
         {
             return new FilmCardViewModel
@@ -55,10 +59,11 @@ namespace CinemaShare.Common.Mapping
             };
         }
 
-    ///<summary>
-    /// Converts FilmData object to ExtendedFilmCardViewModel
-    ///</summary>
-    ///<param name="filmData"> New FilmData object </param>
+        ///<summary>
+        /// Converts FilmData object to ExtendedFilmCardViewModel
+        ///</summary>
+        ///<param name="filmData"> FilmData object to map from</param>
+        ///<returns>Mapped instance of type <see cref="ExtendedFilmCardViewModel"/></returns>
         public ExtendedFilmCardViewModel MapToExtendedFilmCardViewModel(FilmData filmData)
         {
             var viewModel = MapSimilarProperties<FilmData, ExtendedFilmCardViewModel>(filmData);
@@ -71,11 +76,11 @@ namespace CinemaShare.Common.Mapping
             return viewModel;
         }
 
-    ///<summary>
-    /// Converts FilmData object to FilmDataViewModel
-    ///</summary>
-    ///<param name="filmData"> New FilmData object </param>
-    ///<returns>FilmDataViewModel object</returns>
+        ///<summary>
+        /// Converts FilmData object to FilmDataViewModel
+        ///</summary>
+        ///<param name="filmData"> FilmData object to map from </param>
+        ///<returns>Mapped instance of type <see cref="FilmDataViewModel"/></returns>
         public FilmDataViewModel MapToFilmDataViewModel(FilmData filmData)
         {
             var viewModel = MapSimilarProperties<FilmData, FilmDataViewModel>(filmData);
@@ -85,9 +90,9 @@ namespace CinemaShare.Common.Mapping
                 viewModel.Genres = string.Join(", ", filmData.Genre.Select(a => a.Genre.ToString()));
                 viewModel.Rating = Math.Round(filmData.Film.Rating, 1).ToString();
                 viewModel.FilmProjections = filmData.Film.FilmProjection.Select(x => MapToProjectionCardViewModel(x))
-                                                                        .OrderByDescending(x=>x.Date)
+                                                                        .OrderByDescending(x => x.Date)
                                                                         .ToList();
-                viewModel.FilmReviews = filmData.Film.FilmReviews.Select(x=>MapToFilmReviewViewMode(x))
+                viewModel.FilmReviews = filmData.Film.FilmReviews.Select(x => MapToFilmReviewViewMode(x))
                                                                  .OrderByDescending(x => x.CreatedOn)
                                                                  .ToList();
                 viewModel.CreatedByUserId = filmData.Film.AddedByUserId;
@@ -95,27 +100,28 @@ namespace CinemaShare.Common.Mapping
             return viewModel;
         }
 
-    ///<summary>
-    /// Converts FilmReview object to FilmReviewViewModel
-    ///</summary>
-    ///<param name="review"> New FilmReview object</param> 
+        ///<summary>
+        /// Converts FilmReview object to FilmReviewViewModel
+        ///</summary>
+        ///<param name="review"> FilmReview object to map from</param> 
+        ///<returns>Mapped instance of type <see cref="FilmReviewViewModel"/></returns>
         public FilmReviewViewModel MapToFilmReviewViewMode(FilmReview review)
         {
             return new FilmReviewViewModel
             {
                 Content = review.Content,
                 CreatedOn = review.CreatedOn,
-                UserGender=review.User.Gender,
-                Username=review.User.UserName,
+                UserGender = review.User.Gender,
+                Username = review.User.UserName,
             };
         }
 
-    ///<summary>
-    /// Converts FilmData object to FilmUpdateInputModel
-    ///</summary>
-    ///<param name="filmData"> New FilmData object </param>
-    ///<returns>FilmUpdateInputModel object</returns>
-        public MapToFilmUpdateInputModel(FilmData filmData)
+        ///<summary>
+        /// Converts FilmData object to FilmUpdateInputModel
+        ///</summary>
+        ///<param name="filmData"> FilmData object to map from</param>
+        ///<returns>Mapped instance of type <see cref="FilmUpdateInputModel"/></returns>
+        public FilmUpdateInputModel MapToFilmUpdateInputModel(FilmData filmData)
         {
             var viewModel = MapSimilarProperties<FilmData, FilmUpdateInputModel>(filmData);
             if (filmData != null)
@@ -125,11 +131,11 @@ namespace CinemaShare.Common.Mapping
             return viewModel;
         }
 
-    ///<summary>
-    /// Converts FilmJsonModel data to FilmUpdateInputModel
-    ///</summary>
-    ///<param name="filmData"> New FilmData object </param>
-    ///<returns>FilmInputModel object</returns>
+        ///<summary>
+        /// Converts FilmJsonModel data to FilmUpdateInputModel
+        ///</summary>
+        ///<param name="filmData"> FilmData object to map from </param>
+        ///<returns>Mapped instance of type <see cref="FilmInputModel"/></returns>
         public FilmInputModel MapToFilmInputModel(FilmJsonModel filmData)
         {
             if (filmData.Response == "False")
@@ -188,14 +194,14 @@ namespace CinemaShare.Common.Mapping
             filmInputModel.Runtime = runtime;
 
             return filmInputModel;
-        } 
-        
-    ///<summary>
-    /// Converts FilmInputModel data to FilmData
-    ///</summary>
-    ///<param name="film"> New Film object </param>
-    ///<param name="input"> New FilmInputModel object </param>
-    ///<returns>FilmData object</returns>
+        }
+
+        ///<summary>
+        /// Converts FilmInputModel data to FilmData
+        ///</summary>
+        ///<param name="film"> Film object to map from</param>
+        ///<param name="input">FilmInputModel object to map from</param>
+        ///<returns>Mapped instance of type <see cref="FilmData"/></returns>
         public FilmData MapToFilmData(FilmInputModel input, Film film)
         {
             var model = MapSimilarProperties<FilmInputModel, FilmData>(input);
@@ -203,24 +209,24 @@ namespace CinemaShare.Common.Mapping
             model.Genre = input.Genre.Select(x => new GenreType() { Genre = x }).ToList();
             return model;
         }
-        
-    ///<summary>
-    /// Converts FilmUpdateInputModel data to FilmData
-    ///</summary>
-    ///<param name="input"> New FilmUpdateInputModel object </param>
-    ///<returns>FilmData object</returns>
+
+        ///<summary>
+        /// Converts FilmUpdateInputModel data to FilmData
+        ///</summary>
+        ///<param name="input"> FilmUpdateInputModel object to map from<param>
+        ///<returns>Mapped instance of type <see cref="FilmData"/></returns>
         public FilmData MapToFilmData(FilmUpdateInputModel input)
         {
             var model = MapSimilarProperties<FilmUpdateInputModel, FilmData>(input);
             model.Genre = input.Genre.Select(genre => new GenreType() { Genre = genre }).ToList();
             return model;
         }
-        
-    ///<summary>
-    /// Converts Cinema object to CinemaDataViewModel
-    ///</summary>
-    ///<param name="cinema"> New Cinema object </param>
-    ///<returns>CinemaDataViewModel object</returns>
+
+        ///<summary>
+        /// Converts Cinema object to CinemaDataViewModel
+        ///</summary>
+        ///<param name="cinema"> Cinema object to map from</param>
+        ///<returns>Mapped instance of type <see cref="CinemaDataViewModel"/></returns>
         public CinemaDataViewModel MapToCinemaDataViewModel(Cinema cinema)
         {
             var viewModel = MapSimilarProperties<Cinema, CinemaDataViewModel>(cinema);
@@ -230,48 +236,48 @@ namespace CinemaShare.Common.Mapping
             }
             return viewModel;
         }
-        
-    ///<summary>
-    /// Converts Cinema data to CinemaCardViewModel
-    ///</summary>
-    ///<param name="rawCinema"> New Cinema object </param>
-    ///<returns>CinemaCardViewModel object</returns>
+
+        ///<summary>
+        /// Converts Cinema data to CinemaCardViewModel
+        ///</summary>
+        ///<param name="rawCinema"> Cinema object to map from</param>
+        ///<returns>Mapped instance of type <see cref="CinemaCardViewModel"/></returns>
         public CinemaCardViewModel MapToCinemaCardViewModel(Cinema rawCinema)
         {
             var viewModel = MapSimilarProperties<Cinema, CinemaCardViewModel>(rawCinema);
             viewModel.Mananger = rawCinema.Manager.UserName;
             return viewModel;
         }
-        
-    ///<summary>
-    /// Converts Cinema object to CinemaInputModel
-    ///</summary>
-    ///<param name="cinema"> New Cinema object </param>
-    ///<returns>CinemaInputModel object</returns>
+
+        ///<summary>
+        /// Converts Cinema object to CinemaInputModel
+        ///</summary>
+        ///<param name="cinema"> Cinema object to map from</param>
+        ///<returns>Mapped instance of type <see cref="CinemaInputModel"/></returns>
         public CinemaInputModel MapToCinemaUpdateInputModel(Cinema cinema)
         {
             var viewModel = MapSimilarProperties<Cinema, CinemaInputModel>(cinema);
             return viewModel;
         }
-        
-    ///<summary>
-    /// Converts CinemaInputModel object to Cinema
-    ///</summary>
-    ///<param name="input"> New CinemaInputModel object </param>
-    ///<returns>Cinema object</returns>
+
+        ///<summary>
+        /// Converts CinemaInputModel object to Cinema
+        ///</summary>
+        ///<param name="input"> CinemaInputModel object to map from</param>
+        ///<returns>Mapped instance of type <see cref="Cinema"/></returns>
         public Cinema MapToCinemaData(CinemaInputModel input)
         {
             var model = MapSimilarProperties<CinemaInputModel, Cinema>(input);
             return model;
         }
-        
-    ///<summary>
-    /// Creates FilmProjection object
-    ///</summary>
-    ///<param name="input">Projection data</param>
-    ///<param name="film"> New Film object </param>
-    ///<param name="cinema"> New Cinema object </param>
-    ///<returns>FilmProjection object</returns>
+
+        ///<summary>
+        /// Creates FilmProjection object
+        ///</summary>
+        ///<param name="input">Projection data to map from</param>
+        ///<param name="film"> Film object to map from</param>
+        ///<param name="cinema"> Cinema object to map from</param>
+        ///<returns>Mapped instance of type <see cref="FilmProjection"/></returns>
         public FilmProjection MapToFilmProjection(ProjectionInputModel input, FilmData film, Cinema cinema)
         {
             return new FilmProjection
@@ -289,12 +295,12 @@ namespace CinemaShare.Common.Mapping
                 }
             };
         }
-        
-    ///<summary>
-    /// Converts filmProjection object to ProjectionCardViewModel
-    ///</summary>
-    ///<param name="filmProjection"> New FilmProjection object </param>
-    ///<returns>ProjectionCardViewModel object</returns>
+
+        ///<summary>
+        /// Converts filmProjection object to ProjectionCardViewModel
+        ///</summary>
+        ///<param name="filmProjection"> FilmProjection object to map from</param>
+        ///<returns>Mapped instance of type <see cref="ProjectionCardViewModel"/></returns>
         public ProjectionCardViewModel MapToProjectionCardViewModel(FilmProjection filmProjection)
         {
             return new ProjectionCardViewModel
@@ -308,12 +314,12 @@ namespace CinemaShare.Common.Mapping
                 CinemaCountry = filmProjection.Cinema.Country
             };
         }
-        
-    ///<summary>
-    /// Converts filmProjection object to ProjectionInputModel
-    ///</summary>
-    ///<param name="filmProjection"> New FilmProjection object </param>
-    ///<returns>ProjectionInputModel object</returns>
+
+        ///<summary>
+        /// Converts filmProjection object to ProjectionInputModel
+        ///</summary>
+        ///<param name="filmProjection"> FilmProjection object to map from</param>
+        ///<returns>Mapped instance of type <see cref="ProjectionInputModel"/></returns>
         public ProjectionInputModel MapToProjectionInputModel(FilmProjection filmProjection)
         {
             return new ProjectionInputModel
@@ -327,12 +333,12 @@ namespace CinemaShare.Common.Mapping
                 StudentsTicketPrice = filmProjection.TicketPrices.StudentPrice
             };
         }
-        
-    ///<summary>
-    /// Converts FilmProjection object to ProjectionDataViewModel
-    ///</summary>
-    ///<param name="dilmProjcetion"> New FilmProjection object </param>
-    ///<returns>ProjectionDataViewModel object</returns>
+
+        ///<summary>
+        /// Converts FilmProjection object to ProjectionDataViewModel
+        ///</summary>
+        ///<param name="dilmProjcetion"> FilmProjection object to map from </param>
+        ///<returns>Mapped instance of type <see cref="ProjectionDataViewModel"/></returns>
         public ProjectionDataViewModel MapToProjectionDataViewModel(FilmProjection filmProjection)
         {
             return new ProjectionDataViewModel
@@ -351,16 +357,16 @@ namespace CinemaShare.Common.Mapping
                 ChildrenTicketPrice = filmProjection.TicketPrices.ChildrenPrice,
                 AdultsTicketPrice = filmProjection.TicketPrices.AdultPrice,
                 StudentsTicketPrice = filmProjection.TicketPrices.StudentPrice,
-                FilmId=filmProjection.FilmId,
-                CinemaId=filmProjection.CinemaId,
+                FilmId = filmProjection.FilmId,
+                CinemaId = filmProjection.CinemaId,
             };
         }
-        
-    ///<summary>
-    /// Converts ProjectionTicket object to TicketCardViewModel
-    ///</summary>
-    ///<param name="ticket"> New ProjectionTicket object </param>
-    ///<returns>TicketCardViewModel object</returns>
+
+        ///<summary>
+        /// Converts ProjectionTicket object to TicketCardViewModel
+        ///</summary>
+        ///<param name="ticket"> ProjectionTicket object to map from</param>
+        ///<returns>Mapped instance of type <see cref="TicketCardViewModel"/></returns>
         public TicketCardViewModel MapToTicketCardViewModel(ProjectionTicket ticket)
         {
             var viewModel = MapSimilarProperties<ProjectionTicket, TicketCardViewModel>(ticket);
@@ -370,16 +376,19 @@ namespace CinemaShare.Common.Mapping
             viewModel.ProjectionDate = ticket.Projection.Date;
             return viewModel;
         }
-        
-    ///<summary>
-    /// Updates information about users' tickets with selected parameters
-    ///</summary>
-    ///<param name="userId">Id of the user</param>
-    ///<param name="input">Ticket information</param>
-    ///<param name="projection">Projection information</param>
-    ///<param name="DateTime">Ticket time paramater</param>
-    ///<returns>Updated ticket data </returns>
-        public ProjectionTicket MapToProjectionTicket(string userId, TicketInputModel input, FilmProjection projection, DateTime timeStamp)
+
+        ///<summary>
+        /// Updates information about users' tickets with selected parameters
+        ///</summary>
+        ///<param name="userId">Id of the user</param>
+        ///<param name="input">Ticket information</param>
+        ///<param name="projection">Projection information</param>
+        ///<param name="DateTime">Ticket time paramater</param>
+        ///<returns>Mapped instance of type <see cref="ProjectionTicket"/></returns>
+        public ProjectionTicket MapToProjectionTicket(string userId,
+                                                      TicketInputModel input,
+                                                      FilmProjection projection,
+                                                      DateTime timeStamp)
         {
             return new ProjectionTicket
             {

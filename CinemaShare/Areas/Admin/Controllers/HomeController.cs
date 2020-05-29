@@ -12,6 +12,10 @@ namespace CinemaShare.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class HomeController : Controller
     {
+        /// <summary>
+        /// Default dashboard page
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             return View();

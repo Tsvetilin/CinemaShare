@@ -1,7 +1,5 @@
 ﻿using Data;
 using Data.Models;
-using System.Collections.Generic;
-using System.Data.Entity;
 using System.Threading.Tasks;
 
 namespace Business
@@ -16,41 +14,30 @@ namespace Business
         }
 
         /// <summary>
-        /// Adds a new review
+        /// Adds a new review in the database
         /// </summary>
-        /// <param name="filmReview">New review</param>
-        /// <returns></returns>
-        public async Task Add(FilmReview filmReview)
+        /// <param name="filmReview">The review to add</param>
+        public async Task AddAsync(FilmReview filmReview)
         {
             await context.FilmReviews.AddAsync(filmReview);
             await context.SaveChangesAsync();
         }
 
         /// <summary>
-        /// Finds a review bt ID
+        /// Finds a review by ID
         /// </summary>
         /// <param name="cinema">The ID of the review</param>
-        /// <returns>Review</returns>
-        public async Task<FilmReview> Get(string id)
+        /// <returns>Review searched, returns null if not exists</returns>
+        public async Task<FilmReview> GetAsync(string id)
         {
             return await context.FilmReviews.FindAsync(id);
         }
 
         /// <summary>
-        /// Gets all the reviews
-        /// </summary>
-        /// <returns>List with reviews </returns>
-        public async Task<IEnumerable<FilmReview>> GetAll()
-        {
-            return await context.FilmReviews.ToListAsync();
-        }
-
-        /// <summary>
         /// Update the selected review if exists
         /// </summary>
-        /// <param name="filmReview">A review of the film</param>
-        /// <returns></returns>
-        public async Task Update(FilmReview filmReview)
+        /// <param name="filmReview">An updated review of the film</param>
+        public async Task UpdateAsync(FilmReview filmReview)
         {
             var filmInContext = await context.FilmReviews.FindAsync(filmReview.Id);
             if (filmInContext != null)
@@ -64,8 +51,7 @@ namespace Business
         /// Delete a review with the selected ID if exists
         /// </summary>
         /// <param name="id">Review ID</param>
-        /// <returns></returns>
-        public async Task Delete(string id)
+        public async Task DeleteAsync(string id)
         {
             var filmInContext = await context.FilmReviews.FindAsync(id);
             if (filmInContext != null)

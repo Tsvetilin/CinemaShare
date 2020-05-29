@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Business;
 using Data.Models;
@@ -18,7 +16,7 @@ namespace CinemaShare.Areas.Admin.Controllers
         private readonly IFilmProjectionBusiness filmProjectionBusiness;
         private readonly IFilmDataBusiness filmDataBusiness;
 
-        public ProjectionsController(IFilmProjectionBusiness filmProjectionBusiness, 
+        public ProjectionsController(IFilmProjectionBusiness filmProjectionBusiness,
                                      IFilmDataBusiness filmDataBusiness)
         {
             this.filmProjectionBusiness = filmProjectionBusiness;
@@ -26,9 +24,8 @@ namespace CinemaShare.Areas.Admin.Controllers
         }
 
         /// <summary>
-        /// The current page becomes projections page
+        /// Default projections page listing
         /// </summary>
-        /// <return>Page view</returns>
         public IActionResult Index()
         {
             var projecitons = filmProjectionBusiness.GetAll().ToList();
@@ -36,9 +33,8 @@ namespace CinemaShare.Areas.Admin.Controllers
         }
 
         /// <summary>
-        /// Show details about projection by ID
+        /// Shows details about projection by ID
         /// </summary>
-        /// <return>Projection View</returns>
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -46,7 +42,7 @@ namespace CinemaShare.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var projeciton = await filmProjectionBusiness.Get(id);
+            var projeciton = await filmProjectionBusiness.GetAsync(id);
             if (projeciton == null)
             {
                 return NotFound();
@@ -56,9 +52,8 @@ namespace CinemaShare.Areas.Admin.Controllers
         }
 
         /// <summary>
-        /// Edits films data by ID
+        /// Shows edit page for the projection
         /// </summary>
-        /// <return>Updated projection view</returns>
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -66,7 +61,7 @@ namespace CinemaShare.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var projection = await filmProjectionBusiness.Get(id);
+            var projection = await filmProjectionBusiness.GetAsync(id);
             if (projection == null)
             {
                 return NotFound();
@@ -79,44 +74,43 @@ namespace CinemaShare.Areas.Admin.Controllers
         }
 
         /// <summary>
-        /// Updates only selected data for projection by ID
+        /// Edits selected film's data
         /// </summary>
-        /// <return>Projection page view</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, 
+        public async Task<IActionResult> Edit(string id,
                                   [Bind("Id,Date,ProjecitonType,TotalTickets,FilmId, TicketPrices")] FilmProjection projection)
         {
-            var projectionInContext = await filmProjectionBusiness.Get(id);
+            var projectionInContext = await filmProjectionBusiness.GetAsync(id);
             if (id != projection.Id || projectionInContext == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var ticketUrlPattern = Url.ActionLink("Index", "Tickets");
-                var projecitonsUrlPattern = Url.ActionLink("Index", "Projections");
-                projection.CinemaId = projectionInContext.CinemaId;
-                await filmProjectionBusiness.Update(projection,projecitonsUrlPattern ,ticketUrlPattern);
-                return RedirectToAction(nameof(Details), new { id });
-            }
-            var films = filmDataBusiness.GetAll().ToList().OrderBy(x => x.Title).
+                var films = filmDataBusiness.GetAll().ToList().OrderBy(x => x.Title).
                                                   ToDictionary(x => x.FilmId, x => x.Title);
-            ViewBag.SelectListOfFilms = new SelectList(films, "Key", "Value");
-            return View(projection);
+                ViewBag.SelectListOfFilms = new SelectList(films, "Key", "Value");
+                return View(projection);
+            }
+
+            var ticketUrlPattern = Url.ActionLink("Index", "Tickets");
+            var projecitonsUrlPattern = Url.ActionLink("Index", "Projections");
+            projection.CinemaId = projectionInContext.CinemaId;
+            await filmProjectionBusiness.UpdateAsync(projection, projecitonsUrlPattern, ticketUrlPattern);
+            return RedirectToAction(nameof(Details), new { id });
         }
 
         /// <summary>
         /// Deletes projection by ID and redirects the page to projections
         /// </summary>
-        /// <return>Projections page view</returns>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var projectionUrlPattern = Url.ActionLink("Index", "Projections");
-            await filmProjectionBusiness.Delete(id, projectionUrlPattern);
+            await filmProjectionBusiness.DeleteAsync(id, projectionUrlPattern);
             return RedirectToAction(nameof(Index));
         }
     }

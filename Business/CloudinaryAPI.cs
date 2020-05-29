@@ -1,9 +1,7 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Business
@@ -20,11 +18,14 @@ namespace Business
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
         }
+
         /// <summary>
         /// Uploads new image with selected parameters
         /// </summary>
+        /// <param name="fileName">Name of the file to upload</param>
+        /// <param name="imageMemoryStream">Memory stream containing the image data</param>
         /// <returns>Image uri</returns>
-        public async Task<string> UploadImage(MemoryStream imageMemoryStream, string fileName)
+        public async Task<string> UploadImageAsync(MemoryStream imageMemoryStream, string fileName)
         {
             imageMemoryStream.Position = 0;
             var cloudinaryAccount = new Account(cloudName, apiKey, apiSecret);

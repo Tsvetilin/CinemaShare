@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Business;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+/// <summary>
+/// Admin section pages' controllers
+/// </summary>
 namespace CinemaShare.Areas.Admin.Controllers
 {
     [Area("Admin")]
@@ -22,9 +22,8 @@ namespace CinemaShare.Areas.Admin.Controllers
         }
 
         ///<summary>
-        /// Universal method for redirection of pages
+        /// Cinemas default page for listing
         ///</summary>
-        ///<returns>Film data model</returns>
         public IActionResult Index()
         {
             var model = cinemaBusiness.GetAll();
@@ -34,7 +33,6 @@ namespace CinemaShare.Areas.Admin.Controllers
         ///<summary>
         /// Shows details for cinema searched by ID
         ///</summary>
-        ///<returns>Film data view</returns>
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -52,9 +50,8 @@ namespace CinemaShare.Areas.Admin.Controllers
         }
 
         ///<summary>
-        /// Edits cinema data by selected ID
+        /// Shows edit page for the cinema
         ///</summary>
-        ///<returns>Cinema view</returns>
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -72,41 +69,40 @@ namespace CinemaShare.Areas.Admin.Controllers
         }
 
         ///<summary>
-        /// Edits only selected film data
+        /// Edits selected cinema's data
         ///</summary>
-        ///<returns>Cinema view</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,Name,City,Country")] Cinema cinema)
         {
             var cinemaInContext = await cinemaBusiness.GetAsync(id);
 
-            if (id != cinema.Id || cinemaInContext == null) 
+            if (id != cinema.Id || cinemaInContext == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                cinema.ManagerId = cinemaInContext.ManagerId;
-                var ticketUrlPattern = Url.ActionLink("Index", "Tickets");
-                await cinemaBusiness.UpdateAsync(cinema,ticketUrlPattern);
-                return RedirectToAction(nameof(Details), new { id });
+                return View(cinema);
             }
 
-            return View(cinema);
+            cinema.ManagerId = cinemaInContext.ManagerId;
+            var ticketUrlPattern = Url.ActionLink("Index", "Tickets");
+            await cinemaBusiness.UpdateAsync(cinema, ticketUrlPattern);
+            return RedirectToAction(nameof(Details), new { id });
         }
 
         ///<summary>
-        /// Deletes cinema by ID and
-        /// and makes a redirection to Projections
+        /// Deletes cinema by ID
+        /// and makes a redirection to Projections page
         ///</summary>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var projectionUrlPattern = Url.ActionLink("Index", "Projections");
-            await cinemaBusiness.DeleteAsync(id,projectionUrlPattern);
+            await cinemaBusiness.DeleteAsync(id, projectionUrlPattern);
             return RedirectToAction(nameof(Index));
         }
     }

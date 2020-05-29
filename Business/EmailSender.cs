@@ -22,7 +22,11 @@ namespace Business
         /// <summary>
         /// Sends email from a selected sender to a selected receiver with subject and message
         /// </summary>
-        /// <returns></returns>
+        /// <param name="sender">Email of the sender</param>
+        /// <param name="senderName">Name of the sender</param>
+        /// <param name="reciever">Email of the reciever</param>
+        /// <param name="subject">Subject of the email</param>
+        /// <param name="htmlMessage">Message to send</param>
         public async Task SendEmailAsync(string sender,
                                          string senderName,
                                          string reciever,
@@ -38,7 +42,9 @@ namespace Business
         /// <summary>
         /// Sends email from a default sender to a selected receiver with subject and message
         /// </summary>
-        /// <returns></returns>
+        /// <param name="reciever">Email of the reciever</param>
+        /// <param name="subject">Subject of the email</param>
+        /// <param name="htmlMessage">Message to send</param>
         public async Task SendEmailAsync(string reciever,
                                          string subject,
                                          string htmlMessage)
@@ -52,7 +58,9 @@ namespace Business
         /// <summary>
         /// Sends email to cancel a ticket reservation for a selected projection
         /// </summary>
-        /// <returns></returns>
+        /// <param name="reciever">Email of the reciever</param>
+        /// <param name="projection">Projection data about the one that is canceled</param>
+        /// <param name="projectionsUrlPattern">Url of the projections reference page</param>
         public async Task SendTicketCancelationEmailAsync(string reciever, 
                                                           FilmProjection projection,
                                                           string projectionsUrlPattern)
@@ -70,7 +78,9 @@ namespace Business
         /// <summary>
         /// Sends email to inform about ticket information update
         /// </summary>
-        /// <returns></returns>
+        /// <param name="reciever">Email of the reciever</param>
+        /// <param name="projection">Projection data about the one that is canceled</param>
+        /// <param name="ticketsUrlPattern">Url of the rickets reference page</param>
         public async Task SendTicketUpdateEmailAsync(string reciever,
                                                      FilmProjection projection, 
                                                      string ticketsUrlPattern)
@@ -88,7 +98,8 @@ namespace Business
         /// <summary>
         /// Sends a confirmation email to a receiver from a default sender
         /// </summary>
-        /// <returns></returns>
+        /// <param name="reciever">Email of the reciever</param>
+        /// <param name="callbackUrl">Url callback of the website</param>
         public async Task SendEmailConfirmationEmailAsync(string reciever, string callbackUrl)
         {
             var subject= "Confirm your email";
@@ -97,6 +108,5 @@ namespace Business
                 $" <a style=\"text-decoration: none !important\" href='{callbackUrl}'>clicking here</a>.</p>";
             await SendEmailAsync(reciever, subject, html);
         }
-
     }
 }

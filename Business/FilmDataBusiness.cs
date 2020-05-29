@@ -1,14 +1,10 @@
 ﻿using Data;
 using Data.Models;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using Data.Enums;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
 
 namespace Business
 {
@@ -20,13 +16,16 @@ namespace Business
         {
             this.context = context;
         }
-        
+
         /// <summary>
-        /// Adds new film
+        /// Adds new film in the database
         /// </summary>
         /// <param name="filmData">Data of the new film </param>        
-        /// <param name="film">New film object</param>
-        /// <returns></returns>
+        /// <param name="film">Existing film object, data to be added to</param>
+        /// <param name="mapToModelFunc">
+        /// Method that maps the <typeparamref name="TModel"/> and the Film model to FilmData model
+        /// </param>
+        /// <typeparam name="TModel">Model, the Film data model to be mapped from</typeparam>
         public async Task AddAsync<TModel>(TModel filmData, Film film, Func<TModel, Film, FilmData> mapToModelFunc)
         {
             await context.FilmDatas.AddAsync(mapToModelFunc(filmData, film));
@@ -36,8 +35,8 @@ namespace Business
         /// <summary>
         /// Checks if film is added in the database
         /// </summary>
-        /// <param name="filmTitle">Data of the new film </param>        
-        /// <returns>True if added or false if not</returns>
+        /// <param name="filmTitle">Title of the film to check for</param>        
+        /// <returns>True if already added or false if not</returns>
         public bool IsAlreadyAdded(string filmTitle)
         {
             return context.FilmDatas.Any(x => x.Title.ToLower().Equals(filmTitle.ToLower()));
@@ -47,7 +46,7 @@ namespace Business
         /// Gets film by ID
         /// </summary>
         /// <param name="id">The film ID</param>        
-        /// <returns>Selected film</returns>
+        /// <returns>Selected film, returns null if not found</returns>
         public async Task<FilmData> GetAsync(string id)
         {
             return await context.FilmDatas.FindAsync(id);
@@ -56,8 +55,10 @@ namespace Business
         /// <summary>
         /// Gets a film by ID
         /// </summary>
-        /// <param name="id">The film ID</param>        
-        /// <returns>The film as TModel</returns>
+        /// <param name="id">The film ID to search for</param>
+        /// <param name="mapToModelFunc">Method that maps the Film data to <typeparamref name="TModel"/></param>
+        /// <typeparam name="TModel">Model, the Film data model to be mapped to</typeparam>
+        /// <returns>The film data as <typeparamref name="TModel"/>, null if not found</returns>
         public async Task<TModel> GetAsync<TModel>(string id, Func<FilmData, TModel> mapToModelFunc)
         {
             var film = await GetAsync(id);
@@ -65,19 +66,30 @@ namespace Business
         }
 
         /// <summary>
-        /// Gets all films in the database
+        /// Gets all film's data in the database
         /// </summary>    
-        /// <returns>List of films</returns>
+        /// <returns>List of all film's data </returns>
         public IEnumerable<FilmData> GetAll()
         {
             return context.FilmDatas.ToList();
         }
 
         /// <summary>
+        /// Get all films' titles for selection listing
+        /// </summary>
+        /// <returns>Dictionary containing all films' titles</returns>
+        public IDictionary<string,string> GetAllFilmsTitles()
+        {
+            return GetAll().ToList().Select(x => x.Title).OrderBy(x => x).ToDictionary(x => x);
+        }
+
+        /// <summary>
         /// Gets all films by a selected name
         /// </summary>    
-        /// <param name="searchString">Input string</param>
-        /// <returns>List of films</returns>
+        /// <param name="searchString">Film title to seatch for</param>
+        /// <param name="mapToModelFunc">Method that maps the Film data to <typeparamref name="TModel"/></param>
+        /// <typeparam name="TModel">Model, the Film data model to be mapped to</typeparam>
+        /// <returns>List of films found mapped to <typeparamref name="TModel"/></returns>
         public IEnumerable<TModel> GetAllByName<TModel>(string searchString, Func<FilmData, TModel> mapToModelFunc)
         {
            return GetAll().Where(x => x.Title.ToLower().Contains(searchString.ToLower()))
@@ -88,7 +100,7 @@ namespace Business
         /// Gets a film by a selected name
         /// </summary>    
         /// <param name="title">The film title</param>
-        /// <returns>Film</returns>
+        /// <returns>The film result, null if not found</returns>
         public FilmData GetByName(string title)
         {
             var film = context.FilmDatas.FirstOrDefault(x => x.Title.ToLower() == title.ToLower());
@@ -102,7 +114,9 @@ namespace Business
         /// <param name="page">Number of the page</param>
         /// <param name="filmsOnPage">Number of the films on the page</param>
         /// <param name="sortOption">Sorting criteria</param>
-        /// <returns>List of films</returns>
+        /// <param name="mapToModelFunc">Method that maps the Film data to <typeparamref name="TModel"/></param>
+        /// <typeparam name="TModel">Model, the Film data model to be mapped to</typeparam>
+        /// <returns>List of films mapped to <typeparamref name="TModel"/></returns>
         public IEnumerable<TModel> GetPageItems<TModel>(int page, int filmsOnPage, string sortOption,
                                                         Func<FilmData, TModel> mapToModelFunc)
         {
@@ -127,16 +141,20 @@ namespace Business
         /// <summary>
         /// Gets top 10 films with the best rating
         /// </summary>    
-        /// <returns>List of films</returns>
+        /// <param name="mapToModelFunc">Method that maps the Film data to <typeparamref name="TModel"/></param>
+        /// <typeparam name="TModel">Model, the Film data model to be mapped to</typeparam>
+        /// <returns>List of films mapped to <typeparamref name="TModel"/></returns>
         public IEnumerable<TModel> GetTopFilms<TModel>(Func<FilmData,TModel> mapToModelFunc)
         {
             return this.GetAll().OrderByDescending(x => x.Film.Rating).Take(10).Select(x => mapToModelFunc(x)).ToList();
         }
 
         /// <summary>
-        /// Gets the most recently added 4 films
+        /// Gets the most recently released 4 films
         /// </summary>    
-        /// <returns>List of films</returns>
+        /// <param name="mapToModelFunc">Method that maps the Film data to <typeparamref name="TModel"/></param>
+        /// <typeparam name="TModel">Model, the Film data model to be mapped to</typeparam>
+        /// <returns>List of films mapped to <typeparamref name="TModel"/></returns>
         public IEnumerable<TModel> GetRecentFilms<TModel>(Func<FilmData,TModel> mapToModelFunc)
         {
             return this.GetAll().OrderByDescending(x => x.ReleaseDate).Take(4).Select(x=>mapToModelFunc(x)).ToList();
@@ -155,8 +173,7 @@ namespace Business
         /// Updates the data about a selected film
         /// </summary>    
         /// <param name="filmData">The updated data of the film</param>
-        /// <returns></returns>
-        public async Task Update(FilmData filmData)
+        public async Task UpdateAsync(FilmData filmData)
         {
             var filmDataInContext = await context.FilmDatas.FindAsync(filmData.FilmId);
             if (filmDataInContext != null)
@@ -170,8 +187,7 @@ namespace Business
         /// Deletes film by ID
         /// </summary>    
         /// <param name="id">The film ID</param>
-        /// <returns></returns>
-        public async Task Delete(string id)
+        public async Task DeleteAsync(string id)
         {
             var filmInContext = await context.FilmDatas.FindAsync(id);
             if (filmInContext != null)

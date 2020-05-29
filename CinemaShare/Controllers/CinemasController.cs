@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Business;
@@ -33,15 +32,14 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Redirect to a new cinema view model if seаrched string is valid 
-        /// or shows an error
+        /// Default cinemas page with search options
         ///</summary>
         public IActionResult Index(int id = 1, string search = "")
         {
-            if (!String.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search))
             {
                 var searchResult = cinemaBusiness.GetSearchResults(search, mapper.MapToCinemaCardViewModel).ToList();
-                if (searchResult.Count != 0 )
+                if (searchResult.Count != 0)
                 {
                     return View(new CinemasIndexViewModel
                     {
@@ -58,7 +56,7 @@ namespace CinemaShare.Controllers
             {
                 id = 1;
             }
-            var  cinemas = cinemaBusiness.GetPageItems(id, cinemasOnPage, mapper.MapToCinemaCardViewModel).ToList();
+            var cinemas = cinemaBusiness.GetPageItems(id, cinemasOnPage, mapper.MapToCinemaCardViewModel).ToList();
             CinemasIndexViewModel viewModel = new CinemasIndexViewModel
             {
                 PagesCount = pageCount,
@@ -68,11 +66,10 @@ namespace CinemaShare.Controllers
 
             return View(viewModel);
         }
-        
+
         /// <summary>
         /// Shows cinema data by selected index
         /// </summary>
-        /// <returns>Projections data view</returns>
         public async Task<IActionResult> Detail(string id = null)
         {
             if (id == null)
@@ -87,7 +84,7 @@ namespace CinemaShare.Controllers
             }
 
             var projections = filmProjectionBusiness.GetAllByCinemaId(id, mapper.MapToProjectionCardViewModel)
-                                                    .OrderByDescending(x=>x.Date);
+                                                    .OrderByDescending(x => x.Date);
             viewModel.FilmProjections = projections.ToList();
             return this.View(viewModel);
         }
@@ -109,7 +106,6 @@ namespace CinemaShare.Controllers
         ///<summary>
         /// Adds cinema to the Database
         ///</summary>
-        /// <param>New CinemaInputModel object</param>
         [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
         public async Task<IActionResult> Add(CinemaInputModel input)
@@ -142,12 +138,8 @@ namespace CinemaShare.Controllers
         }
 
         ///<summary>
-        /// Udpates cinema data by ID
+        /// Shows update page for the cinema
         ///</summary>
-        ///<returns>
-        /// Updated model view if manager's ID equals user's ID or
-        /// Cinema details page 
-        ///</returns>
         [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Update(string id)
         {
@@ -168,9 +160,6 @@ namespace CinemaShare.Controllers
         ///<summary>
         /// Updates cinema data by ID
         ///</summary>
-        ///<returns>
-        /// Updated model view if manager's ID equals user's ID 
-        ///</returns>
         [Authorize(Roles = "Manager, Admin")]
         [HttpPost]
         public async Task<IActionResult> Update(CinemaInputModel input, string id)
@@ -188,7 +177,7 @@ namespace CinemaShare.Controllers
                 data.Id = cinema.Id;
                 data.ManagerId = cinema.ManagerId;
                 var ticketUrlPattern = Url.ActionLink("Index", "Tickets");
-                await cinemaBusiness.UpdateAsync(data,ticketUrlPattern);
+                await cinemaBusiness.UpdateAsync(data, ticketUrlPattern);
                 return RedirectToAction("Manage", "Cinemas", new { Id = id });
             }
 
@@ -207,17 +196,14 @@ namespace CinemaShare.Controllers
             if (user?.Id == cinema?.ManagerId)
             {
                 var projectionUrlPattern = Url.ActionLink("Index", "Projections");
-                await cinemaBusiness.DeleteAsync(id,projectionUrlPattern);
+                await cinemaBusiness.DeleteAsync(id, projectionUrlPattern);
             }
             return RedirectToAction("Index", "Cinemas");
         }
-        
+
         ///<summary>
-        /// Manages cinema data by selected ID
+        /// Shows cinema manage page 
         ///</summary>
-        ///<returns>
-        /// Cinema data view if user's ID equals manager's ID
-        ///</returns>
         [Authorize(Roles = "Manager, Admin")]
         public async Task<IActionResult> Manage(string id)
         {

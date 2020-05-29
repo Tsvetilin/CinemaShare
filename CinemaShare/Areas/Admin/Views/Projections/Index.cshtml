@@ -4,6 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
+<h1>Update Projections</h1>
 <table class="table">
     <thead>
         <tr>
@@ -26,27 +27,28 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cinema.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Film.FilmData.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProjectionType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalTickets)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Manage</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cinema.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Film.FilmData.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectionType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalTickets)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Manage</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
