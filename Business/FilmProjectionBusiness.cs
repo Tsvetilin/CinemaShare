@@ -108,7 +108,6 @@ namespace Business
         /// and send email to infrom about the update
         /// </summary>
         /// <param name="projection">New projection object</param>
-        /// <returns></returns>
         public async Task Update(FilmProjection projection, string projectionsUrlPattern, string ticketsUrlPattern)
         {
             var projectionInContext = await context.FilmProjections.FindAsync(projection.Id);
@@ -147,7 +146,6 @@ namespace Business
         /// </summary>
         /// <param name="id">ID of the projection</param>
         /// <param name="projectionsOnPage">Projections Count</param>
-        /// <returns></returns>
         public async Task Delete(string id, string projectionsUrlPattern)
         {
             var projectionInContext = await context.FilmProjections.FindAsync(id);

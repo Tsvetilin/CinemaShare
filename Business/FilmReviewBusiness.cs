@@ -19,7 +19,7 @@ namespace Business
         /// Adds a new review
         /// </summary>
         /// <param name="filmReview">New review</param>
-        /// <returns></returns>
+        
         public async Task Add(FilmReview filmReview)
         {
             await context.FilmReviews.AddAsync(filmReview);
@@ -49,7 +49,6 @@ namespace Business
         /// Update the selected review if exists
         /// </summary>
         /// <param name="filmReview">A review of the film</param>
-        /// <returns></returns>
         public async Task Update(FilmReview filmReview)
         {
             var filmInContext = await context.FilmReviews.FindAsync(filmReview.Id);
@@ -64,7 +63,6 @@ namespace Business
         /// Delete a review with the selected ID if exists
         /// </summary>
         /// <param name="id">Review ID</param>
-        /// <returns></returns>
         public async Task Delete(string id)
         {
             var filmInContext = await context.FilmReviews.FindAsync(id);

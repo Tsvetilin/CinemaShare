@@ -39,7 +39,5 @@ namespace Data.Models
         public DateTime ReleaseDate { get; set; }
 
         public TargetAudience TargetAudience { get; set; }
-
-
     }
 }
